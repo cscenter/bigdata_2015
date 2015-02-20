@@ -58,8 +58,6 @@ if "/partitions" in files and "partitions" in chunks:
         f = line.strip().split()
         search_files.append([f[0], f[1], f[2]])
 
-print(search_files)
-
 
 def get_number_by_file(filename):
     for element in search_files:
@@ -70,6 +68,7 @@ def get_number_by_file(filename):
                         line_arr = line.split()
                         if line_arr[0] == filename:
                             return line_arr[1]
+    return 0
 
 
 # эту функцию надо реализовать. Она принимает название файла с ключами и возвращает
