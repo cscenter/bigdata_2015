@@ -27,7 +27,7 @@ def chunk_locations():
 # Возвращает содержимое указанного фрагмента с указанного файлового сервера
 # в виде потока
 def get_chunk_data(chunk_server_id, chunk_id):
-  return open("data/%s/%s" % (chunk_server_id, chunk_id))
+  return open("data/{}/{}".format(chunk_server_id, chunk_id))
 
 
 
