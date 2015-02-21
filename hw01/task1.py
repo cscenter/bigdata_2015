@@ -37,22 +37,17 @@ def demo():
 # Если вы не знаете ничего про итераторы или об их особенностях в Питоне,
 # погуглите "python итератор генератор". Вот например
 # http://0agr.ru/blog/2011/05/05/advanced-python-iteratory-i-generatory/
-def get_file_content(filename):
+def find_file(filename):
     for f in dfs.files():
         if filename == f.name:
-            print("SUCCES")
-            for fragment in f.chunks:
-                valid_chunks = [c for c in dfs.chunk_locations() if c.id == fragment]
-                print(valid_chunks)
-            print('READING CONTENT')
-            file_content = []
-            for c in valid_chunks:
-                for line in  dfs.get_chunk_data(c.chunkserver, c.id):
-                    file_content += [line[:-1]]
-            print(file_content)
-            return
+            return f
     raise "File not found"
-  # raise "Comment out this line and write your code below"
+
+def get_file_content(filename):
+    f = find_file(filename)
+    valid_chunks = (c for fragment in f.chunks for c in dfs.chunk_locations() if c.id == fragment)
+    return (line[:-1] for c in valid_chunks for line in dfs.get_chunk_data(c.chunkserver, c.id) if len(line[:-1]) > 0)
+
 
 
 # эту функцию надо реализовать. Она принимает название файла с ключами и возвращает
@@ -61,4 +56,6 @@ def calculate_sum(keys_filename):
   raise "Comment out this line and write your code below"
 
 # demo()
-get_file_content('/shard_7')
+myCoolIterator = get_file_content('/shard_7')
+for i in myCoolIterator:
+    print(i)
