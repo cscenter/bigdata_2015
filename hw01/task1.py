@@ -38,11 +38,27 @@ def demo():
 # погуглите "python итератор генератор". Вот например
 # http://0agr.ru/blog/2011/05/05/advanced-python-iteratory-i-generatory/
 def get_file_content(filename):
-  raise "Comment out this line and write your code below"
+    for f in dfs.files():
+        if filename == f.name:
+            print("SUCCES")
+            for fragment in f.chunks:
+                valid_chunks = [c for c in dfs.chunk_locations() if c.id == fragment]
+                print(valid_chunks)
+            print('READING CONTENT')
+            file_content = []
+            for c in valid_chunks:
+                for line in  dfs.get_chunk_data(c.chunkserver, c.id):
+                    file_content += [line[:-1]]
+            print(file_content)
+            return
+    raise "File not found"
+  # raise "Comment out this line and write your code below"
+
 
 # эту функцию надо реализовать. Она принимает название файла с ключами и возвращает
 # число
 def calculate_sum(keys_filename):
   raise "Comment out this line and write your code below"
 
-demo()
+# demo()
+get_file_content('/shard_7')
