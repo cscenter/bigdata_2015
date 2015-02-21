@@ -28,18 +28,19 @@ def demo():
 
 # Support functions
 
-def get_file_fragments(filename):
+def get_file_chunks(filename):
+  if filename is None: raise Exception("No filename given")
   for f in dfs.files():
     if f.name == filename:
       return f.chunks
-  return None
+  raise Exception("File not found")
 
-def get_chunk_locations(file_fragments):
+def get_chunk_locations(file_chunks):
   chunk_locations = []
-  if not file_fragments is None:
-    for chunk in dfs.chunk_locations():
-      if chunk.id in file_fragments:
-        chunk_locations.append((chunk.chunkserver, chunk.id))
+  if file_chunks is None: raise Exception("No chunks given")
+  for chunk in dfs.chunk_locations():
+    if chunk.id in file_chunks:
+      chunk_locations.append((chunk.chunkserver, chunk.id))
   return chunk_locations
 
 # Эту функцию надо реализовать. Функция принимает имя файла и 
@@ -48,20 +49,20 @@ def get_chunk_locations(file_fragments):
 # погуглите "python итератор генератор". Вот например
 # http://0agr.ru/blog/2011/05/05/advanced-python-iteratory-i-generatory/
 def get_file_content(filename):
-  chunk_locations = get_chunk_locations(get_file_fragments(filename))
-  for pair in chunk_locations:
-    with dfs.get_chunk_data(pair[0], pair[1]) as f:
+  chunk_locations = get_chunk_locations(get_file_chunks(filename))
+  for (server_id, chunk_id) in chunk_locations:
+    with dfs.get_chunk_data(server_id, chunk_id) as f:
       for line in f:
         yield line[:-1]
   
 
 def get_search_file(key):
   for l in get_file_content("/partitions"):
-    partition = l.strip().split()
-    if key >= partition[0] and key <= partition[1]:
-      return partition[2]
-    if key < partition[0]:
-      break
+    (range_min, range_max, shard) = l.strip().split()
+    if key >= range_min and key <= range_max:
+      return shard
+    if key < range_min: break 
+  raise Exception("Key is out of range")
 
 
 # эту функцию надо реализовать. Она принимает название файла с ключами и возвращает 
@@ -73,9 +74,9 @@ def calculate_sum(keys_filename):
       key = key.strip()
       for line in get_file_content(get_search_file(key)):
         if line == "": continue
-        pair = line.strip().split()
-        if pair[0] == key:
-          res += int(pair[1])
+        (found_key, found_value) = line.strip().split()
+        if found_key == key:
+          res += int(found_value)
           break
   return res
     
