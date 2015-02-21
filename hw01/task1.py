@@ -25,6 +25,20 @@ def demo():
             # удаляем символ перевода строки
             print(line[:-1])
 
+    # Дальнейший код всего лишь тестирует получение фрагмента, предполагая, что известно,
+    # где он лежит. Не рассчитывайте, что этот фрагмент всегда будет находиться
+    # на использованных тут файл-серверах
+
+    # При использовании test_dfs читаем из каталога cs0
+    chunk_iterator = dfs.get_chunk_data("cs0", "partitions")
+
+    # При использовании http_dfs читаем с данного сервера
+    # chunk_iterator = dfs.get_chunk_data("104.155.8.206", "partitions")
+    print("\nThe contents of chunk partitions:")
+    for line in chunk_iterator:
+        # удаляем символ перевода строки
+        print(line[:-1])
+
 
 # Эту функцию надо реализовать. Функция принимает имя файла и
 # возвращает итератор по его строкам.
@@ -35,8 +49,8 @@ def get_file_content(filename):
     raise "Comment out this line and write your code below"
 
 
-# эту функцию надо реализовать. Она принимает название файла с ключами и
-# возвращает число
+# эту функцию надо реализовать. Она принимает название файла с ключами и возвращает
+# число
 def calculate_sum(keys_filename):
     raise "Comment out this line and write your code below"
 
