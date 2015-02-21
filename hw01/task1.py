@@ -2,10 +2,10 @@
 # encoding: utf8
 
 # Для быстрого локального тестирования используйте модуль test_dfs
-import test_dfs as dfs
+# import test_dfs as dfs
 
 # Для настоящего тестирования используйте модуль http_dfs
-#import http_dfs as dfs
+import http_dfs as dfs
 
 # Демо показывает имеющиеся в DFS файлы, расположение их фрагментов
 # и содержимое фрагмента "partitions" с сервера "cs0"
@@ -26,7 +26,7 @@ def demo():
   chunk_iterator = dfs.get_chunk_data("cs0", "partitions")
 
   # При использовании http_dfs читаем с данного сервера
-  #chunk_iterator = dfs.get_chunk_data("104.155.8.206", "partitions")
+  chunk_iterator = dfs.get_chunk_data("104.155.8.206", "partitions")
   print("\nThe contents of chunk partitions:")
   for line in chunk_iterator:
     # удаляем символ перевода строки
@@ -58,10 +58,13 @@ def get_start(diaposone):
 def get_finish(diaposone):
     return diaposone.split(' ')[1]
 def get_filename(diaposone):
-    return  diaposone.split(' ')[2][:-1]
+    return diaposone.split(' ')[2][:-1]
 
 def get_filename_for_key(key):
-    for d in dfs.get_chunk_data("cs0", "partitions"):
+    # при использовании http_dfs
+    for d in dfs.get_chunk_data("104.155.8.206", "partitions"):
+    # при использовании test_dfs
+    # for d in dfs.get_chunk_data("cs0", "partitions"):
         start = get_start(d)
         finish = get_finish(d)
         filename = get_filename(d)
@@ -75,13 +78,15 @@ def calculate_sum(keys_filename):
     sum = 0
     keys = get_local_file_content(keys_filename)
     for k in keys:
-        print(k)
         filename = get_filename_for_key(k)
         for l in get_file_content(filename):
             if (k == l.split(' ')[0]):
                 sum += int(l.split(' ')[1])
+                break
     return sum
 
 
+# demo()
+print(calculate_sum("data\keys"))
 
-# print(calculate_sum("data\keys"))
+
