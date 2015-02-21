@@ -24,17 +24,60 @@ def demo():
       # удаляем символ перевода строки 
       print(line[:-1])
 
+
+
+# Support functions
+
+def get_file_fragments(filename):
+  for f in dfs.files():
+    if f.name == filename:
+      return f.chunks
+  return None
+
+def get_chunk_locations(file_fragments):
+  chunk_locations = []
+  if not file_fragments is None:
+    for chunk in dfs.chunk_locations():
+      if chunk.id in file_fragments:
+        chunk_locations.append((chunk.chunkserver, chunk.id))
+  return chunk_locations
+
 # Эту функцию надо реализовать. Функция принимает имя файла и 
 # возвращает итератор по его строкам. 
 # Если вы не знаете ничего про итераторы или об их особенностях в Питоне,
 # погуглите "python итератор генератор". Вот например
 # http://0agr.ru/blog/2011/05/05/advanced-python-iteratory-i-generatory/
 def get_file_content(filename):
-  raise "Comment out this line and write your code below"
+  chunk_locations = get_chunk_locations(get_file_fragments(filename))
+  for pair in chunk_locations:
+    with dfs.get_chunk_data(pair[0], pair[1]) as f:
+      for line in f:
+        yield line[:-1]
+  
+
+def get_search_file(key):
+  for l in get_file_content("/partitions"):
+    partition = l.strip().split()
+    if key >= partition[0] and key <= partition[1]:
+      return partition[2]
+    if key < partition[0]:
+      break
+
 
 # эту функцию надо реализовать. Она принимает название файла с ключами и возвращает 
 # число
 def calculate_sum(keys_filename):
-  raise "Comment out this line and write your code below"
+  res = 0
+  with open(keys_filename) as f:
+    for key in f:
+      key = key.strip()
+      for line in get_file_content(get_search_file(key)):
+        if line == "": continue
+        pair = line.strip().split()
+        if pair[0] == key:
+          res += int(pair[1])
+          break
+  return res
+    
 
-demo()
+#demo()
