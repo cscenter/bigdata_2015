@@ -32,17 +32,53 @@ def demo():
     # удаляем символ перевода строки
     print(line[:-1])
 
+def get_shard_name(key):
+  with dfs.get_chunk_data("cs0", "partitions") as f:
+    for line in f:
+      start, finish, name = line.rstrip().split()
+      if start <= key and key <= finish:
+        # print("keys from {} to {}, shard: {}".format(start, finish, name))
+        return name
+    raise "No shard found!"
+
+def get_chunk_server(chunk_id, chunk_locations):
+  for chunk in chunk_locations:
+    if chunk.id == chunk_id:
+      return chunk.chunkserver
+  raise "Chunkserver not found!"
+
 # Эту функцию надо реализовать. Функция принимает имя файла и
 # возвращает итератор по его строкам.
 # Если вы не знаете ничего про итераторы или об их особенностях в Питоне,
 # погуглите "python итератор генератор". Вот например
 # http://0agr.ru/blog/2011/05/05/advanced-python-iteratory-i-generatory/
 def get_file_content(filename):
-  raise "Comment out this line and write your code below"
+  chunks = []
+  for line in dfs.files():
+    if line.name == filename:
+      for chunk in line.chunks:
+        cs = get_chunk_server(chunk, dfs.chunk_locations())
+        chunks.append("/".join(["data", cs, chunk]))
+  for chunk in chunks:
+    with open(chunk) as f:
+      for line in f:
+        if len(line) > 2:
+          yield line
+  raise StopIteration
 
 # эту функцию надо реализовать. Она принимает название файла с ключами и возвращает
 # число
 def calculate_sum(keys_filename):
-  raise "Comment out this line and write your code below"
+  sum_ = 0
+  with open(keys_filename) as keys_:
+    for key in keys_:
+      key = key.rstrip()
+      shard = get_shard_name(key)
+      for line in get_file_content(shard):
+        key_, val_ = line.split()
+        if (key == key_):
+          sum_ += int(val_)
+          break
+  return sum_
 
-demo()
+print(calculate_sum("data/keys"))
