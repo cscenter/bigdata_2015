@@ -1,9 +1,9 @@
 #!/usr/bin/python
 # encoding: utf8
 
-import test_dfs as dfs
+#import test_dfs as dfs
 
-#import http_dfs as dfs
+import http_dfs as dfs
 
 # Эту функцию надо реализовать. Функция принимает имя файла и
 # возвращает итератор по его строкам.
@@ -30,7 +30,8 @@ def calculate_sum(keys_filename):
   #chunk_iterator = dfs.get_chunk_data("104.155.8.206", "partitions")
   for keys in get_file_content(keys_filename):
       key = keys[:-1]
-      for line in dfs.get_chunk_data("cs0", "partitions"):
+    #  for line in dfs.get_chunk_data("cs0", "partitions"):
+      for line in dfs.get_chunk_data("104.155.8.206", "partitions"):  
           (begin, end, shard_name) = line[:-1].split(' ')
           if key >= begin and key <= end:
               chunks = get_chunks(shard_name)
