@@ -1,11 +1,8 @@
 #!/usr/bin/python
 # encoding: utf8
 
-# Для быстрого локального тестирования используйте модуль test_dfs
 import test_dfs as dfs
-# Ничего не значащий комментарий
 
-# Для настоящего тестирования используйте модуль http_dfs
 #import http_dfs as dfs
 
 # Демо показывает имеющиеся в DFS файлы, расположение их фрагментов
@@ -13,8 +10,9 @@ import test_dfs as dfs
 # (не рассчитывайте, что эти две константы останутся неизменными в http_dfs. Они
 #  использованы исключительно для демонстрации)
 def demo():
-  for f in dfs.files():
-    print("File {0} consists of fragments {1}".format(f.name, f.chunks))
+ # for f in dfs.files():
+  #  print("File {0} consists of fragments {1}".format(f.name, f.chunks))
+  #  print('             1111')
 
   for c in dfs.chunk_locations():
     print("Chunk {0} sits on chunk server {1}".format(c.id, c.chunkserver))
@@ -24,14 +22,9 @@ def demo():
   # на использованных тут файл-серверах
 
   # При использовании test_dfs читаем из каталога cs0
-  chunk_iterator = dfs.get_chunk_data("cs0", "partitions")
-
-  # При использовании http_dfs читаем с данного сервера
-  #chunk_iterator = dfs.get_chunk_data("104.155.8.206", "partitions")
-  print("\nThe contents of chunk partitions:")
-  for line in chunk_iterator:
-    # удаляем символ перевода строки
-    print(line[:-1])
+ # chunk_iterator = dfs.get_chunk_data("cs0", "partitions")
+ 
+ 
 
 # Эту функцию надо реализовать. Функция принимает имя файла и
 # возвращает итератор по его строкам.
@@ -39,11 +32,37 @@ def demo():
 # погуглите "python итератор генератор". Вот например
 # http://0agr.ru/blog/2011/05/05/advanced-python-iteratory-i-generatory/
 def get_file_content(filename):
-  raise "Comment out this line and write your code below"
+  file = open(filename)
+  for line in file:
+      yield line      
+    
+def get_chunks(shard_name):
+  for f in dfs.files():
+      if f.name == shard_name:
+          return f.chunks
+          
+def get_server_for_chunk(chunk):
+  for c in dfs.chunk_locations():
+      print(1)              
 
 # эту функцию надо реализовать. Она принимает название файла с ключами и возвращает
 # число
 def calculate_sum(keys_filename):
-  raise "Comment out this line and write your code below"
-
+  result = 0  
+  file = open(keys_filename)
+  
+  # При использовании http_dfs читаем с данного сервера
+  #chunk_iterator = dfs.get_chunk_data("104.155.8.206", "partitions")
+  for key in file:
+      for line in dfs.get_chunk_data("cs0", "partitions"):
+          (begin, end, shard_name) = line[:-1].split(' ')
+          if key >= begin and key <= end:
+              chunks = get_chunks(shard_name)
+              for chunk in chunks:
+                  server_name = get_server_for_chunk(chunk)
+              break
+   
+  return result           
+  
 demo()
+#calculate_sum('data/keys')
