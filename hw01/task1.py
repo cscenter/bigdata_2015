@@ -32,30 +32,56 @@ def demo():
     # удаляем символ перевода строки
     print(line[:-1])
 
-# Эту функцию надо реализовать. Функция принимает имя файла и
-# возвращает итератор по его строкам.
-# Если вы не знаете ничего про итераторы или об их особенностях в Питоне,
-# погуглите "python итератор генератор". Вот например
-# http://0agr.ru/blog/2011/05/05/advanced-python-iteratory-i-generatory/
 def find_file(filename):
     for f in dfs.files():
         if filename == f.name:
             return f
     raise "File not found"
+# Эту функцию надо реализовать. Функция принимает имя файла и
+# возвращает итератор по его строкам.
+# Если вы не знаете ничего про итераторы или об их особенностях в Питоне,
+# погуглите "python итератор генератор". Вот например
+# http://0agr.ru/blog/2011/05/05/advanced-python-iteratory-i-generatory/
 
 def get_file_content(filename):
     f = find_file(filename)
-    valid_chunks = (c for fragment in f.chunks for c in dfs.chunk_locations() if c.id == fragment)
-    return (line[:-1] for c in valid_chunks for line in dfs.get_chunk_data(c.chunkserver, c.id) if len(line[:-1]) > 0)
+    file_chunks = (c for fragment in f.chunks for c in dfs.chunk_locations() if c.id == fragment) # находим все чанки этого файла
+    return (line[:-1] for c in file_chunks for line in dfs.get_chunk_data(c.chunkserver, c.id) if len(line[:-1]) > 0) # возвращаем генератор строчек файла, обрезая символ перехода строки, и игнорируя пустые строчки
+
+def get_local_file_content(filename):
+    file = open(filename)
+    return (line[:-1] for line in file)
 
 
+def get_start(diaposone):
+    return diaposone.split(' ')[0]
+def get_finish(diaposone):
+    return diaposone.split(' ')[1]
+def get_filename(diaposone):
+    return  diaposone.split(' ')[2][:-1]
+
+def get_filename_for_key(key):
+    for d in dfs.get_chunk_data("cs0", "partitions"):
+        start = get_start(d)
+        finish = get_finish(d)
+        filename = get_filename(d)
+        if (key >= start) and (key <= finish):
+            return filename
+    raise "File for key {0} not found".format(key)
 
 # эту функцию надо реализовать. Она принимает название файла с ключами и возвращает
 # число
 def calculate_sum(keys_filename):
-  raise "Comment out this line and write your code below"
+    sum = 0
+    keys = get_local_file_content(keys_filename)
+    for k in keys:
+        print(k)
+        filename = get_filename_for_key(k)
+        for l in get_file_content(filename):
+            if (k == l.split(' ')[0]):
+                sum += int(l.split(' ')[1])
+    return sum
 
-# demo()
-myCoolIterator = get_file_content('/shard_7')
-for i in myCoolIterator:
-    print(i)
+
+
+# print(calculate_sum("data\keys"))
