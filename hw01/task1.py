@@ -15,7 +15,7 @@ def get_file_content(filename):
     
 def get_chunks(shard_name):
   for f in files:
-      if f.name == shard_name[1:]: # shard_name начинается с /
+      if f.name == shard_name[1:]: # shard_name начинается с символа '/'
           return f.chunks
          
 def get_server_for_chunk(chunk):
@@ -26,17 +26,17 @@ def get_server_for_chunk(chunk):
 def calculate_sum(key_chunk_name, chunkserver):
   result = 0  
   for keys in dfs.get_chunk_data(chunkserver, key_chunk_name):
-      key = keys[:-1]
-      partitions = ()
-      for f in dfs.files():
+      key = keys[:-1] # удаляем символ перевода строки
+      partitions = () 
+      for f in dfs.files(): # ищем где chunks для /partitions
           if f.name == "/partitions":
               partitions = f.chunks
               break
-      for partition in partitions:
+      for partition in partitions: # для каждого chunk файла /partitions ищем необходимый нам диапозон
           for c in dfs.chunk_locations():
               if c.id == partition:
-                  for line in dfs.get_chunk_data(c.chunkserver, partition):
-                  #for line in dfs.get_chunk_data("104.155.8.206", "partitions"):  
+                  #for line in dfs.get_chunk_data(c.chunkserver, partition):
+                  for line in dfs.get_chunk_data("104.155.8.206", "partitions"):  
                       if len(line[:-1]) == 0:
                           continue
                       (begin, end, shard_name) = line[:-1].split(' ')
@@ -56,16 +56,16 @@ def calculate_sum(key_chunk_name, chunkserver):
                               if haveFoundKey:
                                   break
                           break 
-                  break  
+            #      break # 
   return result           
   
 result_sum = 0
 keys = ()
-for f in files: # ищем где chunks для keys
+for f in files: # ищем где chunks для /keys
     if f.name == "/keys":
         keys = f.chunks
         break
-for key in keys: # для каждого chunk файла key считаем    
+for key in keys: # для каждого chunk файла /keys считаем    
     for c in chunk_locations:
         if c.id == key:
             result_sum += calculate_sum(key, c.chunkserver)
