@@ -2,7 +2,7 @@
 # encoding: utf8
 
 # Для быстрого локального тестирования используйте модуль test_dfs
-№import test_dfs as dfs
+#import test_dfs as dfs
 
 # Для настоящего тестирования используйте модуль http_dfs
 import http_dfs as dfs
@@ -27,9 +27,6 @@ def demo():
 #################################################################################
 # Эту функцию надо реализовать. Функция принимает имя файла и 
 # возвращает итератор по его строкам. 
-# Если вы не знаете ничего про итераторы или об их особенностях в Питоне,
-# погуглите "python итератор генератор". Вот например
-# http://0agr.ru/blog/2011/05/05/advanced-python-iteratory-i-generatory/
 def get_file_content(filename):
   looking_file = None
   for f in dfs.files():
@@ -55,7 +52,6 @@ def get_file_content(filename):
 # число
 # я полагаю что ключи не отсортированы и надо бы их отсортировать.
 # ну и пока надеюсь что весь файл с ключами вместится в память. 
-# 
 def calculate_sum(keys_filename = "./data/keys"): 
   f = open(keys_filename, "r")
   s = f.read()
