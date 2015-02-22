@@ -1,5 +1,6 @@
 [
   {"name": "/partitions", "chunks": ["partitions"]},
+  {"name": "/keys", "chunks": ["keys"]},
   {"name": "/shard_0", "chunks": ["shard_0_chunkaa","shard_0_chunkab","shard_0_chunkac","shard_0_chunkad","shard_0_chunkae","shard_0_chunkaf","shard_0_chunkag","shard_0_chunkah","shard_0_chunkai","shard_0_chunkaj"]},
   {"name": "/shard_1", "chunks": ["shard_1_chunkaa","shard_1_chunkab","shard_1_chunkac","shard_1_chunkad","shard_1_chunkae"]},
   {"name": "/shard_2", "chunks": ["shard_2_chunkaa","shard_2_chunkab","shard_2_chunkac","shard_2_chunkad","shard_2_chunkae"]},
