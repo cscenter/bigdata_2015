@@ -14,7 +14,7 @@ def get_chunkserver(filename):
     for c in dfs.chunk_locations():
         if c.id == filename:
             return c.chunkserver
-    raise FileNotFoundError('File {} was not found')
+    raise FileNotFoundError('File {} was not found'.format(filename))
 
 
 def find_shard_containing_key(key):
@@ -22,6 +22,7 @@ def find_shard_containing_key(key):
         lower_bound, upper_bound, shard = range_shard_pair.split()
         if lower_bound <= key <= upper_bound:
             for f in dfs.files():
+                # Slicing has been made due to shard filename incompatibility
                 if f.name == shard[1:]:
                     return f
     raise Exception("There's no such key as {0} in the dfs".format(key))
@@ -48,9 +49,9 @@ def get_value(key):
     for chunk in shard.chunks:
         first_key, _ = get_first_line_only(chunk).split()
         if first_key <= key:
-            previous_chunk = chunk  # skip chunk
+            previous_chunk = chunk  # skip the chunk
         else:
-            return find_value_in_file(previous_chunk, key)  # the previous chunk definitely contains the key
+            return find_value_in_file(previous_chunk, key)  # the previous chunk  contains the key
     return find_value_in_file(chunk, key)  # key is in the last chunk
     #  If not, the code above should be replaced with this simple block:
     #     value = find_value_in_file(chunk, key)
