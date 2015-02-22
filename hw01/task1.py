@@ -25,7 +25,7 @@ def find_shard_containing_key(key):
                 # Slicing has been made due to shard filename incompatibility
                 if f.name == shard[1:]:
                     return f
-    raise Exception("There's no such key as {0} in the dfs".format(key))
+    raise Exception('There\'s no such key as {0} in the dfs'.format(key))
 
 
 def get_first_line_only(filename):
@@ -38,7 +38,7 @@ def get_first_line_only(filename):
 def find_value_in_file(filename, key):
     for key_value_pair in get_file_content(filename):
         that_key, that_value = key_value_pair.split()
-        if key_value_pair != '\n' and that_key == key:
+        if that_key == key:
             return int(that_value)
 
 
