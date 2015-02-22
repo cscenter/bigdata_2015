@@ -2,40 +2,44 @@
 # encoding: utf8
 
 # Для быстрого локального тестирования используйте модуль test_dfs
-import test_dfs as dfs
-import interval_tree as intr
+# import test_dfs as dfs
 
 # Для настоящего тестирования используйте модуль http_dfs
-# import http_dfs as dfs
+import http_dfs as dfs
+
+import interval_tree as intr
 
 # Демо показывает имеющиеся в DFS файлы, расположение их фрагментов
 # и содержимое фрагмента "partitions" с сервера "cs0"
 # (не рассчитывайте, что эти две константы останутся неизменными в http_dfs. Они
 # использованы исключительно для демонстрации)
 def demo():
-    for f in dfs.files():
-        print("File {0} consists of fragments {1}".format(f.name, f.chunks))
+    # for f in dfs.files():
+    # print("File {0} consists of fragments {1}".format(f.name, f.chunks))
 
-    for c in dfs.chunk_locations():
-        print("Chunk {0} sits on chunk server {1}".format(c.id, c.chunkserver))
+    # for c in dfs.chunk_locations():
+    #     print("Chunk {0} sits on chunk server {1}".format(c.id, c.chunkserver))
 
     # Дальнейший код всего лишь тестирует получение фрагмента, предполагая, что известно,
     # где он лежит. Не рассчитывайте, что этот фрагмент всегда будет находиться
     # на использованных тут файл-серверах
 
     # При использовании test_dfs читаем из каталога cs0
-    chunk_iterator = dfs.get_chunk_data("cs0", "partitions")
+    #chunk_iterator = dfs.get_chunk_data("cs0", "partitions")
 
     # При использовании http_dfs читаем с данного сервера
     # chunk_iterator = dfs.get_chunk_data("104.155.8.206", "partitions")
-    print("\nThe contents of chunk partitions:")
-    for line in chunk_iterator:
+    # print("\nThe contents of chunk partitions:")
+    # for line in chunk_iterator:
     # удаляем символ перевода строки
+    #     print(line[:-1])
+
+    print("\nTest: ")
+    for line in get_file_content("/partitions"):
         print(line[:-1])
 
-    print("\nTest: keys")
+    print("\nTest: keys...")
     print(calculate_sum("/keys"))
-
 
 
 # Эту функцию надо реализовать. Функция принимает имя файла и
@@ -54,9 +58,8 @@ def get_file_content(filename):
         chunks_and_locations = get_unique_chunks_locations(chunk_ids)
         # Делаем построчный итератор контента
         for chunk_id, location_id in chunks_and_locations:
-            with dfs.get_chunk_data(location_id, chunk_id) as file_data:
-                for line in file_data:
-                    yield line
+            for line in dfs.get_chunk_data(location_id, chunk_id):
+                yield line
         raise StopIteration
 
 
@@ -98,6 +101,8 @@ def calculate_sum(keys_filename):
                         query_schedule_map_of_sets[location] = set([key])
 
     for location, keys_set in query_schedule_map_of_sets.iteritems():
+        # Хак на формат именования шардов от files приходит без слеша а от partitions со слешем в начале
+        location = location[1:]
         for line in get_file_content(location):
             line = line.strip()
             if line:
