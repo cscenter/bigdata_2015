@@ -2,10 +2,10 @@
 #encoding: utf-8
 
 # Для быстрого локального тестирования используйте модуль test_dfs
-import test_dfs as dfs
+#import test_dfs as dfs
 
 # Для настоящего тестирования используйте модуль http_dfs
-#import http_dfs as dfs
+import http_dfs as dfs
 
 # Демо показывает имеющиеся в DFS файлы, расположение их фрагментов
 # и содержимое фрагмента "partitions" с сервера "cs0"
@@ -130,8 +130,8 @@ def calculate_sum(keys_filename=None, use_remote_keys=False):
     if not found:
       raise "Can not find shard containing key:{}".format(key)
 
-  print(ans)
+  print("Calculated sum of views:{}".format(ans))
 
 
-print(dfs.files())
-calculate_sum("data\keys", use_remote_keys=False)
+#print(dfs.files())
+calculate_sum("data\keys", use_remote_keys=True)
