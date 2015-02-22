@@ -53,7 +53,7 @@ def get_value(key):
         else:
             return find_value_in_file(previous_chunk, key)  # the previous chunk  contains the key
     return find_value_in_file(chunk, key)  # key is in the last chunk
-    #  If not, the code above should be replaced with this simple block:
+    #  If not, the code above (from the 50th line) should be replaced with this simple block:
     #     value = find_value_in_file(chunk, key)
     #     if value:
     #         return value
@@ -64,6 +64,3 @@ def calculate_sum(keys_filename):
     for key in get_file_content(keys_filename):
         sum += get_value(key)
     return sum
-
-# Example:
-print(calculate_sum('keys'))
