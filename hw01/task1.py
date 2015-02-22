@@ -1,48 +1,65 @@
 #!/usr/bin/python
 # encoding: utf8
 
-# Для быстрого локального тестирования используйте модуль test_dfs
-import test_dfs as dfs
+import os.path
+import re
+import http_dfs as dfs
+# import test_dfs as dfs
 
-# Для настоящего тестирования используйте модуль http_dfs
-#import http_dfs as dfs
+files = dfs.files()
+chunk_locations = dfs.chunk_locations()
 
-# Демо показывает имеющиеся в DFS файлы, расположение их фрагментов
-# и содержимое фрагмента "partitions" с сервера "cs0"
-# (не рассчитывайте, что эти две константы останутся неизменными в http_dfs. Они
-#  использованы исключительно для демонстрации)
-def demo():
-  for f in dfs.files():
-    print("File {0} consists of fragments {1}".format(f.name, f.chunks))
+def get_file_chunks_ids(filename):
+    for record in files:
+        if record.name == filename:
+            return record.chunks
 
-  for c in dfs.chunk_locations():
-    print("Chunk {0} sits on chunk server {1}".format(c.id, c.chunkserver))
 
-  # Дальнейший код всего лишь тестирует получение фрагмента, предполагая, что известно,
-  # где он лежит. Не рассчитывайте, что этот фрагмент всегда будет находиться
-  # на использованных тут файл-серверах
+def get_chunks_info(filename):
+    file_chunks_ids = get_file_chunks_ids(filename)
+    info = []
+    for chunk_id in file_chunks_ids:
+        for location in chunk_locations:
+            if location.id == chunk_id:
+                info.append(location)
+    return info
+        
 
-  # При использовании test_dfs читаем из каталога cs0
-  chunk_iterator = dfs.get_chunk_data("cs0", "partitions")
-
-  # При использовании http_dfs читаем с данного сервера
-  #chunk_iterator = dfs.get_chunk_data("104.155.8.206", "partitions")
-  print("\nThe contents of chunk partitions:")
-  for line in chunk_iterator:
-    # удаляем символ перевода строки
-    print(line[:-1])
-
-# Эту функцию надо реализовать. Функция принимает имя файла и
-# возвращает итератор по его строкам.
-# Если вы не знаете ничего про итераторы или об их особенностях в Питоне,
-# погуглите "python итератор генератор". Вот например
-# http://0agr.ru/blog/2011/05/05/advanced-python-iteratory-i-generatory/
 def get_file_content(filename):
-  raise "Comment out this line and write your code below"
+    for chunk_info in get_chunks_info(filename):
+        chunk_data = dfs.get_chunk_data(chunk_info.chunkserver, chunk_info.id)
+        for line in chunk_data:
+            yield line
 
-# эту функцию надо реализовать. Она принимает название файла с ключами и возвращает
-# число
+
+def get_filenames_for_key(key):
+    filenames = []
+    for line in get_file_content('/partitions'):
+        try:
+            (min_key, max_key, filename) = line.split()
+            if min_key <= key and max_key >= key:
+                filenames.append(filename)
+        except:
+            pass
+    return filenames
+
+
 def calculate_sum(keys_filename):
-  raise "Comment out this line and write your code below"
+    res = 0
+    for key in get_file_content('/keys'):
+        key = key[:-1]
+        print('Counting for key %s' % (key))
+        for filename in get_filenames_for_key(key):
+            print('Looking in file %s' % (filename))
+            for line in get_file_content(filename):
+                pair = line.split()
+                if len(pair) == 2 and pair[0] == key:
+                    res += int(pair[1])
+    return res
 
-demo()
+
+
+def init():
+    print('Total sum is: %s' % (calculate_sum('data/keys')))
+
+init()
