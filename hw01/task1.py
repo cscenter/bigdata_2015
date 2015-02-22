@@ -34,9 +34,8 @@ def get_visit_count(file, page_keys):
     ret = 0
     for line in get_file_content(file):
         curr_page_key, visit_count = line.split(' ')
-        for page_key in page_keys:
-            if page_key == curr_page_key:
-                ret += int(visit_count)
+        if curr_page_key in page_keys:
+            ret += int(visit_count)
     return ret
 
 
