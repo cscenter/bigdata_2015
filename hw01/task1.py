@@ -24,65 +24,66 @@ def demo():
       # удаляем символ перевода строки 
       print(line[:-1])
 
-# дял начала я сделаю свою демо которя будет показывать имеющиеся 
-# DFS файлы, разположение их фрагментов и содержимое заданного фрагмента 
-# с заданного  сервера
-def demo2(server = "cs0", partitions = "partitions"):
-  for f in dfs.files():
-    print("File {0} consists of fragments {1}".format(f.name, f.chunks))
-#    
-     
- # for c in dfs.chunk_locations():
-  #  print("Chunk {0} sits on chunk server {1}".format(c.id, c.chunkserver))
-
-#   print("\nThe contents of chunk partitions:")
- # with dfs.get_chunk_data(server, partitions) as f:
-  #  for line in f:
-      # удаляем символ перевода строки 
-   #   print(line[:-1])
 #################################################################################
-
 # Эту функцию надо реализовать. Функция принимает имя файла и 
 # возвращает итератор по его строкам. 
 # Если вы не знаете ничего про итераторы или об их особенностях в Питоне,
 # погуглите "python итератор генератор". Вот например
 # http://0agr.ru/blog/2011/05/05/advanced-python-iteratory-i-generatory/
 def get_file_content(filename):
+  looking_file = None
   for f in dfs.files():
     if f.name == filename:
-      print("File {0} consists of fragments {1}".format(f.name, f.chunks))
-      for c in dfs.chunk_locations():
-        if (c.id == f.chunks[0]):
-          print("Chunk {0} sits on chunk server {1}".format(c.id, c.chunkserver))
-          print("\nThe contents of chunk {0}:".format(c.id))
-          with dfs.get_chunk_data(c.chunkserver, f.chunks[0]) as f:
-            for line in f:
-              print(line[:-1])       # удаляем символ перевода строки 
-          return
-#  print(dir(files[0]))
-#  print(type(files[0]))
-#  print(files.index(filename))
-#  raise "Comment out this line and write your code below"
-
+      
+      looking_file = f
+      break
+  #
+  #print("File {0} consists of fragments {1}".format(looking_file.name, looking_file.chunks))
+  #input("press...")
+  for chunk in looking_file.chunks:
+    server = None
+    for c in dfs.chunk_locations(): 
+      if  c.id == chunk :
+      	server = c
+      	break
+    #print("server is:", server) # что если сервер мы не нашли, че делать?
+    #input("press...")
+    with dfs.get_chunk_data(server.chunkserver, chunk) as part_file:
+      for line in part_file:
+        yield(line[:-1])       # удаляем символ перевода строки 
+          
+####################################################################################
 # эту функцию надо реализовать. Она принимает название файла с ключами и возвращает 
 # число
-def calculate_sum(keys_filename = "./data/keys"):
-  keyShard = {}
+# я полагаю что ключи не отсортированы и надо бы их отсортировать.
+# ток надо еще придумать как этим посползоваться
+# ну и пока надеюсь что весь файл с ключами вместится в память. 
+# 
+def calculate_sum(keys_filename = "./data/keys"): 
   f = open(keys_filename, "r")
   s = f.read()
   f.close()
   keys = sorted(list((set(s.split('\n')))))
   if len(keys[0]) < 1: keys = keys[1:]
   myCoolSum = 0;
-  #for key in keys:
-    #
-  print(keys)
-  return 42
-#  raise "Comment out this line and write your code below"
+  for key in keys:
+    for diapazon in get_file_content("/partitions"):
+      a,b,filename = diapazon.split()
+      if (a <= key) and (key <= b) :
+        #print("keys: {0} < {1} < {2}".format(a, key, b))
+        #print("search key {0} in file {1}".format(key, filename))
+        for d in get_file_content(filename):
+        	if(len(d) < 2):continue
+        	k,v = d.split()
+        	if (k == key):
+        	  myCoolSum += int(v);
+        	  break
+        break
+#  print(keys)
+  return myCoolSum ;
 
-get_file_content("/partitions")
-#demo2()
-#calculate_sum()
+#########           ################
+print("sum = ", calculate_sum())
 
 
 
