@@ -1,48 +1,68 @@
 #!/usr/bin/python
 # encoding: utf8
 
-# Для быстрого локального тестирования используйте модуль test_dfs
-import test_dfs as dfs
+import http_dfs as dfs
 
-# Для настоящего тестирования используйте модуль http_dfs
-#import http_dfs as dfs
 
-# Демо показывает имеющиеся в DFS файлы, расположение их фрагментов
-# и содержимое фрагмента "partitions" с сервера "cs0"
-# (не рассчитывайте, что эти две константы останутся неизменными в http_dfs. Они
-#  использованы исключительно для демонстрации)
-def demo():
-  for f in dfs.files():
-    print("File {0} consists of fragments {1}".format(f.name, f.chunks))
-
-  for c in dfs.chunk_locations():
-    print("Chunk {0} sits on chunk server {1}".format(c.id, c.chunkserver))
-
-  # Дальнейший код всего лишь тестирует получение фрагмента, предполагая, что известно,
-  # где он лежит. Не рассчитывайте, что этот фрагмент всегда будет находиться
-  # на использованных тут файл-серверах
-
-  # При использовании test_dfs читаем из каталога cs0
-  chunk_iterator = dfs.get_chunk_data("cs0", "partitions")
-
-  # При использовании http_dfs читаем с данного сервера
-  #chunk_iterator = dfs.get_chunk_data("104.155.8.206", "partitions")
-  print("\nThe contents of chunk partitions:")
-  for line in chunk_iterator:
-    # удаляем символ перевода строки
-    print(line[:-1])
-
-# Эту функцию надо реализовать. Функция принимает имя файла и
-# возвращает итератор по его строкам.
-# Если вы не знаете ничего про итераторы или об их особенностях в Питоне,
-# погуглите "python итератор генератор". Вот например
-# http://0agr.ru/blog/2011/05/05/advanced-python-iteratory-i-generatory/
 def get_file_content(filename):
-  raise "Comment out this line and write your code below"
+    for line in dfs.get_chunk_data(get_chunkserver(filename), filename):
+        if line.strip():
+            yield line.strip()
 
-# эту функцию надо реализовать. Она принимает название файла с ключами и возвращает
-# число
+
+def get_chunkserver(filename):
+    for c in dfs.chunk_locations():
+        if c.id == filename:
+            return c.chunkserver
+    raise FileNotFoundError('File {} was not found')
+
+
+def find_shard_containing_key(key):
+    for range_shard_pair in get_file_content('partitions'):
+        lower_bound, upper_bound, shard = range_shard_pair.split()
+        if lower_bound <= key <= upper_bound:
+            for f in dfs.files():
+                if f.name == shard[1:]:
+                    return f
+    raise Exception("There's no such key as {0} in the dfs".format(key))
+
+
+def get_first_line_only(filename):
+    generator = get_file_content(filename)
+    first_line = next(generator)
+    generator.close()
+    return first_line
+
+
+def find_value_in_file(filename, key):
+    for key_value_pair in get_file_content(filename):
+        that_key, that_value = key_value_pair.split()
+        if key_value_pair != '\n' and that_key == key:
+            return int(that_value)
+
+
+def get_value(key):
+    shard = find_shard_containing_key(key)
+    # In case the shard chunks are sorted in dfs.chunk_locations, we can skip chunks
+    #  while first_key of the chunk is less than key. Performance is increased by 2.5 times
+    for chunk in shard.chunks:
+        first_key, _ = get_first_line_only(chunk).split()
+        if first_key <= key:
+            previous_chunk = chunk  # skip chunk
+        else:
+            return find_value_in_file(previous_chunk, key)  # the previous chunk definitely contains the key
+    return find_value_in_file(chunk, key)  # key is in the last chunk
+    #  If not, the code above should be replaced with this simple block:
+    #     value = find_value_in_file(chunk, key)
+    #     if value:
+    #         return value
+
+
 def calculate_sum(keys_filename):
-  raise "Comment out this line and write your code below"
+    sum = 0
+    for key in get_file_content(keys_filename):
+        sum += get_value(key)
+    return sum
 
-demo()
+# Example:
+print(calculate_sum('keys'))
