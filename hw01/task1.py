@@ -2,10 +2,10 @@
 # encoding: utf8
 
 # Для быстрого локального тестирования используйте модуль test_dfs
-import test_dfs as dfs
+# import test_dfs as dfs
 
 # Для настоящего тестирования используйте модуль http_dfs
-# import http_dfs as dfs
+ import http_dfs as dfs
 
 # Демо показывает имеющиеся в DFS файлы, расположение их фрагментов
 # и содержимое фрагмента "partitions" с сервера "cs0"
@@ -34,24 +34,18 @@ def get_file_content(filename):
   looking_file = None
   for f in dfs.files():
     if f.name == filename:
-      
       looking_file = f
       break
-  #
-  #print("File {0} consists of fragments {1}".format(looking_file.name, looking_file.chunks))
-  #input("press...")
-  for chunk in looking_file.chunks:
+  for chunk in looking_file.chunks: 
     server = None
     for c in dfs.chunk_locations(): 
       if  c.id == chunk :
       	server = c
       	break
-    #print("server is:", server) # что если сервер мы не нашли, че делать?
-    #input("press...")
     with dfs.get_chunk_data(server.chunkserver, chunk) as part_file:
       for line in part_file:
         yield(line[:-1])       # удаляем символ перевода строки 
-          
+  return        
 ####################################################################################
 # эту функцию надо реализовать. Она принимает название файла с ключами и возвращает 
 # число
@@ -66,20 +60,21 @@ def calculate_sum(keys_filename = "./data/keys"):
   keys = sorted(list((set(s.split('\n')))))
   if len(keys[0]) < 1: keys = keys[1:]
   myCoolSum = 0;
-  for key in keys:
-    for diapazon in get_file_content("/partitions"):
-      a,b,filename = diapazon.split()
-      if (a <= key) and (key <= b) :
-        #print("keys: {0} < {1} < {2}".format(a, key, b))
-        #print("search key {0} in file {1}".format(key, filename))
+  index = 0
+  keysLen = len(keys)
+  for diapazon in get_file_content("/partitions"):
+    a,b,filename = diapazon.split()
+    for i in range(index, keysLen):
+      if (a <= keys[i]) and (keys[i] <= b) :
         for d in get_file_content(filename):
-        	if(len(d) < 2):continue
-        	k,v = d.split()
-        	if (k == key):
-        	  myCoolSum += int(v);
-        	  break
+       	  if(len(d) < 2):continue
+          k,v = d.split()
+          if (k == keys[i]):
+            myCoolSum += int(v);
+            break
+      else :
+        index = i
         break
-#  print(keys)
   return myCoolSum ;
 
 #########           ################
