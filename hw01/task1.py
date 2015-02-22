@@ -39,8 +39,8 @@ def demo():
 def get_file_chunks(filename):
     # HACK:
     # for some reason some files were ranames from '/shard*' to 'shard*'
-    if filename.startswith('/shard'):
-        filename = filename.lstrip('/')
+    # if filename.startswith('/shard'):
+    #     filename = filename.lstrip('/')
 
     try:
         chunk_names = next(x for x in dfs.files() if x.name == filename).chunks
