@@ -66,9 +66,8 @@ def get_value(key):
 
 
 def calculate_sum(keys_filename):
-    files_to_chunk_servers_map.clear()  # Because file locations are mutable (I guess)
+    files_to_chunk_servers_map.clear()
     sum_of_values = 0
     for key in get_file_content(keys_filename):
         sum_of_values += get_value(key)
-        print(1)
     return sum_of_values
