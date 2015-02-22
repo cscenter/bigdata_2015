@@ -82,14 +82,19 @@ def get_shard_by_key(key, partition_server, partition_chunk):
 def get_value(key, chunks):
   for chunk in chunks:
     server = server_by_chunk_id(chunk)
+    f = False
+    ans = 0
     for line in dfs.get_chunk_data(server, chunk):
       if line.strip() and len(line.strip().split()) == 2:
         p_key, value = line.strip().split()
         if p_key == key:
           if value.isdigit():
-            return int(value)
+            ans += int(value)
+            f = True
           else:
             raise Exception("Invalid value:{}".format(value))
+    if f and ans:
+      return ans
   raise Exception("Can not find key:{}".format(key))
 
 
@@ -135,4 +140,4 @@ def calculate_sum(keys_filename=None, use_remote_keys=False):
 
 
 #print(dfs.files())
-calculate_sum("data\keys", use_remote_keys=True)
+calculate_sum("data/keys", use_remote_keys=True)
