@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # encoding: utf8
-
+from collections import defaultdict
 # Для быстрого локального тестирования используйте модуль test_dfs
 #import test_dfs as dfs
 
@@ -69,21 +69,25 @@ def find_filename(key, partitions):
 
 def calculate_sum(keys_filename):
   keys = get_file_content(keys_filename)
-  
   partitions = get_file_content("/partitions")
   
   sum = 0
+  shard_key = defaultdict(list, {})
   
   for key in sorted(list(keys)):
-    print (key)
     filename = find_filename(key.strip(), partitions)
-    for c in get_file_content(filename[1:]):
-      if key.strip() == c.split(' ')[0]:
-        sum += int(c.split(' ')[1])
-  print("result sum = ", sum)        
+    shard_key[filename].append(key.strip())
+ 
+  for k, v in shard_key.items():
+    for el in sorted(v):
+      print("Searching for ...", el)
+      for c in get_file_content(k):
+        if el == c.split(' ')[0]:
+          sum += int(c.split(' ')[1])
+  
+  print("result sum = ", sum)
   return sum   
   
-  
-  
+
 demo()
 calculate_sum("/keys")
