@@ -1,11 +1,11 @@
 from collections import namedtuple
-
+from urllib.request import urlopen
 __author__ = 'Flok'
 
-import test_dfs as dfs
+import http_dfs as dfs
 
 Part = namedtuple('Part', ['start', 'finish', 'name'])
-MASTER_URL = "data/"
+MASTER_URL = "bigdata-hw01.barashev.net"
 def get_file_content(file):
     return open(file)
 
@@ -29,7 +29,7 @@ def get_partitions():
     chunk_id = get_file_chunks("/partitions")[0]
     chunk_server_id = get_chunk_server(chunk_id)
 
-    partitions = open("%s/%s/%s" % (MASTER_URL, chunk_server_id, chunk_id))
+    partitions = dfs.get_chunk_data(chunk_server_id, chunk_id)
     for p in partitions:
         if p != '\n':
             partitions_list.append(Part(*p.split()))
@@ -40,11 +40,10 @@ def get_keys(keys_filename):
     keys_list = []
     chunk_id = get_file_chunks(keys_filename)[0]
     chunk_server_id = get_chunk_server(chunk_id)
-
-    partitions = open("%s/%s/%s" % (MASTER_URL, chunk_server_id, chunk_id))
-    for p in partitions:
+    key_file = dfs.get_chunk_data(chunk_server_id, chunk_id)
+    for k in key_file:
         try:
-            keys_list.append(p[:-1])
+            keys_list.append(k[:-1])
         except:
             pass
     return keys_list
@@ -55,6 +54,7 @@ def get_key_num(key, partitions):
     for p in partitions:
         if p.start <= key <= p.finish:
             shard_name = p.name
+            break
     if shard_name is None:
         raise ValueError("no such keyrange for given key")
     #ищем чанки
@@ -74,8 +74,8 @@ def get_key_num(key, partitions):
     raise ValueError("no such key in storage")
 
 def calculate_sum(keys_filename):
-    keys = get_keys(keys_filename)
     partitions = get_partitions()
+    keys = get_keys(keys_filename)
     acc_summ = 0
     for key in keys:
         acc_summ += get_key_num(key, partitions)
