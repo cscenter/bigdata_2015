@@ -80,9 +80,7 @@ def calc_for_shard(keys):
 
 	result = 0
 	size = len(keys);
-	inf = '';
-	for i in xrange(len(keys[-1].value)):
-		inf = inf + 'z';
+	inf = 'z' * len(keys[-1].value)
 	start_keys.append(inf);
 	index_k = 0
 
