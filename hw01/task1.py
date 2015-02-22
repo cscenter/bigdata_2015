@@ -2,8 +2,9 @@
 # encoding: utf8
 
 
+#
 # Для быстрого локального тестирования используйте модуль test_dfs
-import http_dfs as dfs
+import test_dfs as dfs
 
 # Для настоящего тестирования используйте модуль http_dfs
 #import http_dfs as dfs
@@ -17,30 +18,23 @@ dpz = {}
 d1 = {}
 def myFun(f, name_of_partitions):
     chunk_iterator = dfs.get_chunk_data(f.chunkserver, f.id);
-    list = []
     for line in chunk_iterator:
-        #print(line)
         words = line[:-1].split( )
         count = 0
         for w in words:
             count += 1
         if count == 3:
-            #print(words)
             if '/' in words[2]:
                 i = words[2].index('/')
                 s1 = words[2][:i]+words[2][i+1:]
             else:
                 s1 = words[2]
             d1.setdefault(s1, []).append([words[0], words[1]] )
-            #d1[words[2]].sort()
-            list.append(s1)
-    for k in list:
-        d1[k].sort()
     i = 0
     for f in dfs.files():
         if '/' in f.name:
             i = f.name.index('/')
-            s1 = f.name[:i] + f.name[2][i+1:]
+            s1 = f.name[:i] + f.name[i+1:]
         else:
             s1 = f.name
         if f.name != name_of_partitions:
@@ -88,6 +82,7 @@ def sum_key(key_name):
         for j in d1[d]:
             #print(key_name + " " + j[0] + " " + j[1])
             if key_name >= j[0] and key_name <= j[1]:
+                print(server[dpz[d][i]], dpz[d][i])
                 chunk_iterator = dfs.get_chunk_data(server[dpz[d][i]], dpz[d][i])
                 for line in chunk_iterator:
                     mas = line[:-1].split( )
@@ -98,6 +93,7 @@ def sum_key(key_name):
                         if mas[0] == key_name:
                             sum += int(mas[1])
                             break
+                break
 
             i += 1
     return sum
