@@ -4,34 +4,34 @@
 import http_dfs as dfs
 
 
-files_to_chunkservers_map = {}
+files_to_chunk_servers_map = {}
 
 
 def get_file_content(filename):
-    for line in dfs.get_chunk_data(get_chunkserver(filename), filename):
+    for line in dfs.get_chunk_data(get_chunk_server(filename), filename):
         if line.strip():
             yield line.strip()
 
 
-def get_chunkserver(filename):
-    if filename in files_to_chunkservers_map:
-        return files_to_chunkservers_map[filename]
+def get_chunk_server(filename):
+    if filename in files_to_chunk_servers_map:
+        return files_to_chunk_servers_map[filename]
     for c in dfs.chunk_locations():
         if c.id == filename:
-            files_to_chunkservers_map[filename] = c.chunkserver
+            files_to_chunk_servers_map[filename] = c.chunkserver
             return c.chunkserver
     raise FileNotFoundError('File {} was not found'.format(filename))
 
 
-def find_shard_containing_key(key):
+def get_shard_by_key(key):
     for range_shard_pair in get_file_content('partitions'):
         lower_bound, upper_bound, shard = range_shard_pair.split()
         if lower_bound <= key <= upper_bound:
             for f in dfs.files():
-                # Slicing has been made due to shard filename incompatibility
+                # Slicing had been made due to shard filename incompatibility
                 if f.name == shard[1:]:
                     return f
-    raise Exception('There\'s no such key as {0} in the dfs'.format(key))
+    raise Exception('There\'s no such key as {} in the dfs'.format(key))
 
 
 def get_first_line_only(filename):
@@ -41,7 +41,7 @@ def get_first_line_only(filename):
     return first_line
 
 
-def find_value_in_file(filename, key):
+def find_value_in_chunk(filename, key):
     for key_value_pair in get_file_content(filename):
         that_key, that_value = key_value_pair.split()
         if that_key == key:
@@ -49,7 +49,7 @@ def find_value_in_file(filename, key):
 
 
 def get_value(key):
-    shard = find_shard_containing_key(key)
+    shard = get_shard_by_key(key)
     # In case the shard chunks are sorted in dfs.chunk_locations, we can skip chunks
     #  while first_key of the chunk is less than key. Performance is increased by 2.5 times
     for chunk in shard.chunks:
@@ -57,15 +57,16 @@ def get_value(key):
         if first_key <= key:
             previous_chunk = chunk  # skip the chunk
         else:
-            return find_value_in_file(previous_chunk, key)  # the previous chunk  contains the key
-    return find_value_in_file(chunk, key)  # key is in the last chunk
-    #  If not, the code above (from the 50th line) should be replaced with this simple block:
+            return find_value_in_chunk(previous_chunk, key)  # the previous chunk  contains the key
+    return find_value_in_chunk(chunk, key)  # key is in the last chunk
+    #  If not, the code above (from the 'first_key, _ = ...' line) should be replaced with this simple block:
     #     value = find_value_in_file(chunk, key)
     #     if value:
     #         return value
 
 
 def calculate_sum(keys_filename):
+    files_to_chunk_servers_map.clear()  # Because file location can be changed
     sum = 0
     for key in get_file_content(keys_filename):
         sum += get_value(key)
