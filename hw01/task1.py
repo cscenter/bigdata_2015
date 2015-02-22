@@ -27,20 +27,20 @@ def demo():
 # дял начала я сделаю свою демо которя будет показывать имеющиеся 
 # DFS файлы, разположение их фрагментов и содержимое заданного фрагмента 
 # с заданного  сервера
-
 def demo2(server = "cs0", partitions = "partitions"):
   for f in dfs.files():
     print("File {0} consists of fragments {1}".format(f.name, f.chunks))
+#    
+     
+ # for c in dfs.chunk_locations():
+  #  print("Chunk {0} sits on chunk server {1}".format(c.id, c.chunkserver))
 
-  for c in dfs.chunk_locations():
-    print("Chunk {0} sits on chunk server {1}".format(c.id, c.chunkserver))
-
-  print("\nThe contents of chunk partitions:")
-  with dfs.get_chunk_data(server, partitions) as f:
-    for line in f:
+#   print("\nThe contents of chunk partitions:")
+ # with dfs.get_chunk_data(server, partitions) as f:
+  #  for line in f:
       # удаляем символ перевода строки 
-      print(line[:-1])
-
+   #   print(line[:-1])
+#################################################################################
 
 # Эту функцию надо реализовать. Функция принимает имя файла и 
 # возвращает итератор по его строкам. 
@@ -48,14 +48,98 @@ def demo2(server = "cs0", partitions = "partitions"):
 # погуглите "python итератор генератор". Вот например
 # http://0agr.ru/blog/2011/05/05/advanced-python-iteratory-i-generatory/
 def get_file_content(filename):
-  raise "Comment out this line and write your code below"
+  for f in dfs.files():
+    if f.name == filename:
+      print("File {0} consists of fragments {1}".format(f.name, f.chunks))
+      for c in dfs.chunk_locations():
+        if (c.id == f.chunks[0]):
+          print("Chunk {0} sits on chunk server {1}".format(c.id, c.chunkserver))
+          print("\nThe contents of chunk {0}:".format(c.id))
+          with dfs.get_chunk_data(c.chunkserver, f.chunks[0]) as f:
+            for line in f:
+              print(line[:-1])       # удаляем символ перевода строки 
+          return
+#  print(dir(files[0]))
+#  print(type(files[0]))
+#  print(files.index(filename))
+#  raise "Comment out this line and write your code below"
 
 # эту функцию надо реализовать. Она принимает название файла с ключами и возвращает 
 # число
 def calculate_sum(keys_filename = "./data/keys"):
+  keyShard = {}
   f = open(keys_filename, "r")
-  print(f.readline())
+  s = f.read()
+  f.close()
+  keys = sorted(list((set(s.split('\n')))))
+  if len(keys[0]) < 1: keys = keys[1:]
+  myCoolSum = 0;
+  #for key in keys:
+    #
+  print(keys)
+  return 42
 #  raise "Comment out this line and write your code below"
 
+get_file_content("/partitions")
 #demo2()
-calculate_sum()
+#calculate_sum()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
