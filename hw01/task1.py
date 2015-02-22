@@ -1,9 +1,9 @@
 #!/usr/bin/python
 # encoding: utf8
 
-import test_dfs as dfs
+#import test_dfs as dfs
 
-#import http_dfs as dfs
+import http_dfs as dfs
 
 # Эту функцию надо реализовать. Функция принимает имя файла и
 # возвращает итератор по его строкам.
@@ -14,7 +14,7 @@ def get_file_content(filename):
     
 def get_chunks(shard_name):
   for f in dfs.files():
-      if f.name == shard_name:
+      if '/' + f.name == shard_name:
           return f.chunks
           
 def get_server_for_chunk(chunk):
@@ -37,11 +37,14 @@ def calculate_sum(key_chunk_name, chunkserver):
       for partition in partitions:
           for c in dfs.chunk_locations():
               if c.id == partition:
-                  for line in dfs.get_chunk_data(c.chunkserver, partition):
-                 # for line in dfs.get_chunk_data("104.155.8.206", "partitions"):  
+                 # for line in dfs.get_chunk_data(c.chunkserver, partition):
+                  for line in dfs.get_chunk_data("104.155.8.206", "partitions"):  
+                      if line == '\n':
+                          continue
                       (begin, end, shard_name) = line[:-1].split(' ')
                       if key >= begin and key <= end:
                           chunks = get_chunks(shard_name)
+                    #      print(chunks)
                           for chunk in chunks:
                               haveFoundKey = False #уже нашли текущий ключ
                               server_name = get_server_for_chunk(chunk)
