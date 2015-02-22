@@ -81,5 +81,3 @@ def calculate_sum(keys_filename):
     return answer
 
 print(calculate_sum("/keys"))
-
-demo()
