@@ -49,9 +49,9 @@ def get_file_content(filename):
     return (line[:-1] for c in file_chunks for line in dfs.get_chunk_data(c.chunkserver, c.id) if len(line[:-1]) > 0) # возвращаем генератор строчек файла, обрезая символ перехода строки, и игнорируя пустые строчки
 
 #не совсем понял где будет хранится файл с ключами, эта функция считывает ключи из файла который не в РФС
-def get_local_file_content(filename):
-    file = open(filename)
-    return (line[:-1] for line in file)
+# def get_local_file_content(filename):
+#     file = open(filename)
+#     return (line[:-1] for line in file)
 
 #следующие 3 функции вытаскивают тройку значений из строки (границы диапозона и имя файла)
 def get_start(diaposone):
@@ -79,9 +79,10 @@ def get_filename_for_key(key):
 def calculate_sum(keys_filename):
     sum = 0
     # если файл с ключами находится в нашей РФС
-    #keys = get_file_content(keys_filename)
-    keys = get_local_file_content(keys_filename)
+    keys = get_file_content(keys_filename)
+    # keys = get_local_file_content(keys_filename)
     for k in keys:
+        print(k)
         filename = get_filename_for_key(k)
         for l in get_file_content(filename):
             if (k == l.split(' ')[0]): # сраниваем ключ с ключём в файле
