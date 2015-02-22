@@ -30,13 +30,9 @@ def get_file_chunks(filename):
     if not chunk_ids:
         raise Exception("file %s were not found" % filename)
 
-    chunk_ids = list(chunk_ids[0])
-    chunk_ids.sort()
-
     chunk_keys_intervals = get_chunk_keys_intervals(filename)
-
     ret = list()
-    for chunk_id, chunk_key_interval in zip(chunk_ids, chunk_keys_intervals):
+    for chunk_id, chunk_key_interval in zip(sorted(chunk_ids[0]), chunk_keys_intervals):
         chunk_server = [l.chunkserver for l in locations_cache if l.id == chunk_id][0]
         ret.append({
             'location': chunk_server,
@@ -47,9 +43,8 @@ def get_file_chunks(filename):
     return ret
 
 
-# todo: remove copypaste
-def get_chunk_content(chunk):
-    for line in dfs.get_chunk_data(chunk['location'], chunk['id']):
+def get_chunk_content(chunk_location, chunk_id):
+    for line in dfs.get_chunk_data(chunk_location, chunk_id):
         if not line.isspace():
             yield line[:-1]
 
@@ -60,29 +55,16 @@ def get_file_content(filename):
         raise Exception("file %s were not found" % filename)
     for chunk_id in chunk_ids[0]:
         chunk_server = [l.chunkserver for l in locations_cache if l.id == chunk_id][0]
-        for line in dfs.get_chunk_data(chunk_server, chunk_id):
-            if not line.isspace():
-                yield line[:-1]
+        for line in get_chunk_content(chunk_server, chunk_id):
+            yield line
 
 
 def get_filename(page_key):
     for line in partitions_cache:
         lo, hi, filename = line.split(' ')
-        filename = filename.strip('/')
         if lo <= page_key <= hi:
             return filename
     raise Exception("page %s were not found" % page_key)
-
-
-def search_in_chunk(page_keys, chunk):
-    chunk_visits = 0
-    for line in get_chunk_content(chunk):
-        curr_page_key, visit_count = line.split(' ')
-        if curr_page_key in page_keys:
-            page_keys.remove(curr_page_key)
-            chunk_visits += int(visit_count)
-    return chunk_visits
-
 
 def find_chunk(page_key, all_chunks):
     for chunk in all_chunks:
@@ -96,7 +78,12 @@ def get_visit_count(file, page_keys):
     all_chunks = get_file_chunks(file)
     while len(page_keys) > 0:
         chunk = find_chunk(list(page_keys)[0], all_chunks)
-        file_visits += search_in_chunk(page_keys, chunk)
+        for line in get_chunk_content(chunk['location'], chunk['id']):
+            curr_page_key, visit_count = line.split(' ')
+            if curr_page_key in page_keys:
+                page_keys.remove(curr_page_key)
+                file_visits += int(visit_count)
+
     return file_visits
 
 
