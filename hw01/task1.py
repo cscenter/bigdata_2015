@@ -3,7 +3,7 @@
 
 # Для быстрого локального тестирования используйте модуль test_dfs
 from setuptools.compat import basestring
-import test_dfs as dfs
+import http_dfs as dfs
 
 # Для настоящего тестирования используйте модуль http_dfs
 # import http_dfs as dfs
@@ -52,17 +52,24 @@ def get_file_content(filename):
 
 
 search_files = []
-
+# print(chunks)
+# print(files)
+# print(list(dfs.get_chunk_data(chunks["partitions"], "partitions")))
 if "/partitions" in files and "partitions" in chunks:
     for line in get_file_content(dfs.get_chunk_data(chunks["partitions"], "partitions")):
-        f = line.strip().split()
-        search_files.append([f[0], f[1], f[2]])
+        # print(line)
+        if line.strip() != "":
+            f = line.strip().split()
+
+            search_files.append([f[0], f[1], f[2]])
 
 
 def get_number_by_file(filename):
     for element in search_files:
         if element[0] <= filename <= element[1]:
-            for file in files[element[2]]:
+            # print(element[2])
+            for file in files[element[2].replace("/", "")]:
+                # print(file)
                 for line in get_file_content(dfs.get_chunk_data(chunks[file], file)):
                     if len(line.strip()) > 0:
                         line_arr = line.split()
@@ -76,9 +83,11 @@ def get_number_by_file(filename):
 def calculate_sum(keys_filename):
     sum_all = 0
     for i in get_file_content(keys_filename):
+        # print(keys_filename)
+        # print(sum_all)
         sum_all += int(get_number_by_file(i))
     return sum_all
 
 
-print(calculate_sum("data/keys"))
+print(calculate_sum(dfs.get_chunk_data(chunks["keys"], "keys")))
 # demo()
