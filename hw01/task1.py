@@ -77,7 +77,7 @@ def calculate_sum(keys_filename):
   for key in sorted(list(keys)):
     print (key)
     filename = find_filename(key.strip(), partitions)
-    for c in get_file_content(filename[1:]):
+    for c in get_file_content(filename):
       if key.strip() == c.split(' ')[0]:
         sum += int(c.split(' ')[1])
   print("result sum = ", sum)        
