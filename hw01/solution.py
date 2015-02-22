@@ -44,7 +44,7 @@ def get_partions():
 		tmp = line.split(' ')
 		if (len(tmp) < 3):
 			continue
-		tmp[2] = tmp[2][1:-1]
+		tmp[2] = tmp[2][:-1]
 		if (tmp[0] > tmp[1]):
 			raise Exception("Partitions are not valid")
 		result.append(tmp)
