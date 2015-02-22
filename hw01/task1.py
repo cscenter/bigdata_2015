@@ -1,48 +1,51 @@
 #!/usr/bin/python
 # encoding: utf8
 
-# Для быстрого локального тестирования используйте модуль test_dfs
+# for local testing
 import test_dfs as dfs
 
-# Для настоящего тестирования используйте модуль http_dfs
-#import http_dfs as dfs
+# for work with real environment
+# import http_dfs as dfs
 
-# Демо показывает имеющиеся в DFS файлы, расположение их фрагментов
-# и содержимое фрагмента "partitions" с сервера "cs0"
-# (не рассчитывайте, что эти две константы останутся неизменными в http_dfs. Они
-#  использованы исключительно для демонстрации)
-def demo():
-  for f in dfs.files():
-    print("File {0} consists of fragments {1}".format(f.name, f.chunks))
 
-  for c in dfs.chunk_locations():
-    print("Chunk {0} sits on chunk server {1}".format(c.id, c.chunkserver))
-
-  # Дальнейший код всего лишь тестирует получение фрагмента, предполагая, что известно,
-  # где он лежит. Не рассчитывайте, что этот фрагмент всегда будет находиться
-  # на использованных тут файл-серверах
-
-  # При использовании test_dfs читаем из каталога cs0
-  chunk_iterator = dfs.get_chunk_data("cs0", "partitions")
-
-  # При использовании http_dfs читаем с данного сервера
-  #chunk_iterator = dfs.get_chunk_data("104.155.8.206", "partitions")
-  print("\nThe contents of chunk partitions:")
-  for line in chunk_iterator:
-    # удаляем символ перевода строки
-    print(line[:-1])
-
-# Эту функцию надо реализовать. Функция принимает имя файла и
-# возвращает итератор по его строкам.
-# Если вы не знаете ничего про итераторы или об их особенностях в Питоне,
-# погуглите "python итератор генератор". Вот например
-# http://0agr.ru/blog/2011/05/05/advanced-python-iteratory-i-generatory/
 def get_file_content(filename):
-  raise "Comment out this line and write your code below"
+    chunk_ids = [f.chunks for f in dfs.files() if f.name == filename]
+    if not chunk_ids:
+        raise Exception("file %s were not found" % filename)
+    locations = dfs.chunk_locations()
+    for chunkId in chunk_ids[0]:
+        chunk_server = [l.chunkserver for l in locations if l.id == chunkId][0]
+        for line in dfs.get_chunk_data(chunk_server, chunkId):
+            if not line.isspace():
+                yield line[:-1]
 
-# эту функцию надо реализовать. Она принимает название файла с ключами и возвращает
-# число
+
+def get_filename(page_key):
+    for line in get_file_content("/partitions"):
+        lo, hi, filename = line.split(' ')
+        if lo <= page_key <= hi:
+            return filename
+    raise Exception("page %s were not found" % page_key)
+
+
+def get_visit_count(page_key):
+    file = get_filename(page_key)
+    for line in get_file_content(file):
+        curr_page_key, visit_count = line.split(' ')
+        if page_key == curr_page_key:
+            return int(visit_count)
+    raise Exception("page %s were not found" % page_key)
+
+
 def calculate_sum(keys_filename):
-  raise "Comment out this line and write your code below"
+    """
+    :param keys_filename:
+    :return: visit count sum by page keys listed in keys_filename
+    """
+    total = 0
+    for line in get_file_content(keys_filename):
+        total += get_visit_count(line)
+    return total
 
-demo()
+
+print(calculate_sum("/keys"))
