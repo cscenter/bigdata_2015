@@ -64,7 +64,7 @@ def get_filename_for_key(key):
             continue
         (start, finish, filename) = d[:-1].split(' ')
         if (key >= start) and (key <= finish):
-            return filename[1:] # костыль для удаления символа '/', т.к. имена файлов в partition и в files различаются
+            return filename
 
     raise "File for key {0} not found".format(key)
 
@@ -82,11 +82,9 @@ def calculate_sum(keys_filename):
             if len(l) == 0: # игнорируем пустые строчки
                 continue
             if (k == l.split(' ')[0]): # сраниваем ключ с ключём в файле
-                sum += int(l.split(' ')[1]) # прибавляем из файла значение соответствующеe ключу
+                sum += int(l.split(' ')[1]) # прибавляем из файла значение соответствующее ключу
                 break
     return sum
-
-
 
 # demo()
 start = time.time()
