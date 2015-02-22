@@ -51,7 +51,7 @@ def find_value_in_chunk(filename, key):
 def get_value(key):
     shard = get_shard_by_key(key)
     # In case the shard chunks are sorted in dfs.chunk_locations, we can skip chunks
-    #  while first_key of the chunk is less than key. Performance is increased by 2.5 times
+    # while first_key of the chunk is less than key. Performance is increased by 2.5 times
     for chunk in shard.chunks:
         first_key, _ = get_first_line_only(chunk).split()
         if first_key <= key:
@@ -59,7 +59,7 @@ def get_value(key):
         else:
             return find_value_in_chunk(previous_chunk, key)  # the previous chunk  contains the key
     return find_value_in_chunk(chunk, key)  # key is in the last chunk
-    #  If not, the code above (from the 'first_key, _ = ...' line) should be replaced with this simple block:
+    # If not, the code above (from the 'first_key, _ = ...' line) should be replaced with this simple block:
     #     value = find_value_in_file(chunk, key)
     #     if value:
     #         return value
@@ -67,13 +67,8 @@ def get_value(key):
 
 def calculate_sum(keys_filename):
     files_to_chunk_servers_map.clear()  # Because file location can be changed
-    sum = 0
+    sum_of_values = 0
     for key in get_file_content(keys_filename):
-        sum += get_value(key)
+        sum_of_values += get_value(key)
         print(1)
-    return sum
-
-import time
-then = time.time()
-print(calculate_sum('keys'))
-print(time.time() - then)
+    return sum_of_values
