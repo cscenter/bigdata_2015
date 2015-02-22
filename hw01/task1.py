@@ -4,6 +4,9 @@
 import http_dfs as dfs
 
 
+files_to_chunkservers_map = {}
+
+
 def get_file_content(filename):
     for line in dfs.get_chunk_data(get_chunkserver(filename), filename):
         if line.strip():
@@ -11,8 +14,11 @@ def get_file_content(filename):
 
 
 def get_chunkserver(filename):
+    if filename in files_to_chunkservers_map:
+        return files_to_chunkservers_map[filename]
     for c in dfs.chunk_locations():
         if c.id == filename:
+            files_to_chunkservers_map[filename] = c.chunkserver
             return c.chunkserver
     raise FileNotFoundError('File {} was not found'.format(filename))
 
@@ -63,4 +69,10 @@ def calculate_sum(keys_filename):
     sum = 0
     for key in get_file_content(keys_filename):
         sum += get_value(key)
+        print(1)
     return sum
+
+import time
+then = time.time()
+print(calculate_sum('keys'))
+print(time.time() - then)
