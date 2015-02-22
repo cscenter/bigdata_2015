@@ -2,7 +2,6 @@
 # encoding: utf8
 
 
-#
 # Для быстрого локального тестирования используйте модуль test_dfs
 import test_dfs as dfs
 
@@ -14,58 +13,49 @@ import test_dfs as dfs
 # (не рассчитывайте, что эти две константы останутся неизменными в http_dfs. Они
 #  использованы исключительно для демонстрации)
 server = {}
-dpz = {}
-d1 = {}
-def myFun(f, name_of_partitions):
+list_of_chunks = {}
+def partitions_handling(f):
     chunk_iterator = dfs.get_chunk_data(f.chunkserver, f.id);
+    list_of_ranges = {}
     for line in chunk_iterator:
-        words = line[:-1].split( )
+        words = line[:-1].split( )     #разбиваем строку файла
         count = 0
-        for w in words:
-            count += 1
-        if count == 3:
-            if '/' in words[2]:
-                i = words[2].index('/')
-                s1 = words[2][:i]+words[2][i+1:]
+        for w in words:                  #считаем количество лексем
+            count += 1                   #если лексем 3 (т.е. левая граница, правая граница и имя фрагмента),
+        if count == 3:                   #то все ок, можем обрабатывать, иначе мусор
+            if '/' in words[2]:          #удаляем / из имени файла, если он есть
+                i = words[2].index('/')  #так как в реальной РФС в названиях файлов / то был, то его не было
+                s1 = words[2][:i]+words[2][i+1:]      #а ключи должны быть одинаковые
             else:
                 s1 = words[2]
-            d1.setdefault(s1, []).append([words[0], words[1]] )
+
+            # словарь хранит для каждого имени файла список его диапазонов, отсортированных по возрастанию
+            # левая и правая граница тоже составляют список из 2 элементов
+            # i-й диапазон для файла находится в его i-м фрагменте.
+            list_of_ranges.setdefault(s1, []).append([words[0], words[1]])
+    return list_of_ranges
+
+def files_handling(name_of_partitions):
     i = 0
-    for f in dfs.files():
-        if '/' in f.name:
+    for f in dfs.files():   #обрабатываем файл files
+        if '/' in f.name:   #удаляем /, если он есть
             i = f.name.index('/')
             s1 = f.name[:i] + f.name[i+1:]
         else:
             s1 = f.name
-        if f.name != name_of_partitions:
+        if f.name != name_of_partitions:     #если это не файл partitions
             for t in f.chunks:
-                 dpz.setdefault(s1, []).append(t)
-        #if f.name[1] != 'p':
-            #for c in d1[f.name]:
-             #   dpz[{c[0], c[1]}] = f.chunks[i]
-             #   i+=1
+                 list_of_chunks.setdefault(s1, []).append(t)    # сохраняем для каждого файла список его фрагментов
+                                                                # i-й элемент списка фрагментов файла d
+                                                                # list_of_chunks[d][i] соответствует i-му элементу
+                                                                # списку диапазонов для этого файла
+                                                                # list_of_ranges[d][i]
+
     for c in dfs.chunk_locations():
         server[c.id] = c.chunkserver;
 
-  # Дальнейший код всего лишь тестирует получение фрагмента, предполагая, что известно,
-  # где он лежит. Не рассчитывайте, что этот фрагмент всегда будет находиться
-  # на использованных тут файл-серверах
+# Функция принимает имя файла и возвращает итератор по его строкам.
 
-  # При использовании test_dfs читаем из каталога cs0
-  #chunk_iterator = dfs.get_chunk_data("cs0", "partitions")
-
-  # При использовании http_dfs читаем с данного сервера
-  #chunk_iterator = dfs.get_chunk_data("104.155.8.206", "partitions")
-  #print("\nThe contents of chunk partitions:")
-  #for line in chunk_iterator:
-    # удаляем символ перевода строки
-   # print(line[:-1])
-
-# Эту функцию надо реализовать. Функция принимает имя файла и
-# возвращает итератор по его строкам.
-# Если вы не знаете ничего про итераторы или об их особенностях в Питоне,
-# погуглите "python итератор генератор". Вот например
-# http://0agr.ru/blog/2011/05/05/advanced-python-iteratory-i-generatory/
 def get_file_content(filename):
   file = open(filename)
   for line in file:
@@ -82,8 +72,7 @@ def sum_key(key_name):
         for j in d1[d]:
             #print(key_name + " " + j[0] + " " + j[1])
             if key_name >= j[0] and key_name <= j[1]:
-                print(server[dpz[d][i]], dpz[d][i])
-                chunk_iterator = dfs.get_chunk_data(server[dpz[d][i]], dpz[d][i])
+                chunk_iterator = dfs.get_chunk_data(server[list_of_chunks[d][i]], list_of_chunks[d][i])
                 for line in chunk_iterator:
                     mas = line[:-1].split( )
                     dv = 0
@@ -104,18 +93,17 @@ def calculate_sum(keys_filename):
    server_of_keys = ''
    sum = 0
    for f in dfs.files():
-        d = {}
-        if f.name == '/partitions':
-            name_of_partitions = f.chunks[0]
-
+        chunks_of_file = {}
+        if 'partitions' in f.name:
+            name_of_partitions = f.chunks[0] #запоминаем имя фрагмента файла partitions
         if f.name == keys_filename:
-            name_of_keys = f.chunks[0]
-        d[f.name] = f.chunks
+            name_of_keys = f.chunks[0]       #запоминаем имя фрагмента файла keys
+        chunks_of_file[f.name] = f.chunks    #запоминаем для каждого файла список его фрагментов в словаре
    for c in dfs.chunk_locations():
         if (c.id == name_of_partitions):
-            myFun(c, name_of_partitions);
+            partitions_handling(c, name_of_partitions);    #обрабатываем файл partitions
         if (c.id == name_of_keys):
-            server_of_keys = c.chunkserver
+            server_of_keys = c.chunkserver    #запоминаем имя сервера, на котором лежит файл keys
 
    chunk_iterator = dfs.get_chunk_data(server_of_keys, name_of_keys)
    for line in chunk_iterator:
@@ -125,6 +113,3 @@ def calculate_sum(keys_filename):
    return sum
 
 calculate_sum("/keys")
-
-
-
