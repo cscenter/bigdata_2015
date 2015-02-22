@@ -28,8 +28,7 @@ def get_shard_by_key(key):
         lower_bound, upper_bound, shard = range_shard_pair.split()
         if lower_bound <= key <= upper_bound:
             for f in dfs.files():
-                # Slicing had been made due to shard filename incompatibility
-                if f.name == shard[1:]:
+                if f.name == shard:
                     return f
     raise Exception('There\'s no such key as {} in the dfs'.format(key))
 
@@ -50,7 +49,7 @@ def find_value_in_chunk(filename, key):
 
 def get_value(key):
     shard = get_shard_by_key(key)
-    # In case the shard chunks are sorted in dfs.chunk_locations, we can skip chunks
+    # If the shard chunks are sorted in dfs.chunk_locations, we can skip chunks
     # while first_key of the chunk is less than key. Performance is increased by 2.5 times
     for chunk in shard.chunks:
         first_key, _ = get_first_line_only(chunk).split()
