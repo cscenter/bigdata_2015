@@ -66,7 +66,13 @@ def get_filename(page_key):
             return filename
     raise Exception("page %s were not found" % page_key)
 
+
 def find_chunk(page_key, all_chunks):
+    """
+    :param page_key:
+    :param all_chunks:
+    :return: chunk metadata that interval matches page_key
+    """
     for chunk in all_chunks:
         if chunk['start'] <= page_key <= chunk['end']:
             return chunk
@@ -94,7 +100,9 @@ def calculate_sum(keys_filename):
         task_file_to_keys[file].append(page_key)
 
     total = 0
-    # todo: parallelize
+    # todo: it can be paralellized
+    # I decided dot not provide parallel code
+    # cause in Python it may reduce readability
     for file in task_file_to_keys.keys():
         total += get_visit_count(file, set(task_file_to_keys[file]))
 
