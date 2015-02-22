@@ -32,24 +32,27 @@ def get_filename(page_key):
 
 def get_visit_count(file, page_keys):
     ret = 0
+    # todo: use bin search in chunks
     for line in get_file_content(file):
         curr_page_key, visit_count = line.split(' ')
         if curr_page_key in page_keys:
             ret += int(visit_count)
-    return ret
+            page_keys.remove(curr_page_key)
+            if len(page_keys) == 0:
+                return ret
+    raise Exception("The following keys were not found in %s: %s" % (page_keys, file))
 
 
 def calculate_sum(keys_filename):
     task_file_to_keys = defaultdict(list)
-    keys = list(get_file_content(keys_filename))
-    for page_key in keys:
+    for page_key in get_file_content(keys_filename):
         file = get_filename(page_key)
         task_file_to_keys[file].append(page_key)
 
     total = 0
-    # todo: parallel
+    # todo: parallelize
     for file in task_file_to_keys.keys():
-        total += get_visit_count(file, task_file_to_keys[file])
+        total += get_visit_count(file, set(task_file_to_keys[file]))
 
     return total
 
