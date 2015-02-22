@@ -2,10 +2,10 @@
 # encoding: utf8
 
 # Для быстрого локального тестирования используйте модуль test_dfs
-import test_dfs as dfs
+#import test_dfs as dfs
 
 # Для настоящего тестирования используйте модуль http_dfs
-#import http_dfs as dfs
+import http_dfs as dfs
 
 import collections
 
@@ -100,6 +100,9 @@ def calculate_for_one_chunk(chuck_id, keys):
     for part_id in get_chunk_parts(chuck_id):
         for line in get_file_content(part_id):
             data = line[:-1].split(" ")
+            if len(data) != 2:
+                continue
+
             for key in keys:
                 if key == data[0]:
                     summary += int(data[1])
@@ -118,9 +121,14 @@ def get_chuck_to_keys_mapping(keys):
     # But there is no way how we could get know it.
     for line in get_file_content("partitions"):
         data = line.split(" ")
+        if len(data) != 3:
+            continue
+
         for key in keys:
             if data[0] <= key <= data[1]:
-                chuck_to_key[data[2][:-1]].append(key)
+                # Issue (data[2][1:-1]) found in "production"
+                # We do not need to cut first '/' symbol in test client. But for http_dfs we need so.
+                chuck_to_key[data[2][1:-1]].append(key)
 
     return chuck_to_key
 
