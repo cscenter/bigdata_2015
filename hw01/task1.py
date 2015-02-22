@@ -42,20 +42,33 @@ def calculate_sum(key_chunk_name, chunkserver):
                       (begin, end, shard_name) = line[:-1].split(' ')
                       if key >= begin and key <= end:
                           chunks = get_chunks(shard_name)
-                          haveFoundKey = False # флаг что еще не нашли текущий ключ в одном из chunk-ов
+                          
+                          # используем тот факт, что диапозоны в шадре отсортированы 
+                          # нет необходимости пробегаться по всем chunk-ам
+                          # можно по первой строке определить: может ли подходить нам chunk или нет
+                          # если key < begin в chunk-ке, то этот и все последующие чанки нам не подходят
+                          # выбираем самый "правый" подходящий chunk
+                          # и ввиду непрерывности распределения диапазонов в нём хранится нужная нам запись
+                          needServerName = -1 # адресс chunk-ка с нужной нам записью 
+                          needChunk = -1 # имя chunk-ка с нужной на записью                                       
                           for chunk in chunks:
                               server_name = get_server_for_chunk(chunk)
                               for line in get_file_content(server_name, chunk):
                                   if len(line[:-1]) == 0:
                                       continue
                                   (chunk_key, chunk_value) = line[:-1].split(' ')
-                                  if key == chunk_key:
-                                      result += int(chunk_value)
-                                      haveFoundKey = True
-                                      break
-                              if haveFoundKey: # если уже нашли ключ, то не надо искать в остальных chunk-ах
+                                  if key >= chunk_key:
+                                      needServerName = server_name
+                                      needChunk = chunk
+                                  break    
+                          
+                          for line in get_file_content(needServerName, needChunk):
+                              if len(line[:-1]) == 0:
+                                  continue
+                              (chunk_key, chunk_value) = line[:-1].split(' ')
+                              if key == chunk_key:
+                                  result += int(chunk_value)
                                   break
-                          break # уже нашли нужный интервал
                   break # уже нашли нужную запись в chuck_location c.id == partition
   return result           
   
