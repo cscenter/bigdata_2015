@@ -84,8 +84,8 @@ def calculate_sum(keys_filename):
       for c in get_file_content(k):
         if el == c.split(' ')[0]:
           sum += int(c.split(' ')[1])
-  
-  print("result sum = ", sum)
+     
+  print("result sum = ", sum)        
   return sum   
   
 
