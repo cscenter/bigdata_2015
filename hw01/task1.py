@@ -68,9 +68,6 @@ def calculate_sum(keys_filename):
                     shard = interval[2]         #нашли в каком файле искать key
                     break
         chunks = []
-            #нужно удалить след. строчку, если в files добавят к именам шардов слеш
-            #иначе файлы не будут находится и ответ будет всегда 0
-        shard = shard[1:]          #убираем слеш из начала имени файла
         for f in dfs.files():
             if f.name == shard:
                 chunks = f.chunks           #нашли все фрагменты этого файла
