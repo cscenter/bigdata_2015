@@ -1,4 +1,5 @@
 [
+  {"name": "/keys", "chunks": ["keys"]},
   {"name": "/partitions", "chunks": ["partitions"]},
   {"name": "/keys", "chunks": ["keys"]},
   {"name": "/shard_0", "chunks": ["shard_0_chunkaa","shard_0_chunkab","shard_0_chunkac","shard_0_chunkad","shard_0_chunkae","shard_0_chunkaf","shard_0_chunkag","shard_0_chunkah","shard_0_chunkai","shard_0_chunkaj"]},

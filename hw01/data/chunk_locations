@@ -1,4 +1,5 @@
 [
+  {"id": "keys", "chunkserver": "cs0" },
   {"id": "partitions", "chunkserver": "cs0" },
   {"id": "keys", "chunkserver": "cs0" },
   {"id": "shard_0_chunkaa", "chunkserver": "cs3" },
