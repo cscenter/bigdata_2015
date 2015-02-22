@@ -2,10 +2,10 @@
 # encoding: utf8
 
 # Для быстрого локального тестирования используйте модуль test_dfs
-import test_dfs as dfs
+# import test_dfs as dfs
 
 # Для настоящего тестирования используйте модуль http_dfs
-#import http_dfs as dfs
+import http_dfs as dfs
 
 # Демо показывает имеющиеся в DFS файлы, расположение их фрагментов
 # и содержимое фрагмента "partitions" с сервера "cs0"
@@ -23,29 +23,51 @@ def demo():
   # на использованных тут файл-серверах
 
   # При использовании test_dfs читаем из каталога cs0
-  chunk_iterator = dfs.get_chunk_data("cs0", "partitions")
+  # chunk_iterator = dfs.get_chunk_data("cs0", "partitions")
 
   # При использовании http_dfs читаем с данного сервера
-  #chunk_iterator = dfs.get_chunk_data("104.155.8.206", "partitions")
+  chunk_iterator = dfs.get_chunk_data("104.155.8.206", "partitions")
   print("\nThe contents of chunk partitions:")
   for line in chunk_iterator:
     # удаляем символ перевода строки
     print(line[:-1])
 
-def get_shard_name(key):
-  with dfs.get_chunk_data("cs0", "partitions") as f:
-    for line in f:
-      start, finish, name = line.rstrip().split()
-      if start <= key and key <= finish:
-        # print("keys from {} to {}, shard: {}".format(start, finish, name))
-        return name
-    raise "No shard found!"
+dfs_files = dfs.files()
+dfs_chunk_locations = dfs.chunk_locations()
 
-def get_chunk_server(chunk_id, chunk_locations):
-  for chunk in chunk_locations:
+def chunks(filename):
+  '''return list of chunk_id for file'''
+  if filename is None:
+    raise Exception("Empty filename!")
+  for f in dfs_files:
+    if f.name.strip("/") == filename.strip("/"):
+      return f.chunks
+  raise Exception("Chunks for '{}' not found!".format(filename))
+
+def get_chunk_server(chunk_id):
+  for chunk in dfs_chunk_locations:
     if chunk.id == chunk_id:
       return chunk.chunkserver
-  raise "Chunkserver not found!"
+  raise Exception("Chunkserver for '{}' not found!".format(chunk_id))
+
+def partitions(filename):
+  pchunk_id, *_ = chunks(filename)
+  return (get_chunk_server(pchunk_id), pchunk_id)
+
+# tuple (chunk_server_id, chunk_id) for partitions
+dfs_partitions = partitions("/partitions")
+
+def get_shard_name(key):
+  # with dfs.get_chunk_data("cs0", "partitions") as f:
+    for line in dfs.get_chunk_data(*dfs_partitions):
+      try:
+        start, finish, name = line.rstrip().split()
+        if start <= key and key <= finish:
+          return name.strip("/")
+      except ValueError:
+        continue
+    raise Exception("Shard for key '{}' not found!".format(key))
+
 
 # Эту функцию надо реализовать. Функция принимает имя файла и
 # возвращает итератор по его строкам.
@@ -53,32 +75,32 @@ def get_chunk_server(chunk_id, chunk_locations):
 # погуглите "python итератор генератор". Вот например
 # http://0agr.ru/blog/2011/05/05/advanced-python-iteratory-i-generatory/
 def get_file_content(filename):
-  chunks = []
-  for line in dfs.files():
-    if line.name == filename:
-      for chunk in line.chunks:
-        cs = get_chunk_server(chunk, dfs.chunk_locations())
-        chunks.append("/".join(["data", cs, chunk]))
-  for chunk in chunks:
-    with open(chunk) as f:
-      for line in f:
-        if len(line) > 2:
-          yield line
+  chunks_param = [(get_chunk_server(id), id) for id in chunks(filename)]
+  for (server_id, chunk_id) in chunks_param:
+    for line in dfs.get_chunk_data(server_id, chunk_id):
+      yield line
   raise StopIteration
 
 # эту функцию надо реализовать. Она принимает название файла с ключами и возвращает
 # число
 def calculate_sum(keys_filename):
   sum_ = 0
-  with open(keys_filename) as keys_:
-    for key in keys_:
-      key = key.rstrip()
-      shard = get_shard_name(key)
-      for line in get_file_content(shard):
-        key_, val_ = line.split()
+  # Для быстрого локального тестирования c test_dfs
+  # for key in open("data" + keys_filename):
+  # Для настоящего тестирования c http_dfs
+  for key in get_file_content(keys_filename):
+    key = key.rstrip()
+    shard = get_shard_name(key)
+    for line in get_file_content(shard):
+      try:
+        key_, val_ = line.rstrip().split()
         if (key == key_):
           sum_ += int(val_)
           break
+      except ValueError:
+        continue
   return sum_
 
-print(calculate_sum("data/keys"))
+
+print(calculate_sum("/keys"))
+#demo()
