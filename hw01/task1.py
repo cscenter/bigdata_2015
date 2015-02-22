@@ -2,10 +2,10 @@
 # encoding: utf8
 
 # Для быстрого локального тестирования используйте модуль test_dfs
-import test_dfs as dfs
+#import test_dfs as dfs
 
 # Для настоящего тестирования используйте модуль http_dfs
-#import http_dfs as dfs
+import http_dfs as dfs
 
 # Демо показывает имеющиеся в DFS файлы, расположение их фрагментов
 # и содержимое фрагмента "partitions" с сервера "cs0"
@@ -23,10 +23,10 @@ def demo():
   # на использованных тут файл-серверах
 
   # При использовании test_dfs читаем из каталога cs0
-  chunk_iterator = dfs.get_chunk_data("cs0", "partitions")
+#  chunk_iterator = dfs.get_chunk_data("cs0", "partitions")
 
   # При использовании http_dfs читаем с данного сервера
-  #chunk_iterator = dfs.get_chunk_data("104.155.8.206", "partitions")
+  chunk_iterator = dfs.get_chunk_data("104.155.8.206", "partitions")
   print("\nThe contents of chunk partitions:")
   for line in chunk_iterator:
     # удаляем символ перевода строки
@@ -42,24 +42,48 @@ def demo():
 def get_chunk_location(chunk):
   for c in dfs.chunk_locations():
       if c.id == chunk:
-        return c.location
+        return c.chunkserver
 
 def get_file_content(filename):
+  
+  chunks = []
+  
   for f in dfs.files():
     if f.name == filename:
        chunks = f.chunks
   
   for chunk in chunks:
-    for line in dfs.det_chunk_data(get_chunk_location(chunk), chunk):
+    for line in dfs.get_chunk_data(get_chunk_location(chunk), chunk):
       yield line
       
       
 # эту функцию надо реализовать. Она принимает название файла с ключами и возвращает
 # число
+def find_filename(key, partitions):
+  for line in partitions:
+      l = line.split(' ')
+      if l[0].isalnum():
+        if (key >= l[0]) and (key <= l[1]):
+          return l[2].strip()
+    
+
 def calculate_sum(keys_filename):
   keys = get_file_content(keys_filename)
-  partitions = get_file_content("partitions")
-
+  
+  partitions = get_file_content("/partitions")
+  
+  sum = 0
+  
+  for key in sorted(list(keys)):
+    print (key)
+    filename = find_filename(key.strip(), partitions)
+    for c in get_file_content(filename[1:]):
+      if key.strip() == c.split(' ')[0]:
+        sum += int(c.split(' ')[1])
+  print("result sum = ", sum)        
+  return sum   
+  
+  
   
 demo()
-calculate_sum("keys")
+calculate_sum("/keys")
