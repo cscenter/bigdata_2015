@@ -1,11 +1,9 @@
 from collections import namedtuple
-from urllib.request import urlopen
 __author__ = 'Flok'
 
-import http_dfs as dfs
+import test_dfs as dfs
 
 Part = namedtuple('Part', ['start', 'finish', 'name'])
-MASTER_URL = "bigdata-hw01.barashev.net"
 def get_file_content(file):
     return open(file)
 
@@ -48,6 +46,7 @@ def get_keys(keys_filename):
             pass
     return keys_list
 
+#получает число просмотров для переданного ключа
 def get_key_num(key, partitions):
     #ищем шард
     shard_name = None
@@ -81,4 +80,4 @@ def calculate_sum(keys_filename):
         acc_summ += get_key_num(key, partitions)
     return acc_summ
 
-print(calculate_sum("/keys"))
+#print(calculate_sum("/keys"))
