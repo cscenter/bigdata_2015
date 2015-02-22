@@ -4,7 +4,7 @@ from collections import namedtuple
 #Use this import if you're using Python3
 from urllib.request import urlopen
 #Use this import if you're using Python2
-#from urllib2 import urlopen
+# from urllib2 import urlopen
 import json
 
 MASTER_URL = "bigdata-hw01.barashev.net"
