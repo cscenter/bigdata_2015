@@ -111,14 +111,15 @@ def calculate_sum(keys_filename=None, use_remote_keys=False):
     keys_chunk = chunks_by_name('/keys')[0]
     key_server = server_by_chunk_id(keys_chunk)
     keys = dfs.get_chunk_data(key_server, keys_chunk)
+
   for key_n in keys:
     key = key_n.strip()
     found = False
     for partition_chunk in partition_chunks:
       partition_server = server_by_chunk_id(partition_chunk)
       shard = get_shard_by_key(key, partition_server, partition_chunk)
-      if use_remote_keys:
-        shard = modify_shard(shard)
+      #if use_remote_keys:
+        #shard = modify_shard(shard)
       #print(key, shard)
       if shard:
         chunks = chunks_by_name(shard)
