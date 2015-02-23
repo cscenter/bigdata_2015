@@ -14,9 +14,9 @@ def get_file_content(chunkserver, chunk_name):
     
 def get_chunks(shard_name):
   for f in files:
-      if f.name == shard_name[1:]: # shard_name начинается с символа '/'
+      if f.name == shard_name: # shard_name начинается с символа '/'
           return f.chunks
-  raise Exception("Chunk for shard: {0} not found".format(shard_name[1:]))       
+  raise Exception("Chunk for shard: {0} not found".format(shard_name))       
          
 def get_server_for_chunk(chunk):  
   for c in chunk_locations:
