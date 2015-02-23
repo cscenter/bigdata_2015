@@ -33,7 +33,7 @@ def get_file(filename):
 # Функция принимает имя файла и возвращает итератор по его строкам.
 def get_file_content(filename):
     file = get_file(filename)
-    chunks = [chunk for chunk in dfs.chunk_locations() for chunk_id in file.chunks if chunk.id == chunk_id]
+    chunks = (chunk for chunk in dfs.chunk_locations() for chunk_id in file.chunks if chunk.id == chunk_id)
     for chunk in chunks:
         for line in dfs.get_chunk_data(chunk.chunkserver, chunk.id):
             yield line
@@ -53,7 +53,7 @@ def get_key_file(key):
 
 # Функция принимает название файла с ключами и возвращает сумму их значений
 def calculate_sum(keys_filename):
-    keys = [key[:-1] for key in get_file_content(keys_filename) if len(key) > 1]
+    keys = (key[:-1] for key in get_file_content(keys_filename) if len(key) > 1)
     sum = 0
     for key in keys:
         key_file = get_key_file(key)
