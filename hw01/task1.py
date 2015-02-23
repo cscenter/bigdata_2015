@@ -46,23 +46,25 @@ def calculate_sum(key_chunk_name, chunkserver):
                           # используем тот факт, что диапозоны в шадре отсортированы 
                           # нет необходимости пробегаться по всем chunk-ам
                           # можно по первой строке определить: может ли подходить нам chunk или нет
-                          # если key < begin в chunk-ке, то этот и все последующие чанки нам не подходят
-                          # выбираем самый "правый" подходящий chunk
+                          # если key < key_in_chunk в chunk-ке, то этот и все последующие чанки нам не подходят
+                          # выбираем самый "правый" всмысле максимальности диапрзона подходящий chunk
                           # и ввиду непрерывности распределения диапазонов в нём хранится нужная нам запись
-                          needServerName = -1 # адресс chunk-ка с нужной нам записью 
-                          needChunk = -1 # имя chunk-ка с нужной на записью                                       
+                          need_server_name = -1 # адресс chunk-ка с нужной нам записью 
+                          need_chunk = -1 # имя chunk-ка с нужной на записью      
+                          best_diaposon = ""                                   
                           for chunk in chunks:
                               server_name = get_server_for_chunk(chunk)
                               for line in get_file_content(server_name, chunk):
                                   if len(line[:-1]) == 0:
                                       continue
                                   (chunk_key, chunk_value) = line[:-1].split(' ')
-                                  if key >= chunk_key:
-                                      needServerName = server_name
-                                      needChunk = chunk
+                                  if key >= chunk_key and best_diaposon < chunk_key:
+                                      need_server_name = server_name
+                                      need_chunk = chunk
+                                      best_diaposon = chunk_key
                                   break    
                           
-                          for line in get_file_content(needServerName, needChunk):
+                          for line in get_file_content(need_server_name, need_chunk):
                               if len(line[:-1]) == 0:
                                   continue
                               (chunk_key, chunk_value) = line[:-1].split(' ')
