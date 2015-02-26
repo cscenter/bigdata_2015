@@ -1,13 +1,12 @@
 #!/usr/bin/python
 # encoding: utf8
 import time
-import array
 
 # Для быстрого локального тестирования используйте модуль test_dfs
-# import test_dfs as dfs
+import test_dfs as dfs
 
 # Для настоящего тестирования используйте модуль http_dfs
-import http_dfs as dfs
+# import http_dfs as dfs
 
 # Демо показывает имеющиеся в DFS файлы, расположение их фрагментов
 # и содержимое фрагмента "partitions" с сервера "cs0"
@@ -56,9 +55,9 @@ def get_file_content(filename):
 #функция возвращает имя файла, в котором возможно хранится данный ключ
 def get_filename_for_key(key):
     # при использовании http_dfs
-    for d in dfs.get_chunk_data("104.155.8.206", "partitions"):
+    # for d in dfs.get_chunk_data("104.155.8.206", "partitions"):
     # при использовании test_dfs
-    # for d in dfs.get_chunk_data("cs0", "partitions"):
+    for d in dfs.get_chunk_data("cs0", "partitions"):
 
         if (len(d[:-1]) == 0): # проверяем строку на пустую
             continue
