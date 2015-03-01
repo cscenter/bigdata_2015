@@ -1,17 +1,15 @@
 # encoding: utf-8
 from dfs_client import *
 import mincemeat
+import os
 # Запускаетя через run.sh
 #
 # Алгоритм умножения матриц работает за один проход mapreduce. Использует тот факт,
 # что каждый элемент результирующей матрицы является скалярным произведением
 # соответствующей строки первой матрицы и столбца второй.
 #
-# Данный алгоритм не сохраняет результат в DFS за неимением возможности. Однако,
-# на настоящей mapreduce платформе каждый редьюсер писал бы результаты в определенный чанк.
-# И таким образом результат был бы сохранен в распределенном виде на DFS. Формат был бы следующим -
-# каждый чанк состоял из последовательности состоящей из тройки значений i j v, где i - номер строки,
-# j - номер столбца и v - значение матрицы в ячейке (i,j).
+# Данный сохраняются  в директоию out. Каждый файл хранит в себе тройку значений i j v,
+# где i - номер строки, j - номер столбца и v - значение матрицы в ячейке (i,j).
 #
 # На этапе map подготавливаются элементы для скалярного произведения, на этапе reduce
 # происходит подсчет этого произведения для каждого элемента матрицы. Для матриц размера
@@ -123,7 +121,11 @@ def reducefn(reduce_key, reduce_values):
     sum = 0
     for index in xrange(1, K + 1):
         sum += x_1[index] * x_2[index]
-    return reduce_key, sum
+    filename = "%s/data/out/%s" % (os.getcwd(), reduce_key.replace(" ", "_"))
+    f = open(filename, 'w')
+    f.write("%s %s" % (reduce_key, sum))
+    f.close()
+    return reduce_key, filename
 
 
 def local_handle(filname1, filname2, M, K, N):
@@ -161,18 +163,19 @@ def remote_handle(filname1, filname2, M, K, N):
 
     results = s.run_server(password="")
 
+    print("Result files:")
     for key, value in results.items():
         _, v = value
-        print("%s %s" % (key, v))
+        print("%s" % v)
 
         # matrix = {}
         # for key, value in results.items():
         # _, v = value
-        #     i, j = parse_matrix_index(key)
-        #     if i not in matrix:
-        #         matrix[i] = {}
-        #     row = matrix[i]
-        #     row[j] = v
+        # i, j = parse_matrix_index(key)
+        # if i not in matrix:
+        # matrix[i] = {}
+        # row = matrix[i]
+        # row[j] = v
         # print_matrix_from_result(matrix, M, N)
 
 
