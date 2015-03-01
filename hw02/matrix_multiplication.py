@@ -63,13 +63,12 @@ rows = size['1']['rows']
 if result_matrix[-1][0][0] != rows or result_matrix[-1][0][1] != cols:
     raise Exception('matrices sizes are invalid')
 
-
-r = 2
-
-files_number = len(matrix_files) / 2
-rows_per_file = rows / files_number
-lines_per_row = cols / r
-
+# r = 2
+#
+# files_number = len(matrix_files) / 2
+# rows_per_file = rows / files_number
+# lines_per_row = cols / r
+#
 # row = 1
 # col = 1
 # line = 0
