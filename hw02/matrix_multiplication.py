@@ -56,15 +56,47 @@ s.reducefn = reducefn
 results = s.run_server(password="")
 result_matrix = sorted(results.items())
 size = {'1': {'rows': 3, 'cols': 4}, '2': {'rows': 4, 'cols': 6}}  # sorry for duplicating
-row_len = size['2']['cols']
 
-if result_matrix[-1][0][0] != size['1']['rows'] or result_matrix[-1][0][1] != size['2']['cols']:
+cols = size['2']['cols']
+rows = size['1']['rows']
+
+if result_matrix[-1][0][0] != rows or result_matrix[-1][0][1] != cols:
     raise Exception('matrices sizes are invalid')
+
+
+# i = 0
+# for l in get_file_content(matrix_files[0]):
+#     if i == 1:
+#         r = len(l.split())
+#         break
+#     i += 1
+#
+# files_number = len(matrix_files) / 2
+# rows_per_file = rows / files_number
+# lines_per_row = cols / r
+#
+# row = 1
+# line = 0
+# file_number = 1
+# for key, value in result_matrix:
+#     if line == 0:
+#         filename = 'result_{}.dat'.format(file_number)
+#         write_file(filename, '{} {}'.format(row, min(row + rows_per_file, rows)))
+#         write_file('result', filename)
+#         file_number += 1
+#     write_file(filename, '{} '.format(value) if line % r != 0 else '{}\n'.format(value))
+#     line += 1
+#     if line == lines_per_row * rows_per_file:
+#         line = 0
+#         row += rows_per_file
 
 with open('result.dat', 'w') as out:
     for key, value in result_matrix:
-        out.write('{} '.format(value) if key[1] < row_len else '{}\n'.format(value))
+        out.write('{} '.format(value) if key[1] < cols else '{}\n'.format(value))
 
 # Result matrix is written on local disc, in file called 'result.dat', one row per line.
+# You can see code writing result matrix into different chunks similarly to input matrix, but it wouldn't work while
+#  write_file function allow to write only one line per file. The code is supposed to work only if write_file allows
+#  to write to the file many times.
 # This MapReduce is better to run on N * M machines, where N and M are sizes of result matrix
 # (hence, N * M is number of reducers).

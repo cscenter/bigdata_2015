@@ -434,7 +434,7 @@ class MapInputDFSFileName(MapInput):
     generator = None
 
 
-    def __init__(self, files, size):
+    def __init__(self, files):
         self.generator = self.get_generator(files)
 
     def get_generator(self, files):
