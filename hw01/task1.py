@@ -6,7 +6,7 @@ from setuptools.compat import basestring
 import http_dfs as dfs
 
 # Для настоящего тестирования используйте модуль http_dfs
-# import http_dfs as dfs
+#import http_dfs as dfs
 
 # Демо показывает имеющиеся в DFS файлы, расположение их фрагментов
 # и содержимое фрагмента "partitions" с сервера "cs0"
@@ -19,6 +19,7 @@ def demo():
     for c in dfs.chunk_locations():
         print("Chunk {0} sits on chunk server {1}".format(c.id, c.chunkserver))
 
+<<<<<<< HEAD
     print("\nThe contents of chunk partitions:")
     with dfs.get_chunk_data("cs0", "partitions") as f:
         for line in f:
@@ -38,6 +39,24 @@ for c in dfs.chunk_locations():
 
 # Эту функцию надо реализовать. Функция принимает имя файла и
 # возвращает итератор по его строкам. 
+=======
+  # Дальнейший код всего лишь тестирует получение фрагмента, предполагая, что известно,
+  # где он лежит. Не рассчитывайте, что этот фрагмент всегда будет находиться
+  # на использованных тут файл-серверах
+
+  # При использовании test_dfs читаем из каталога cs0
+  chunk_iterator = dfs.get_chunk_data("cs0", "partitions")
+
+  # При использовании http_dfs читаем с данного сервера
+  #chunk_iterator = dfs.get_chunk_data("104.155.8.206", "partitions")
+  print("\nThe contents of chunk partitions:")
+  for line in chunk_iterator:
+    # удаляем символ перевода строки
+    print(line[:-1])
+
+# Эту функцию надо реализовать. Функция принимает имя файла и
+# возвращает итератор по его строкам.
+>>>>>>> 6fd1ee7934cb6735ffbce3e4e8588c425332ce63
 # Если вы не знаете ничего про итераторы или об их особенностях в Питоне,
 # погуглите "python итератор генератор". Вот например
 # http://0agr.ru/blog/2011/05/05/advanced-python-iteratory-i-generatory/
@@ -51,6 +70,7 @@ def get_file_content(filename):
                 yield line[:-1]
 
 
+<<<<<<< HEAD
 search_files = []
 # print(chunks)
 # print(files)
@@ -78,6 +98,8 @@ def get_number_by_file(filename):
     return 0
 
 
+=======
+>>>>>>> 6fd1ee7934cb6735ffbce3e4e8588c425332ce63
 # эту функцию надо реализовать. Она принимает название файла с ключами и возвращает
 # число
 def calculate_sum(keys_filename):
@@ -89,5 +111,9 @@ def calculate_sum(keys_filename):
     return sum_all
 
 
+<<<<<<< HEAD
 print(calculate_sum(dfs.get_chunk_data(chunks["keys"], "keys")))
 # demo()
+=======
+demo()
+>>>>>>> 6fd1ee7934cb6735ffbce3e4e8588c425332ce63

@@ -30,3 +30,10 @@ def get_chunk_data(chunk_server_id, chunk_id):
     raise Exception("ERROR: can't get chunk %s from chunkserver %s" % (chunk_id, chunk_server_id))
   for line in resp:
     yield line.decode(encoding='UTF-8')
+<<<<<<< HEAD
+=======
+
+
+
+
+>>>>>>> 6fd1ee7934cb6735ffbce3e4e8588c425332ce63
