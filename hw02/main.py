@@ -3,19 +3,27 @@ import mincemeat
 
 
 def mapfn(k, v):
+
     reduce_key = None
     i = 1
     for l in get_file_content(v):
         if reduce_key is None:
             matrix_num, start, end = l.split(" ", 2)
             reduce_key = matrix_num
+            matrix_num=int(matrix_num)
+            start=int(start)
+            end=int(end)
             continue
         values = [int(v) for v in l.split(" ")]
+        # print(values)
         if matrix_num == 1:
+            # print("dsfd")
             for value in values:
+                # print(values)
                 line=i%one[1]+start
                 # column = i%one[1]
                 for m in range(1,two[1]+1):
+                    # print (line, m), [1, start, i, [value]]
                     yield (line, m), [1, start, i, [value]]
 
                 i+=1
@@ -24,13 +32,15 @@ def mapfn(k, v):
                 line=i%two[1]+start
                 column = i%two[1]
                 for h in range(1,one[0]+1):
+                    # print (h, column), [2, start, i, [value]]
                     yield (h, column), [2, start, i, [value]]
                 i+=1
 
 
 
-# редьюсер суммирует значения с одинаковым ключом
+
 def reducefn(k, vs):
+    print("dfsd")
     arr1=[]
     arr2=[]
     res1=[]
@@ -55,7 +65,7 @@ def reducefn(k, vs):
         for a in arr2:
             if int(a[1])==b:
                 res2.extend(a[3])
-
+    print(sum(map(lambda x, y: x*y, arr1, arr2)))
     return sum(map(lambda x, y: x*y, arr1, arr2))
 
 
@@ -67,21 +77,21 @@ for l in get_file_content("/matrix2"):
 
 
 def get_dimentions_of_matrixes(u):
-    l = []
+    ff = []
     y = {}
     for i in [l for l in get_file_content(u)]:
         t = i.replace("/", "").replace("matrix", "").split("_")[1].split(".")[0]
-        l.append(t)
+        ff.append(t)
         y[t] = i
     # print(y[sorted(l, reverse=True)[0]])
     reduce_key = None
     li = []
-    for l in get_file_content(y[sorted(l, reverse=True)[0]]):
+    for ff in get_file_content(y[sorted(ff, reverse=True)[0]]):
         if reduce_key is None:
-            matrix_num, start, end = l.split(" ", 2)
+            matrix_num, start, end = ff.split(" ", 2)
             reduce_key = matrix_num
             continue
-        li.extend([int(v) for v in l.split(" ")])
+        li.extend([int(v) for v in ff.split(" ")])
     return int(end), int(len(li) / (int(end) - int(start) + 1))
     # print(matrix_files)
 
@@ -92,7 +102,7 @@ two = get_dimentions_of_matrixes("/matrix2")
 print(one, two)
 assert one[1] == two[0]
 
-print(list(get_file_content("/matrix1_1.dat")))
+print(matrix_files)
 s = mincemeat.Server()
 
 s.map_input = mincemeat.MapInputDFSFileName(matrix_files)
