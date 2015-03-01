@@ -31,10 +31,10 @@ def print_matrix(matrix_toc, rows, cols):
   if rows != read_rows:
     print("Что-то пошло не так: мы прочитали %d строк а надо было %d" % (read_rows, rows))
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--num", required = True, help = "Номер матрицы")
-parser.add_argument("--rows", required = True, help = "Число строк")
-parser.add_argument("--cols", required = True, help = "Число столбцов")
-
-args = parser.parse_args()
-print_matrix("/matrix%s" % args.num, int(args.rows), int(args.cols))
+# parser = argparse.ArgumentParser()
+# parser.add_argument("--num", required = True, help = "Номер матрицы")
+# parser.add_argument("--rows", required = True, help = "Число строк")
+# parser.add_argument("--cols", required = True, help = "Число столбцов")
+#
+# args = parser.parse_args()
+# print_matrix("/matrix%s" % args.num, int(args.rows), int(args.cols))
