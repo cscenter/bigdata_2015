@@ -1,5 +1,15 @@
 # encoding: utf-8
 # -*- coding: utf-8 -*-
+
+# условимся что размерности матриц M на N, и N на Q
+# этот MapReduce должен выполняться первым, маппер принимает на вход файлы матриц
+# для каждой ячейки из исходной матрицы выдаёт ключ(координаты ячейки результирующей матрицы, на которую влияет, а так же индекс в сумме произведения строки из первой матрицы
+# и столбца из второй матрицы) и значение ячейки
+# в reduce мы перемножаем значения двух ячеек исходных матриц
+# в результате мы имеем множество перемноженных ячеек из разных матриц, так же знаем координаты ячеек результирующей матрицы, в которой их надо просуммировать
+# мапперов может быть не более чем  M + N (т.к. минимальное содержание в чанке - 1 строка матрицы)
+# reduceров может быть не более чем 2 * M * Q * N (M Q размерность результирующей матрицы, для каждой ячейки сгенерируется по 2 * N значений)
+# в результате имеем M * Q * N значений, которые подадим второму MapReduceру (product_matrix.py)
 from dfs_client import *
 import mincemeat
 
@@ -32,7 +42,7 @@ def mapfn(k, v):
                     current_row += 1
 
                 for j in xrange(1, q + 1):
-                    yield (str(current_row) + '|' + str(j) + '|' + str(current_col) ), value #  i, j, номер в последовательности
+                    yield (str(current_row) + '|' + str(j) + '|' + str(current_col) ), value #  координаты в результирующей матрице и индекс
 
                 current_col += 1
 
@@ -42,7 +52,7 @@ def mapfn(k, v):
                     current_row += 1
 
                 for i in xrange(1, m + 1):
-                    yield (str(i) + '|' + str(current_col) + '|' + str(current_row) ), value #  i, j, номер в последовательности
+                    yield (str(i) + '|' + str(current_col) + '|' + str(current_row) ), value #  коориднаты в результирующей матрице и индекс
 
 
                 current_col += 1
@@ -50,17 +60,17 @@ def mapfn(k, v):
 
 
 
-
+# обрабатывает и пишет в файл, возвращает имя файла
 def reducefn(k, vs):
-    # print('reduce ', k, vs)
     (i, j, index) = k.split('|')
-    # [a, b] = vs
-    result = 1
+    new_key = (i + '|' + j)
+    new_value = 1
     for v in vs:
-        result *= int(v)
+        new_value *= int(v)
 
-    result = (i + '|' + j), result
-    return result
+    result = new_key, new_value
+    write_file(k, str(new_key) + ' ' + str(new_value) + '\n')
+    return k
 
 
 
@@ -78,11 +88,9 @@ s.mapfn = mapfn
 s.reducefn = reducefn
 
 results = s.run_server(password="")
-# for key, value in sorted(results.items()):
-#     print("%s: %s" % (key, value) )
-
-file = open("precalc_results", "w")
+# пишем в файл все файлы для следующего MapReducа
+precalc_result_files = ''
 for key, value in results.items():
-    print(value)
-    new_key, new_value = value
-    file.write("%s %s\n" % (new_key, new_value))
+    precalc_result_files = precalc_result_files + str(key) + '\n'
+
+write_file('precalc_result_files', precalc_result_files)
