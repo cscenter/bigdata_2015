@@ -20,3 +20,7 @@ def get_file_content(filename):
         yield l[:-1]
     except StopIteration:
       pass
+
+def write_file(filename, content):
+  chunk = dfs.create_file(filename)
+  dfs.write_chunk(chunk, content)
