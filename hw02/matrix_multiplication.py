@@ -55,7 +55,7 @@ s.reducefn = reducefn
 
 results = s.run_server(password="")
 result_matrix = sorted(results.items())
-size = {'1': {'rows': 3, 'cols': 4}, '2': {'rows': 4, 'cols': 6}}
+size = {'1': {'rows': 3, 'cols': 4}, '2': {'rows': 4, 'cols': 6}}  # sorry for duplicating
 row_len = size['2']['cols']
 
 if result_matrix[-1][0][0] != size['1']['rows'] or result_matrix[-1][0][1] != size['2']['cols']:
