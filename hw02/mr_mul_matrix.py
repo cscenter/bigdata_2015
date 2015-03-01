@@ -15,6 +15,9 @@ import collections
 #
 #   Если машин будет больше - они будут простаивать.
 #
+#   Результаты свертки записываются в локальные файлы. Каждый результат в свой файл.
+#   Имя файла = позиция в выходной матрице
+#
 ####
 
 def mapfn(k, v):
@@ -84,16 +87,17 @@ def reducefn(k, vs):
 
 s = mincemeat.Server()
 
-# читаем список файлов, из которых состоят матрицы
 matrix_files = [l for l in get_file_content("/matrix1")]
 for l in get_file_content("/matrix2"):
     matrix_files.append(l)
 
-# и подаем этот список на вход мапперам
 s.map_input = mincemeat.MapInputDFSFileName(matrix_files)
 s.mapfn = mapfn
 s.reducefn = reducefn
 
+# Save all data in local files
 results = s.run_server(password="")
 for key, value in sorted(results.items()):
-    print("%s: %s" % (key, value) )
+    file = open("data/out/" + str(key) + ".dat", 'w')
+    file.write(str(value))
+    file.close()
