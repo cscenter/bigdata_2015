@@ -37,7 +37,6 @@ def mapfn(k, v):
 
 
 # TODO: check if matrices sizes are valid
-# TODO: write the result in a file
 
 # Note that the elements of the first matrix are exactly in a first half of the 'vs' list due to matrix files
 # order in 'matrix_files'. Similarly, the elements of the second matrix are in a second half.
@@ -60,5 +59,8 @@ s.reducefn = reducefn
 
 results = s.run_server(password="")
 
-for key, value in sorted(results.items()):
-    print("%s: %s" % (key, value))
+result_matrix = sorted(results.items())
+out = open('result.dat', 'w')
+row_len = result_matrix[-1][0][1]
+for key, value in result_matrix:
+    out.write('{} '.format(value) if key[1] < row_len else '{}\n'.format(value))
