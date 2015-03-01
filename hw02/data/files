@@ -1,8 +1,14 @@
 [
   {"name": "/matrix1", "chunks": ["matrix1"]},
   {"name": "/matrix2", "chunks": ["matrix2"]},
+  {"name": "/matrix3", "chunks": ["matrix3"]},
+  {"name": "/matrix4", "chunks": ["matrix4"]},
   {"name": "/matrix1_1.dat", "chunks": ["chunk11"]},
   {"name": "/matrix1_2.dat", "chunks": ["chunk12"]},
   {"name": "/matrix2_1.dat", "chunks": ["chunk21"]},
-  {"name": "/matrix2_2.dat", "chunks": ["chunk22"]}
+  {"name": "/matrix2_2.dat", "chunks": ["chunk22"]},
+  {"name": "/matrix3_1.dat", "chunks": ["chunk31"]},
+  {"name": "/matrix3_2.dat", "chunks": ["chunk32"]},
+  {"name": "/matrix4_1.dat", "chunks": ["chunk41"]},
+  {"name": "/matrix4_2.dat", "chunks": ["chunk42"]}
 ]
