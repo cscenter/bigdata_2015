@@ -4,8 +4,8 @@ import mincemeat
 
 
 # in:  key-value pair, where both key and value are the same filename
-# out: key-value pair, where key is (i, j) - coordinates of an element in result matrix,
-# and value is the value of that element
+# out: key-value pair, where key is (i, j) - coordinates of an cell in result matrix,
+# and value is the element that participates in dot product
 def mapfn(k, v):
     size = {'1': {'rows': 3, 'cols': 4}, '2': {'rows': 4, 'cols': 6}}
     matrix_num = None
