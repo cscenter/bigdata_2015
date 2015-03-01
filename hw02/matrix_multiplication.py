@@ -64,31 +64,32 @@ if result_matrix[-1][0][0] != rows or result_matrix[-1][0][1] != cols:
     raise Exception('matrices sizes are invalid')
 
 
-# i = 0
-# for l in get_file_content(matrix_files[0]):
-#     if i == 1:
-#         r = len(l.split())
-#         break
-#     i += 1
-#
-# files_number = len(matrix_files) / 2
-# rows_per_file = rows / files_number
-# lines_per_row = cols / r
-#
-# row = 1
-# line = 0
-# file_number = 1
-# for key, value in result_matrix:
-#     if line == 0:
-#         filename = 'result_{}.dat'.format(file_number)
-#         write_file(filename, '{} {}'.format(row, min(row + rows_per_file, rows)))
-#         write_file('result', filename)
-#         file_number += 1
-#     write_file(filename, '{} '.format(value) if line % r != 0 else '{}\n'.format(value))
-#     line += 1
-#     if line == lines_per_row * rows_per_file:
-#         line = 0
-#         row += rows_per_file
+r = 2
+
+files_number = len(matrix_files) / 2
+rows_per_file = rows / files_number
+lines_per_row = cols / r
+
+row = 1
+col = 1
+line = 0
+file_number = 1
+for key, value in result_matrix:
+    if line == 0:
+        filename = 'result_{}.dat'.format(file_number)
+        write_file(filename, '{} {}'.format(row, min(row + rows_per_file, rows)))
+        write_file('result', filename)
+        file_number += 1
+    if col % r != 0:
+        write_file(filename, '{} '.format(value))
+        col += 1
+    else:
+        write_file(filename, '{}\n'.format(value))
+        col = 1
+    line += 1
+    if line == lines_per_row * rows_per_file:
+        line = 0
+        row += rows_per_file
 
 with open('result.dat', 'w') as out:
     for key, value in result_matrix:
