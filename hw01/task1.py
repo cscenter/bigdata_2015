@@ -32,20 +32,16 @@ def demo():
     # удаляем символ перевода строки
     print(line[:-1])
 
-# Эту функцию надо реализовать. Функция принимает имя файла и
-# возвращает итератор по его строкам.
-# Если вы не знаете ничего про итераторы или об их особенностях в Питоне,
-# погуглите "python итератор генератор". Вот например
-# http://0agr.ru/blog/2011/05/05/advanced-python-iteratory-i-generatory/
 
-#находит расположение чанка
+#возвращает номер сервера, где лежит чанк
 def get_chunk_location(chunk):
   for c in dfs.chunk_locations():
       if c.id == chunk:
         return c.chunkserver
 
+
+#возвращает файл построчно
 def get_file_content(filename):
-  
   chunks = []
   
   for f in dfs.files():
@@ -55,16 +51,37 @@ def get_file_content(filename):
   for chunk in chunks:
     for line in dfs.get_chunk_data(get_chunk_location(chunk), chunk):
       yield line
+
       
-      
-# эту функцию надо реализовать. Она принимает название файла с ключами и возвращает
-# число
+#возвращает массив генераторов чанков по первой строке
+def find_chunk(filename, intervals):
+  print(filename, intervals[0])
+  chunks=[]
+  chunks_data=[]
+  i=0
+  
+  for f in dfs.files():
+    if f.name == filename:
+      chunks = f.chunks
+  
+  for chunk in chunks:
+    if next(dfs.get_chunk_data(get_chunk_location(chunk), chunk)).split(' ')[0] == intervals[i]:
+      data = (get_chunk_location(chunk), chunk)
+      chunks_data.append(data)
+      if i == len(intervals)-1:
+        break
+      else:
+        i += 1
+  return chunks_data
+
+
+#возвращает строку, содержащую путь к файлу
 def find_filename(key, partitions):
   for line in partitions:
       l = line.split(' ')
       if l[0].isalnum():
         if (key >= l[0]) and (key <= l[1]):
-          return l[2].strip()
+          return line
     
 
 def calculate_sum(keys_filename):
@@ -72,21 +89,34 @@ def calculate_sum(keys_filename):
   partitions = get_file_content("/partitions")
   
   sum = 0
-  shard_key = defaultdict(list, {})
+  shard_int = defaultdict(list, {})
   
   for key in sorted(list(keys)):
-    filename = find_filename(key.strip(), partitions)
-    shard_key[filename].append(key.strip())
- 
-  for k, v in shard_key.items():
-    for el in sorted(v):
-      print("Searching for ...", el)
-      for c in get_file_content(k):
-        if el == c.split(' ')[0]:
-          sum += int(c.split(' ')[1])
+    filename = find_filename(key[:-1], partitions)
+    shard_name = filename.split(' ')[2][:-1]
+    interval = filename.split(' ')[0]
+    if shard_name not in shard_int:
+      shard_int[shard_name] = defaultdict(list, {})
+    shard_int[shard_name][interval].append(key[:-1])
+
+  for k, v in shard_int.items():
+    v2 = sorted(v)
+    chunks = find_chunk(k, v2)
+    for inter in v2:
+      for el in sorted(v[inter]):
+        data = chunks[v2.index(inter)]
+        chunk = dfs.get_chunk_data(data[0], data[1])
+        print("Searching for ...", el)
+        a = next(chunk)
+        b = a.split(' ')[0]   
+        while el != b:
+          a = next(chunk)
+          b = a.split(' ')[0]
+        sum += int(a.split(' ')[1])
+        print(sum)
      
   print("result sum = ", sum)        
-  return sum   
+  return sum
   
 
 demo()
