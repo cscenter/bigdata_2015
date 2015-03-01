@@ -11,6 +11,10 @@ def mapfn(dummy, v):
     """
         for each (i, j) of A (LxM) emits key=(i,k) value=A[i,j] in 1..N
         for each (j, k) of B (MxN) emits key=(i,k) value=B[j,k] in 1..L
+
+        As you can see, map stage can be parallelized and limited
+        by DFS. As for local file system, we can process each chunk file in parallel so
+         the optimal number of mappers is equal to number of chunks in this case
     :param dummy:
     :param v:
     :return:
@@ -31,7 +35,7 @@ def mapfn(dummy, v):
             for A_ij in values:
                 for k in range(1, N + 1):
                     logging.info("Emitting reduce_key=(%s,%s), value=%s for A" % (row, k, A_ij))
-                    yield (row, k), A_ij
+                    yield str((row, k)), A_ij
                 col += 1
                 if col > M:
                     row += 1
@@ -40,16 +44,22 @@ def mapfn(dummy, v):
             for B_jk in values:
                 for i in range(1, L + 1):
                     logging.info("Emitting reduce_key=(%s,%s), value=%s for B" % (i, col, B_jk))
-                    yield (i, col), B_jk
+                    yield str((i, col)), B_jk
                 col += 1
                 if col > N:
                     row += 1
                     col = 1
 
 
-# key = (i,k)
-# value = sum_j (A[i,k] * B[j, k])
 def reducefn(dummy, vs):
+    """
+    key = (i,k)
+    value = sum_j (A[i,k] * B[j, k])
+    Optimal reducer count is L*N
+    :param dummy:
+    :param vs:
+    :return:
+    """
     # hardcoded dims
     L = 3
     M = 4

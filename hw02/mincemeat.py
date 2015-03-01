@@ -171,7 +171,7 @@ class Client(Protocol):
         self.reducefn = types.FunctionType(marshal.loads(reducefn), globals(), 'reducefn')
 
     def call_mapfn(self, command, data):
-        logging.info("Mapping %s" % str(data[0]))
+        logging.info("Mapping %s" % str(data[0]).encode("utf-8"))
         results = {}
         for k, v in self.mapfn(data[0], data[1]):
             if k not in results:
