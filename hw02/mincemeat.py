@@ -183,7 +183,8 @@ class Client(Protocol):
         self.send_command('mapdone', (data[0], results))
 
     def call_reducefn(self, command, data):
-       # logging.info("Reducing %s" % str(data[0].encode('utf-8')))     # !!!
+       # logging.info("Reducing %s" % str(data[0].encode('utf-8')))     # !!! 
+       # запись в лог закомментирована, так как структура data[0] не поддается encode
         results = self.reducefn(data[0], data[1])
         self.send_command('reducedone', (data[0], results))
         
