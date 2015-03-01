@@ -434,3 +434,17 @@ class MapInputDFSFileName(MapInput):
 
     def next(self):
         return next(self.generator)
+
+# Подает на вход словарь
+class MapInputDictionary(MapInput):
+    generator = None
+
+    def __init__(self, d):
+        self.generator = self.get_generator(d)
+
+    def get_generator(self, dictionary):
+        for key in dictionary:
+            yield key, dictionary[key]
+
+    def next(self):
+        return next(self.generator)
