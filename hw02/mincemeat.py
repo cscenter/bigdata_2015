@@ -214,6 +214,7 @@ class Server(asyncore.dispatcher, object):
         self.map_input = None
         self.password = None
 
+
     def run_server(self, password="", port=DEFAULT_PORT):
         self.password = password
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -432,7 +433,8 @@ class MapInputDFSFileLineByLine(MapInput):
 class MapInputDFSFileName(MapInput):
     generator = None
 
-    def __init__(self, files):
+
+    def __init__(self, files, size):
         self.generator = self.get_generator(files)
 
     def get_generator(self, files):

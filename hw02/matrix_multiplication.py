@@ -5,7 +5,7 @@ import mincemeat
 
 # in:  key-value pair, where both key and value are the same filename
 # out: key-value pair, where key is (i, j) - coordinates of an element in result matrix,
-#      and value is the value of that element
+# and value is the value of that element
 def mapfn(k, v):
     size = {'1': {'rows': 3, 'cols': 4}, '2': {'rows': 4, 'cols': 6}}
     matrix_num = None
@@ -36,8 +36,6 @@ def mapfn(k, v):
                     yield ((k, col), v)
 
 
-# TODO: check if matrices sizes are valid
-
 # Note that the elements of the first matrix are exactly in a first half of the 'vs' list due to matrix files
 # order in 'matrix_files'. Similarly, the elements of the second matrix are in a second half.
 # So we can just slice the list and calculate a dot product.
@@ -46,21 +44,27 @@ def reducefn(k, vs):
     return sum([x * y for (x, y) in zip(vs[:mid + 1], vs[mid:])])
 
 
-s = mincemeat.Server()
-
 matrix_files = [l for l in get_file_content("/matrix1")]
 for l in get_file_content("/matrix2"):
     matrix_files.append(l)
 
-
+s = mincemeat.Server()
 s.map_input = mincemeat.MapInputDFSFileName(matrix_files)
 s.mapfn = mapfn
 s.reducefn = reducefn
 
 results = s.run_server(password="")
-
 result_matrix = sorted(results.items())
-out = open('result.dat', 'w')
-row_len = result_matrix[-1][0][1]
-for key, value in result_matrix:
-    out.write('{} '.format(value) if key[1] < row_len else '{}\n'.format(value))
+size = {'1': {'rows': 3, 'cols': 4}, '2': {'rows': 4, 'cols': 6}}
+row_len = size['2']['cols']
+
+if result_matrix[-1][0][0] != size['1']['rows'] or result_matrix[-1][0][1] != size['2']['cols']:
+    raise Exception('matrices sizes are invalid')
+
+with open('result.dat', 'w') as out:
+    for key, value in result_matrix:
+        out.write('{} '.format(value) if key[1] < row_len else '{}\n'.format(value))
+
+# Result matrix is written on local disc, in file called 'result.dat', one row per line.
+# This MapReduce is better to run on N * M machines, where N and M are sizes of result matrix
+# (hence, N * M is number of reducers).
