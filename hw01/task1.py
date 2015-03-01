@@ -50,15 +50,14 @@ def find_value_in_chunk(filename, key):
 def get_value(key):
     shard = get_shard_by_key(key)
     # If the shard chunks are sorted in dfs.chunk_locations, we can skip chunk
-    # while first_key of the chunk is less than key. Performance is increased by 2.5 times
+    # while first_key of the chunk is less than key. Performance is increased by 2.5 time
     for chunk in shard.chunks:
         first_key, _ = get_first_line_only(chunk).split()
         if first_key <= key:
             previous_chunk = chunk  # skip the chunk
         else:
-            return find_value_in_chunk(previous_chunk, key)  # the previous chunk contains the key
-    return find_value_in_chunk(chunk, key)  # k
-    # ey is in the last chunk
+            return find_value_in_chunk(previous_chunk, key)  # the previous chunk  contains the key
+    return find_value_in_chunk(chunk, key)  # key is in the last chunk
     # If not, the code above (from the 'first_key, _ = ...' line) should be replaced with this simple block:
     #     value = find_value_in_file(chunk, key)
     #     if value:
