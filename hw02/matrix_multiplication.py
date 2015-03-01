@@ -4,7 +4,6 @@
 from __future__ import print_function
 
 import dfs_client
-import itertools
 import mincemeat
 
 
@@ -64,7 +63,7 @@ def reducefn(key, values):
     for k in xrange(s / 2):
         result += ps[k][2] * qs[k][2]
 
-    result_filename = 'target/res_%d_%d_%d.txt' % (i, j, partition)
+    result_filename = 'target/temp_result_%d_%d_%d.dat' % (i, j, partition)
     try:
         os.makedirs('target')
     except OSError as exception:
@@ -116,7 +115,6 @@ def main():
     s.map_input = MapInputMatricesMultiply(files1, files2, m, l, n, r)
     s.mapfn = mapfn
     s.reducefn = reducefn
-    # print_matrix('/matrix1', l)
 
     results = s.run_server(password='')
     print(results)
