@@ -434,3 +434,17 @@ class MapInputDFSFileName(MapInput):
 
     def next(self):
         return next(self.generator)
+#Мой собственный переопределённый класс
+class MyMapInputDFSFileName(MapInput):
+    generator = None
+
+    def __init__(self, files_1, files_2):
+        self.generator = self.get_generator(files_1, files_2)
+
+    def get_generator(self, files_1, files_2):
+        for f1 in files_1:
+            for f2 in files_2:
+                yield f1, f2
+
+    def next(self):
+        return next(self.generator)
