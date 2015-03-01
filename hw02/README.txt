@@ -1,2 +1,2 @@
-Запускаетя через run.sh
-Коментарии в multiply_matrix.py
+Запускается через run.sh
+Комментарии в multiply_matrix.py
