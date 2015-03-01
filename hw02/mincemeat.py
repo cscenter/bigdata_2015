@@ -434,3 +434,17 @@ class MapInputDFSFileName(MapInput):
 
     def next(self):
         return next(self.generator)
+        
+class MapInputDFSFileNameByMatrix1Matrix2(MapInput):
+    generator = None
+
+    def __init__(self, files_for_matrix_1, files_for_matrix_2):
+        self.generator = self.get_generator(files_for_matrix_1, files_for_matrix_2)
+
+    def get_generator(self, files_for_matrix_1, files_for_matrix_2):
+        for f1 in files_for_matrix_1:
+            for f2 in files_for_matrix_2:
+                yield f1, f2
+
+    def next(self):
+        return next(self.generator)        

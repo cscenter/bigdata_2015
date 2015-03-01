@@ -8,17 +8,19 @@ import mincemeat
 # файла, и для каждой строки (больше не помещается в память) 
 # выплевывает номер матрицы и сумму значений
 def mapfn(k, v):
-    
+#  for i in range(1, 11111111):
+ #     b = i
   r = 2 #ОЛОЛОЛООЛОЛОЛОЛОЛОЛОЛОЛОЛОЛОООООООООООООООООООООООООООООООООООООООООООООООООООООООООООООООООООООООООООООО
   n = 3
   K = 4
   m = 6
-  value = 0
-  for cur_col_in_result in range(1, m + 1):    
-      row = 1
-      col = 1
-      head_title = False
-      for l in get_file_content(k):
+ # value = 0    
+  
+  
+  row = 1  
+  col = 1
+  head_title = False
+  for l in get_file_content(k):
           if head_title == False:
               matrix_num, row, end = l.split(" ", 2)
               row = int(row)
@@ -34,9 +36,9 @@ def mapfn(k, v):
                   row2 = int(row2)
                   head_title2 = True
                   continue
-              if cur_col_in_result >= col2 and cur_col_in_result <= col2 + r - 1:                  
-                  if row2 >= col and row2 <= col + r - 1:
-                      value += int(l.split(" ")[(row2 - 1) % r]) * int(l2.split(" ")[(cur_col_in_result - 1) % r])
+              if row2 >= col and row2 <= col + r - 1:
+                  for cols in range(col2, col2 + r):
+                     yield '(' + str(row) + ',' + str(cols) + ')', int(l.split(" ")[(row2 - 1) % r]) * int(l2.split(" ")[(cols - 1) % r]) 
               
               col2 += r
               if col2 > m:
@@ -45,9 +47,9 @@ def mapfn(k, v):
           col += r
           if col > K:
               col = 1
-              yield '(' + str(row) + ',' + str(cur_col_in_result) + ')', value
+          #    yield '(' + str(row) + ',' + str(cur_col_in_result) + ')', value
             #  yield str(row), value
-              value = 0
+            #  value = 0
               row += 1
 #    values = [int(v) for v in l.split(" ")]
  #   yield reduce_key, sum(values)
