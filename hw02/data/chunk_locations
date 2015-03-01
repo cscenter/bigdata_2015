@@ -1,8 +1,0 @@
-[
-  {"id": "matrix1", "chunkserver": "cs0" },
-  {"id": "matrix2", "chunkserver": "cs1" },
-  {"id": "chunk11", "chunkserver": "cs1" },
-  {"id": "chunk12", "chunkserver": "cs0" },
-  {"id": "chunk21", "chunkserver": "cs1" },
-  {"id": "chunk22", "chunkserver": "cs1" }
-]
