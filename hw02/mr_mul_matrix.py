@@ -3,6 +3,19 @@ from dfs_client import *
 import mincemeat
 import collections
 
+####
+#
+#   ОЦЕНКА:
+#
+#   Количество маперов: не больше K. Где K - количество шардов
+#                       на которые разбиты наши данные.
+#
+#   Количество редьюсеров: не больше N * M. Где MxN - размерность
+#                          результирующей матрицы.
+#
+#   Если машин будет больше - они будут простаивать.
+#
+####
 
 def mapfn(k, v):
     """
@@ -12,6 +25,7 @@ def mapfn(k, v):
             reducer to understand which values should be multiplied between each other
             and value - is just original value for one position in input matrix
     """
+
     # constants start
     # Should be local. In other case mincemeat won't see them
     M = 3
@@ -55,6 +69,9 @@ def mapfn(k, v):
             current_col += 1
 
 def reducefn(k, vs):
+    """
+    Calculate result for one position in output matrix
+    """
     map = collections.defaultdict(lambda: [])
     for v in vs:
         map[v[0]].append(v[1])
