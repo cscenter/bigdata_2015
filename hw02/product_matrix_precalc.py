@@ -36,7 +36,7 @@ def mapfn(k, v):
             current_col = 1
             continue
         for value in l.split(" "):
-            if int(matrix_num) is 1:# M * Q * N
+            if int(matrix_num) is 1:
 
                 if current_col > matrix1_cols:
                     current_col = 1
