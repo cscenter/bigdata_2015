@@ -26,6 +26,8 @@ s = mincemeat.Server()
 matrix_files = [l for l in get_file_content("/matrix1")]
 for l in get_file_content("/matrix2"):
     matrix_files.append(l)
+
+print(matrix_files)
     
 # и подаем этот список на вход мапперам
 s.map_input = mincemeat.MapInputDFSFileName(matrix_files) 
