@@ -2,24 +2,12 @@
 from dfs_client import *
 import mincemeat
 import json
+import os
 
-# Мапперов количество файлов хранящих первую матрицу * кол-во вторую 
-# M * N различных ключей, столько и нужно мапперов
-#
-#
-#
+# Количество мапперов равно количеству файлов хранящих первую матрицу умноженных на кол-во файлов хранящих вторую матрицу (их декартово произведение) 
+# M * N различных ключей, столько и нужно редьюсеров, соотвественно столько машин, не больше, иначе будут машины без дела
 
-
-# маппер ожидает на входе получать ключ и значение, равные имени
-# файла, и для каждой строки (больше не помещается в память) 
-# выплевывает номер матрицы и сумму значений
-#  n = 3
-
-def mapfn(k, v):
-#  for i in range(1, 11111111):
- #     b = i
- 
- # value = 0    
+def mapfn(k, v): 
   r = 2
   K = 4
   m = 6
@@ -44,8 +32,8 @@ def mapfn(k, v):
                   continue
               if row2 >= col and row2 <= col + r - 1:
                   for cols in range(col2, col2 + r):
-             #        print('(' + str(row) + ',' + str(cols) + ')' + ' ' +  str(int(l.split(" ")[(row2 - 1) % r]) * int(l2.split(" ")[(cols - 1) % r])) )
-                     yield '[' + str(row) + ',' + str(cols) + ']', int(l.split(" ")[(row2 - 1) % r]) * int(l2.split(" ")[(cols - 1) % r]) 
+                #     print('(' + str(row) + ',' + str(cols) + ')' + ' ' +  str(int(l.split(" ")[(row2 - 1) % r]) * int(l2.split(" ")[(cols - 1) % r])) )
+                     yield '[' + str(row) + ',' + str(cols) + ']', (int(l.split(" ")[(row2 - 1) % r]) * int(l2.split(" ")[(cols - 1) % r]))                   
               col2 += r
               if col2 > m:
                  row2 += 1
@@ -64,7 +52,7 @@ def mapfn(k, v):
 def reducefn(k, vs):
  #   print(k)
  #   print(vs)
- #   print(k + ' ' + str(vs))
+   # print(k + ' ' + str(vs))
     result = sum(vs)
     return result
     
@@ -81,24 +69,31 @@ s.reducefn = reducefn
 
 results = s.run_server(password="") 
 #sum = 0
-#for key, value in sorted(results.items()):
-#    print("%s: %s" % (key, value) )
+for key, value in sorted(results.items()):
+    print("%s: %s" % (key, value) )
 #    sum += value
 #print(sum)        
 
+
+
+#здравый смысл подсказал что раз мы читали по r блоков, то и хранить хорошо бы по r блоков 
 r = 2
 n = 3
 m = 6
 count_rows_in_each_matrix_dat = 2
 count_rows_in_each_chunks = 2
-#matrix_file = open('matrix.dat', 'w')
 cur_row = 1
 cur_col = 1
 matrix_dat = 'matrix_1.dat'
 matrix_dat_num = 1
 chunk_num = 1
+if os.path.exists('chunks') == False:
+    os.mkdir('chunks')
 chunk_file = open('chunks/chunk_1_1', 'w')
 chunk_file.write(str(cur_row) + ' ' + str(cur_row + count_rows_in_each_matrix_dat - 1) + '\n')
+for_json_file = []
+chunks = ['chunk_1_1']
+matrixs = ['matrix_1.dat']
 for key, value in sorted(results.items()):  
     chunk_file.write(str(value))
     if cur_col % r == 0:
@@ -112,19 +107,29 @@ for key, value in sorted(results.items()):
     if cur_row > n:    
         break
     if (cur_row - 1) % count_rows_in_each_matrix_dat == 0 and cur_col == 1:
+        for_json_file.append({"chunks": chunks, "name": '/' +matrix_dat}) 
         matrix_dat_num += 1
         matrix_dat = 'matrix_%d.dat' % matrix_dat_num
-        chunk_num = 1 
+        matrixs.append(matrix_dat)
+        chunk_num = 1  
+
+        chunks = ['chunk_%d_%d' % (matrix_dat_num, chunk_num)]
     if (cur_row - 1) % count_rows_in_each_chunks == 0 and cur_col == 1:
         if (cur_row - 1) % count_rows_in_each_matrix_dat != 0:
             chunk_num += 1        
+            chunks.append('chunk_%d_%d' % (matrix_dat_num, chunk_num))
         chunk_file = open('chunks/chunk_%d_%d' % (matrix_dat_num, chunk_num), 'w')
         if chunk_num == 1:        
-            chunk_file.write(str(cur_row) + ' ' + str(min(n, cur_row + count_rows_in_each_matrix_dat - 1)) + '\n')
-    print(str(cur_row) + ' ' + str(cur_col) + str(matrix_dat) + ' ' + str('chunk_%d_%d' % (matrix_dat_num, chunk_num)))    
+            chunk_file.write(str(cur_row) + ' ' + str(min(n, cur_row + count_rows_in_each_matrix_dat - 1)) + '\n')  
 
-
-
+chunk_file = open('chunks/matrix', 'w')
+for m in matrixs:
+    chunk_file.write('/' + m + '\n')
+for_json_file.append({"chunks": chunks, "name": '/' + matrix_dat})
+matrix_vector = ['/matrix']
+for_json_file.append({"chunks": 'matrix', "name": matrix_vector}) 
+json_file = open('matrix_files', 'w')
+json.dump(for_json_file, json_file, indent = 2)
 
 
 
