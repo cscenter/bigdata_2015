@@ -148,7 +148,6 @@ class Protocol(asynchat.async_chat):
 class Client(Protocol):
     def __init__(self):
         Protocol.__init__(self)
-        self.mapfn = self.reducefn = self.collectfn = None
         
     def conn(self, server, port):
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -177,9 +176,11 @@ class Client(Protocol):
             if k not in results:
                 results[k] = []
             results[k].append(v)
+            print(k + ' ' + str(results[k]))
         if self.collectfn:
             for k in results:
                 results[k] = [self.collectfn(k, results[k])]
+   #     print(str(results))        
         self.send_command('mapdone', (data[0], results))
 
     def call_reducefn(self, command, data):

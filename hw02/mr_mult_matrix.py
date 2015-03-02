@@ -48,6 +48,10 @@ def mapfn(k, v):
 #    values = [int(v) for v in l.split(" ")]
  #   yield reduce_key, sum(values)
 
+def collectfn(k, data):
+  #  print(k + ' ' + str(data))
+    return sum(data)
+
 # редьюсер суммирует значения с одинаковым ключом
 def reducefn(k, vs):
  #   print(k)
@@ -65,6 +69,7 @@ matrix_files_2 = [l for l in get_file_content("/matrix2")]
 # и подаем этот список на вход мапперам
 s.map_input = mincemeat.MapInputDFSFileNameByMatrix1Matrix2(matrix_files_1, matrix_files_2) 
 s.mapfn = mapfn
+s.collectfn = collectfn
 s.reducefn = reducefn
 
 results = s.run_server(password="") 
