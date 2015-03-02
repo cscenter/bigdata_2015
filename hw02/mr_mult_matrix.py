@@ -65,8 +65,8 @@ s.collectfn = collectfn
 s.reducefn = reducefn
 
 results = s.run_server(password="") 
-for key, value in sorted(results.items()):
-    print("%s: %s" % (key, value) )
+#for key, value in sorted(results.items()):
+ #   print("%s: %s" % (key, value) )
 
 
 

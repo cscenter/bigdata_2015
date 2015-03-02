@@ -176,7 +176,7 @@ class Client(Protocol):
             if k not in results:
                 results[k] = []
             results[k].append(v)
-            print(k + ' ' + str(results[k]))
+       #     print(k + ' ' + str(results[k]))
         if self.collectfn:
             for k in results:
                 results[k] = [self.collectfn(k, results[k])]
