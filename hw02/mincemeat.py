@@ -36,6 +36,7 @@ import random
 import socket
 import sys
 import types
+from mr_mult_matrix import *
 
 from collections import deque
 from collections import Counter
@@ -396,7 +397,7 @@ def dump_results(results):
     keys = results.keys()
     keys.sort()
     for key in keys:
-        print key + "\t" + str(results[key])
+        print(key + "\t" + str(results[key]))
 
 ##################################################################
 # Дополнительные входы для мапперов
@@ -422,6 +423,20 @@ class MapInputDFSFileLineByLine(MapInput):
         return next(self.generator)
 
 # Подает на вход мапперу пары (имя файла, имя файла)
+class MapInputDFSFileName(MapInput):
+    generator = None
+
+    def __init__(self, files):
+        self.generator = self.get_generator(files)
+
+    def get_generator(self, files):
+        for f in files:
+            yield f, f
+
+    def next(self):
+        return next(self.generator)
+
+# Подает на вход мапперу пары из двух файлов (имя файла, имя файла)
 class MapInputDFSFileName(MapInput):
     generator = None
 
