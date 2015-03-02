@@ -41,9 +41,6 @@ def mapfn(k, v):
           col += r
           if col > K:
               col = 1
-          #    yield '(' + str(row) + ',' + str(cur_col_in_result) + ')', value
-            #  yield str(row), value
-            #  value = 0
               row += 1
 #    values = [int(v) for v in l.split(" ")]
  #   yield reduce_key, sum(values)
