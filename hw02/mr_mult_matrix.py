@@ -32,7 +32,7 @@ def mapfn(k, v):
                   continue
               if row2 >= col and row2 <= col + r - 1:
                   for cols in range(col2, col2 + r):
-                #     print('(' + str(row) + ',' + str(cols) + ')' + ' ' +  str(int(l.split(" ")[(row2 - 1) % r]) * int(l2.split(" ")[(cols - 1) % r])) )
+                     # выплевывает ключ/значение как '[строка,столбец]'/произведение соотвественных чисел 
                      yield '[' + str(row) + ',' + str(cols) + ']', (int(l.split(" ")[(row2 - 1) % r]) * int(l2.split(" ")[(cols - 1) % r]))                   
               col2 += r
               if col2 > m:
@@ -42,8 +42,6 @@ def mapfn(k, v):
           if col > K:
               col = 1
               row += 1
-#    values = [int(v) for v in l.split(" ")]
- #   yield reduce_key, sum(values)
 
 def collectfn(k, data):
   #  print(k + ' ' + str(data))
@@ -51,9 +49,6 @@ def collectfn(k, data):
 
 # редьюсер суммирует значения с одинаковым ключом
 def reducefn(k, vs):
- #   print(k)
- #   print(vs)
-   # print(k + ' ' + str(vs))
     result = sum(vs)
     return result
     
@@ -70,20 +65,23 @@ s.collectfn = collectfn
 s.reducefn = reducefn
 
 results = s.run_server(password="") 
-#sum = 0
 for key, value in sorted(results.items()):
     print("%s: %s" % (key, value) )
-#    sum += value
-#print(sum)        
 
 
 
-#здравый смысл подсказал что раз мы читали по r блоков, то и хранить хорошо бы по r блоков 
+
 r = 2
 n = 3
 m = 6
 count_rows_in_each_matrix_dat = 2
 count_rows_in_each_chunks = 2
+
+# здравый смысл подсказал что раз мы читали по r блоков, то и хранить хорошо бы по r блоков в строке чанка
+# разбиваем matrix на matrix_номер.dat и в каждом таком dat файле по count_rows_in_each_matrix_dat строк
+# каждый dat файл содержит count_rows_in_each_chunks строк блоками по r чисел
+# создается файл matrix_files формата json где для каждого .dat файла указываетс список чанков
+# чанки и файл в папке chunks
 cur_row = 1
 cur_col = 1
 matrix_dat = 'matrix_1.dat'
