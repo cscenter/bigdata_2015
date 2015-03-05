@@ -149,9 +149,9 @@ class MasterRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 def send_heartbeat():
     try:
         list = os.listdir(__data_dir__)
-    except os.error:
-        self.send_error(404, "No permission to list directory")
-        return None
+    except os.error as e:
+        print "ERROR: can't list directory %s: %s" % (__data_dir__, str(e))
+        return False
     list.sort(key=lambda a: a.lower())
     datagen, headers = multipart_encode({"chunks": "\n".join(list), "id": __chunkserver_url__})
     request = urllib2.Request("http://%s/heartbeat" % __master_url__, datagen, headers)
