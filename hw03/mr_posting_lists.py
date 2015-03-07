@@ -35,7 +35,10 @@ def mapfn(k, v):
 
 # и записывает список документов для каждого терма во временный файл
 def reducefn(k, vs):
-	print "posting list for term %s" % k
+	import util
+	if len(k) > 100:
+		print "Skipping posting list for term %s" % (util.decode_term(k))
+		return {}
 	with open("tmp/plist/%s" % k, "w") as plist:
 		plist.write("\n".join(vs))
 	return {}
