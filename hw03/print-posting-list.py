@@ -12,8 +12,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--term", required = True)
 args = parser.parse_args()
 
-# Ваш псевдоним в виде строковой константы
-#USERNAME=""
+USERNAME="pershinmr"
 shard = "".join([l for l in metadata.get_file_content("/%s/posting_list/%s" % (USERNAME, util.encode_term(args.term)[0:1]))])
 plists = json.JSONDecoder().decode(shard)
-print plists[util.encode_term(args.term)]
+print plists[util.encode_term(args.term)].split(" ")

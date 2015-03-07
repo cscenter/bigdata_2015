@@ -27,20 +27,31 @@ def mapfn(k, v):
 
 	import client as dfs
 	words = {}
+	doclen = 0
 	for l in dfs.get_file_content(filename):
-		for word in l.encode("utf-8").split():
-			words[word] = True
+		for word in l.encode("utf-8").lower().split():
+                        doclen += 1
+                        if word in words:
+                                words[word] += 1
+                        else:
+                                words[word] = 1
 	for word in words:
-		yield util.encode_term(word), filename
+		yield util.encode_term(word), (filename, doclen, words[word])
 
 # и записывает список документов для каждого терма во временный файл
 def reducefn(k, vs):
 	import util
+	
 	if len(k) > 100:
 		print "Skipping posting list for term %s" % (util.decode_term(k))
 		return {}
+	else:
+                print "posting list for term %s" % k
+        
 	with open("tmp/plist/%s" % k, "w") as plist:
-		plist.write("\n".join(vs))
+                #plist.write("\n".join(vs))
+                for filename, total, n in vs:
+                        plist.write(filename + "_" + str(total) + "_" + str(n) + "\n")
 	return {}
 
 s = mincemeat.Server() 
