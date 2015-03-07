@@ -1,0 +1,6 @@
+Создание индекса анологично примеру:
+python crawl-corpus.py
+python mr_posting_lists.py - включен подсчет tf
+
+Слова ищутся так:
+python search.py word1 word2 word3 ...

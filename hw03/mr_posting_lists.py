@@ -27,11 +27,19 @@ def mapfn(k, v):
 
 	import client as dfs
 	words = {}
+	# count = 0
+	# ЗДЕСЬ МЫ СЧИТАЕМ TF
 	for l in dfs.get_file_content(filename):
 		for word in l.encode("utf-8").split():
-			words[word] = True
+			# count += 1
+			if word not in words:
+				words[word] = 1
+			else:
+				words[word] += 1
+	mx = max(words.values())
+	print(mx)
 	for word in words:
-		yield util.encode_term(word), filename
+		yield util.encode_term(word), "%s %s" % (filename, float(words[word]) / mx)
 
 # и записывает список документов для каждого терма во временный файл
 def reducefn(k, vs):
@@ -73,7 +81,7 @@ def reducefn1(k, vs):
 	import json
 
 	# Ваш псевдоним в виде строковой константы
-	#USERNAME=
+	USERNAME="nizshee"
 	with dfs.file_appender("/%s/posting_list/%s" % (USERNAME, k)) as buf:
 		buf.write(json.JSONEncoder().encode(term_plist))
 
