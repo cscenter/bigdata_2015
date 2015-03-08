@@ -73,7 +73,7 @@ def reducefn1(k, vs):
 	import json
 
 	# Ваш псевдоним в виде строковой константы
-	#USERNAME=
+	USERNAME = "izhleba"
 	with dfs.file_appender("/%s/posting_list/%s" % (USERNAME, k)) as buf:
 		buf.write(json.JSONEncoder().encode(term_plist))
 

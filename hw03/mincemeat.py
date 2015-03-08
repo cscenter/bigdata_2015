@@ -432,3 +432,19 @@ class MapInputSequence(MapInput):
 
     def next(self):
         return next(self.generator)
+
+# Подает на вход мапперу пары (имя файла, дополнительные данные)
+class MapInputSequenceWithData(MapInput):
+    generator = None
+    data = None
+
+    def __init__(self, values, data):
+        self.str_data = data
+        self.generator = self.get_generator(values)
+
+    def get_generator(self, values):
+        for v in values:
+            yield v, self.data
+
+    def next(self):
+        return next(self.generator)
