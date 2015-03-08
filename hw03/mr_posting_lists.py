@@ -30,7 +30,7 @@ def mapfn(k, v):
     sys.path.append("../dfs/")
 
     import client as dfs
-
+# считаем частоту
     words = {}
     for l in dfs.get_file_content(filename):
         for word in l.encode("utf-8").split():
@@ -39,15 +39,23 @@ def mapfn(k, v):
                 words[word] += 1
             else:
                 words[word] = 1
-
+# ключ - слово, значение - имя документа и tf
+    sqr_len_vector_d = 0.0
     for word in words:
-        yield util.encode_term(word), (str(filename) + '///' + str(1 + log(words[word])))
+        tf = 1.0 + log(words[word])
+        sqr_len_vector_d += tf ** 2
+
+        yield util.encode_term(word), (str(filename) + '///' + str(tf))
+# запомним заодно квадрат длины вектора документа
+    USERNAME='PhilippDolgolev'
+    with dfs.file_appender("/%s/vectors/%s" % (USERNAME, filename)) as buf:
+        buf.write(str(sqr_len_vector_d))
 
 
 # и записывает список документов для каждого терма во временный файл
 def reducefn(k, vs):
     import util
-    print util.decode_term(k), vs
+    # print util.decode_term(k), vs
 
     if len(k) > 100:
         print "Skipping posting list for term %s" % (util.decode_term(k))
@@ -78,14 +86,14 @@ def mapfn1(k, v):
 # составляет из них словарь, сериализует его и записывает в файл на DFS
 def reducefn1(k, vs):
     term_plist = {}
-    for term in vs:
+    for term in vs:            # в norms считаем квадрат длины вектора документа
         with open("tmp/plist/%s" % term) as f:
             term_plist[term] = f.read().split("\n")
 
     import sys
 
     sys.path.append("../dfs/")
-
+            # в norms считаем квадрат длины вектора документа
     import client as dfs
     import json
 
