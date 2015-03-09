@@ -8,7 +8,6 @@ import client as dfs
 wikipedia_files = [l for l in dfs.get_file_content("/wikipedia/__toc__")]
 count_of_docs = len(wikipedia_files)
 USERNAME= "sukhochev"
-query = "the Computer"
 query = str(raw_input("query:\n"))
 query = query.lower()
 docs = {}
