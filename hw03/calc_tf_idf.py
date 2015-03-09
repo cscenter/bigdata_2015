@@ -8,6 +8,7 @@ sys.path.append("../dfs/")
 
 import client as dfs
 
+
 def mapfn1(k, docs_total):
     import util
 
@@ -62,6 +63,7 @@ def reducefn1(word_id, word_data_list):
 
 def mapfn2(word_id, v):
     import util
+
     with open("tmp/task_1/%s" % word_id) as word_file:
         for line in word_file:
             doc_id, TFIDF = util.str_to_arg(util.DEF_DELIM, line, "str float")
@@ -71,6 +73,7 @@ def mapfn2(word_id, v):
 
 def reducefn2(doc_id, word_data_list):
     import util
+
     result = []
     for word_data in word_data_list:
         word_id, TFIDF = util.str_to_arg(util.DEF_DELIM, word_data, "str float")
@@ -83,10 +86,12 @@ def reducefn2(doc_id, word_data_list):
     import client as dfs
 
     USERNAME = "izhleba"
-    with dfs.file_appender("/%s/doc_tfidf%s" % (USERNAME, doc_id)) as buf:
+    doc_filename = "/%s/doc_tfidf%s" % (USERNAME, doc_id)
+    with dfs.file_appender(doc_filename) as buf:
         for word, TFIDF in sorted(result):
             buf.write(util.arg_to_str(util.DEF_DELIM, word, TFIDF))
     return doc_id
+
 
 s = mincemeat.Server()
 # читаем оглавление корпуса википедии
@@ -98,10 +103,18 @@ s.mapfn = mapfn1
 s.reducefn = reducefn1
 results = s.run_server(password="")
 
-
 s = mincemeat.Server()
 task1_files = os.listdir("tmp/task_1/")
 s.map_input = mincemeat.MapInputSequence(task1_files)
 s.mapfn = mapfn2
 s.reducefn = reducefn2
 results = s.run_server(password="")
+
+USERNAME = "izhleba"
+docs_result_filename = "/%s/docs_tfidf" % USERNAME
+with dfs.file_appender(docs_result_filename) as buf:
+    for doc_filename in results:
+        buf.write(doc_filename + "\n")
+print("Root file for TFIDF by doc: %s" % docs_result_filename)
+
+
