@@ -1,0 +1,82 @@
+Greenplum was a big data analytics company headquartered in San Mateo, California.
+Greenplum's products include its Unified Analytics Platform, Data Computing Appliance, Analytics Lab, Database, HD and Chorus. Greenplum was acquired by EMC Corporation in July 2010, and then became part of Pivotal Software in 2012. 
+
+ Company 
+Greenplum was founded in September 2003 by Scott Yara and Luke Lonergan.
+It was a merger of two smaller companies Metapa in Los Angeles and Didera in Fairfax, Virginia.
+Investors included SoundView Ventures, Hudson Ventures and Royal Wulff Ventures. A total of $20 million in funding was announced at the merger.
+Greenplum, based in  in San Mateo, California, released its database management system software in April 2005 calling it Bizgres.
+In July 2006 a partnership with Sun Microsystems was announced.
+Greenplum was acquired by EMC Corporation in July 2010, becoming the foundation of EMC's Big Data Division.
+Its computer appliance was announced in October 2010.
+In 2011 Greenplum announced more products and services. 
+In May 2012 Greenplum released its Analytics Workbench, and in October 2012 Chorus. 
+In December 2012 it became part of a joint venture of VMware and parent company EMC Corporation which took the name Pivotal Software in March 2013.
+
+ Features 
+A Platform for Advanced Analytics on Any (and All) Data
+A Flexible, Enterprise-Ready Platform
+Deploy a Foundation for the Future
+Quickly Enhance Data Science Capabilities
+
+Technology 
+
+The Greenplum Database builds on the foundations of open source database PostgreSQL. It primarily functions as a data warehouse and utilizes a shared-nothing, massively parallel (MPP) architecture. In this architecture, data is partitioned across multiple segment servers, and each segment owns and manages a distinct portion of the overall data; there is no disk-level sharing nor data contention among segments.
+
+Greenplum Database's parallel query optimizer converts each query into a physical execution plan. Greenplum's optimizer uses a cost-based algorithm to evaluate potential execution plans, takes a global view of execution across the computer cluster, and factors in the cost of moving data between nodes.  The resulting query plans contain traditional relational database operations as well as parallel "motion" operations that describe when and how data should be transferred between nodes during query execution.
+Commodity Gigabit Ethernet and 10 Gigabit Ethernet technology is used for the transfer between nodes.
+During execution of each node in the plan, multiple relational operations are processed by pipelining:  the ability to begin a task before its predecessor task has completed, to increase effective parallelism. For example, while a table scan is taking place, rows selected can be pipelined into a join process.
+
+Internally, the Greenplum system utilizes log shipping and segment-level replication and provides automated failover. At the storage level, RAID techniques can mask disk failures. At the system level, Greenplum replicates segment and master data to other nodes to ensure that the loss of a machine will not impact the overall database availability.
+In 2009 technology was announced to use parallel streams of data for extract, transform and load operations.
+This technology is exposed to customers via a programmable "external table" interface and a traditional command-line loading interface.
+
+In addition to traditional Structured Query Language (SQL), in 2008 support was announced for MapReduce queries within a parallel dataflow engine, to run analytics against datasets stored in and outside of the Greenplum Database.
+
+For each table (or partition of a table), database administrators can select the storage, execution and compression settings that suit the way that table will be accessed. Greenplum DB transparently abstracts the details of any table or partition, allowing a variety of underlying models: traditional row-oriented tables, optimized for read-mostly scans and bulk append loads, or column-oriented.
+Database administrators also can tune the storage types and compression settings of different partitions within the same table.
+
+Greenplum HD is a supported version of Apache Hadoop. It includes Hadoop's Distributed File System (HDFS), Hive, Pig, HBase, and ZooKeeper.
+Greenplum Chorus is a social network portal for data science teams.
+
+The Greenplum Data Computing Appliance (DCA) is a physical computer appliance to integrate structured data, unstructured data, and partner applications such as business intelligence. A special version of DCA integrated with SAS software was released in April 2011.
+
+Greenplum Command Center software displays interactive dashboards to collect performance metrics and manage system health for Greenplum products. Monitored data is also stored for historical reporting.
+Greenplum Analytics Lab was a data science consultation service, renamed Pivotal Data Labs in 2013.
+
+Greenplum Database was supported for production use on SUSE Linux Enterprise Server 10.2 (64-bit), Red Hat Enterprise Linux 5.x (64-bit), CentOS Linux 5.x (64-bit) and Sun Solaris 10U5+ (64-bit). Greenplum Database was supported on server hardware from a range of vendors including HP, Dell, Sun and IBM.
+Greenplum Database was supported for non-production (development and evaluation) use on Mac OS X 10.5, Red Hat Enterprise Linux 5.2 or higher (32-bit) and CentOS Linux 5.2 or higher (32-bit).
+
+Greenplum had customers in vertical markets from financial services, telecommunications, Internet, retail, transportation and pharmaceuticals industries.  They included Silver Spring Networks, Zions Bancorporation, Reliance Communications, NYSE Euronext, Orbitz, Havas Digital, China Unicom, and Tagged.
+
+Greenplum provided a community edition of its database,  and community forums. But both have been discontinued.  
+
+In the earlier version, Greenplum DB has a limitation on indexing: Unique index and primary key index cannot be used at same time on a table.
+
+Partnerships included Impetus Technologies, Cisco, Brocade Communications Systems, SAS (software), Factual, MicroStrategy, and Informatica.
+
+Competitors include Oracle Exadata, Teradata, Microsoft SQL Server Parallel Data Warehouse, Aster Data Systems, IBM Netezza, SAP, and Vertica.
+
+ Notable Customers 
+China CITIC Bank
+Swiss State Secretariat for Economic Affairs
+Companhia de Seguros Tranquilidade
+O'Reilly Media
+doubleIQ
+Bakrie Telecom
+Zions Bancorporation
+
+ See also 
+
+ Column-oriented database
+ Vertica
+ MapReduce
+ Sybase IQ
+ Gbase
+ 南大通用
+
+References
+
+Category:Business intelligence
+Category:Data warehousing products
+Category:Big data

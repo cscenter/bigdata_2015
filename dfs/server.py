@@ -18,10 +18,10 @@ __home_page__ = "http://li2z.cn/"
 import os
 import posixpath
 import BaseHTTPServer
-import urllib
 import cgi
 import shutil
 import mimetypes
+import urllib
 import re
 import argparse
 import json

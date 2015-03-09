@@ -1,0 +1,83 @@
+Talend is an open source software vendor that provides data integration, data management, enterprise application integration and big data software and services. Headquartered in Redwood City, California, Talend has offices in North America, Europe and Asia, and an international network of technical and services partners.  Customers include eBay, Virgin Mobile, Sony Online Entertainment, Deutsche Post and Allianz. It has 400 employees in 14 offices in 7 countries.
+
+ History 
+Talend was founded in 2005 by Bertrand Diard and Fabrice Bonan. It was the first commercial open source vendor of data integration software. Other vendors have since entered this market, including Apatar, Jitterbit, and Pentaho. Non open source data integration vendors include Software AG, Ab Initio, SAS Institute, Pervasive Software, IBM, Informatica, SAP, RedHat.
+
+The company's first product, Talend Open Studio for Data Integration,Open source start-up upgrades data integration software. Networkworld.com (2007-04-24). Retrieved on 2013-01-10. was launched in October 2006, under its previous name: Talend Open Studio. In January 2008, it had been downloaded over 1 million times. In January 2012, the product totaled 20 million downloads and the company had over 3500 clients around the world.Talend’s Enterprise Manageability Capabilities Streamline Hadoop Deployments. Apache.ulitzer.com. Retrieved on 2013-01-10.
+
+In September 2009, Talend acquired a master data management (MDM) solution Xtentis, which was developed by a French software vendor Amalto. In January 2010, the system was released as an open source product under name Talend MDM (delivered as a free open source version Talend Open Studio for MDM and subscription-based Talend Platform for MDM). It became the first open source MDM solution on the market.
+
+Talend is backed by six venture capital firms. The first two rounds of funding were provided by AGF Private Equity and Galileo Partners. In January 2009, Bernard Liautaud, the founder of Business Objects, led a $12 million round CBernard Liautaud finance l'éditeur de logiciels Talend. LaTribune.fr. Retrieved on 2013-01-10.More Validation For Open Source Software: Talend Raises $12 Million. TechCrunch (2009-01-26). Retrieved on 2013-01-10.Talend's Fundraising Validates Open Source Data Integration. Itbusinessedge.com (2009-01-26). Retrieved on 2013-01-10.Data integrator Talend scores $12M in funding. Sdtimes.com. Retrieved on 2013-01-10. for his firm Balderton Capital. In November 2010, Silver Lake Sumeru led a $34 million round and Talend announced at the same time the acquisition of Sopera, a strategic member of the Eclipse Foundation.Flinn, Ryan. (2010-11-10) Silver Lake Sumeru Invests in Data Management Company Talend. Bloomberg.com. Retrieved on 2013-01-10.Open Source Software Company Talend Raises $34M; Acquires Sopera. Techcrunch.com (2010-11-10). Retrieved on 2013-01-10.Bertrand DIARD, CEO and Co-founder of Talend. France24.com. Retrieved on 2013-01-10.Nouvelle étape de croissance pour Talend. Latribune.fr. Retrieved on 2013-01-10. In May 2011 Talend introduced its Unified Integration Platform – an important milestone subsequent to the acquisition.  In June 2011 the company also released Talend Cloud to support all forms of Cloud-based computing. In February 2012, Talend Open Studio for Big Data, an integration application for big data, was released. In December 2013, Talend raised $40 million from Bpifrance, Iris Capital and Silver Lake Sumeru.Talend Raises $40M To More Aggressively Extend Into Big Data Market, Sets Sights On IPO
+
+In 2011 the company was listed on the Momentum Index of venture-backed companies with an open source business model.http://momentumindex.com/96-open-source-start-ups-ranked-by-momentum-index-3/
+
+Today, Talend has more than 4000 paying customers including eBay, Virgin Mobile, Sony Online Entertainment, Deutsche Post and Allianz.
+
+ Products 
+
+ Data management 
+thumb|software Talend Open Studio for Data Integration Screenshot
+ Talend Open Studio for Big Data: combining big data technologies into a unified open source environment simplifying the loading, extraction, transformation and processing of large and diverse data sets
+ Talend Enterprise Big Data: a big data integration solution that extends Talend Open Studio for Big Data with teamwork and management features
+ Talend Platform for Big Data: a powerful and versatile big data integration and data quality solution that simplifies the loading, extraction and processing of large and diverse data sets so you can make more informed and timely decisions
+
+ Talend Open Studio for Data Integration: an open source application for data integration job design with a graphical development environment
+ Talend Enterprise Data Integration: extends Talend Open Studio for Data Integration with technical support and additional features
+ Talend Platform for Data Management: turn disparate, duplicate sources of data into trusted stores of consolidated information
+ Talend Platform for Data Services: a comprehensive unified data, application and service integration solution that lessens the impact of changing data structures while making the management of data across domains easier.
+
+ Talend Open Studio for MDM: a set of functions for master data management that provides functionality for integration, quality, governance, mastering and collaborating on enterprise data
+ Talend Platform for Master Data Management: turn disparate, inconsistent information across a business into a single, reliable “version of the truth”, providing increased confidence in decisions made
+ Talend Open Studio for Data Quality: an open source data profiling tool that examines the content, structure and quality of complex data structures
+
+ Application integration 
+thumb|software Talend Open Studio for Data Quality Screenshot
+ Talend ESB Standard Edition: an Apache-based open source enterprise service bus
+ Talend Open Studio for ESB: an enterprise service bus and a standards-based connectivity layer used to integrate distributed systems across functional, enterprise and geographic boundaries. It is powered by the Apache CXF, Apache Camel and Apache ActiveMQ open source integration projects
+ Talend Enterprise ESB: extends Talend Open Studio for ESB with advanced deployment and management functions
+ Talend Platform for Enterprise Integration: unifies business process management, application integration and data management allowing firms to increase business productivity, deliver projects faster, and lower operating costs
+
+ Community 
+Talend is an Apache Software Foundation sponsor and many of its engineers are contributors to Apache including CXF, Camel, ServiceMix, Karaf, Santuario, and ActiveMQ. The company is also a member of the Java Community Process (JCP) and is a Strategic Developer Member of the Eclipse Foundation, a Corporate Member of OW2, and has active involvement in the OASIS organization.
+
+Talend publishes the code of its core modules under the GNU Public License or the Apache License. Talend is also a contributor to key open source projects.
+
+Java is the development language of Talend’s products and services.
+
+Its commercial partners include Bonitasoft, Cloudera, Greenplum, Google, Hortonworks, Impetus Technologies,http://www.talend.com/ecosystem/company/impetus Jaspersoft, Netezza, Teradata and Vertica.  Uniservhttp://www.uniserv.com/en/news-data-quality/news2011/aktuelles_040.php
+
+Talendforge
+Talendforge.org is Talend’s technical community site. Sections available for users include a support forum, a wiki, Bugtracker, an exchange, components, tutorials and the translation tool Babili.http://www.talendforge.org/ Talendforge
+
+ Competitors 
+Talend's competitors include:
+ Application Integration: IBM, MS BI, Oracle, Software AG, TIBCO, Progress Software, SnapLogic, Red Hat
+ Data Management: Informatica, IBM, Oracle, Semarchy, Red Hat
+ ESB: MuleSoft, Fusesource, WSO2, Red Hat
+
+ License 
+Talend uses the open core business model.Aslett,Matthew (2009-07-08) What is Open Core Licensing (and what isn’t). blogs.the451group.com Talend publishes the code of its core modules under open source licenses including the GNU Public License, LGPL and the Apache License, and value added features and services under a commercial subscription license.
+
+The commercial subscription license includes:
+ Access to value added features (such as teamwork, load balancing, monitoring)
+ Technical support
+ IP indemnification (legal protection)
+
+ See also 
+ Talendforge
+
+ References 
+
+External links
+
+ 
+ Talend Help Center: https://help.talend.com/
+ Official Community Support site, TalendForge: http://www.talendforge.org/
+ TalendByExample.com, tips & tutorials: http://www.talendbyexample.com/
+
+Category:Enterprise application integration
+Category:Business intelligence
+Category:Software companies based in California
+Category:Data warehousing products
+*
+Category:Big data

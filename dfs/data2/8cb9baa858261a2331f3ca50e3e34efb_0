@@ -1,0 +1,127 @@
+MarkLogic Corporation (formerly Cerisent), or MarkLogic is an American software business that develops and provides an enterprise NoSQL database, MarkLogic. MarkLogic is a document-oriented database platform that has a schema-agnostic data model for storing and managing XML, JSON, RDF, and Geospatial data. It uses a distributed, scale-out architecture, provides ACID transactions, and maintains government-certified security.
+
+The company has its headquarters in Silicon Valley with field offices in Chicago, Frankfurt, London, Munich, New York, Paris, Singapore, Stockholm, Tokyo, Utrecht and Washington D.C.
+
+History
+The company was founded in 2001 by Christopher Lindblad, who was the Chief Architect of the Ultraseek search engine at Infoseek, and Paul Pedersen, a professor of computer science at Cornell University  and UCLA, to address shortcomings with existing search and data products. At the time, it used the then-dominant XML document markup standard and XQuery as the query standard for accessing collections of documents up to hundreds of terabytes in size. Newer versions handle JSON data and use XSLT, and MarkLogic 8 will process data using JavaScript.
+
+In May 2012, Gary Bloom joined MarkLogic as Chief Executive Officer. Prior to joining Veritas Software as CEO in 2000, Bloom held several senior positions at Oracle and was widely considered the successor to Larry Ellison.
+
+MarkLogic is privately held with investments from Sequoia Capital, Tenaya Capital and Northgate Capital.
+
+In 2012, MarkLogic was the vendor with the largest revenue for Hadoop/NoSQL Software or Services, with 13 percent of total marketshare.
+
+For the 2012 London Olympics, the BBC used MarkLogic to power its Olympic Data Services, an application that had to be built in 12 months. "Given the timescales, this project would not have been achievable using a SQL database, which would have pushed the design towards more complete modeling of the data." BBC broke all traffic records during the 2-week games, 2.8 Petabytes on peak day, including more than 100m video requests.
+
+Since 1 October 2013, MarkLogic has been used to help power the U.S. government healthcare.gov site.
+
+Product releases:
+ 2003 - Product Release: Cerisent XQE 1.0
+ 2004 - Product Release: Cerisent XQE 2.0
+ 2005 - Product Release: MarkLogic Server 3.0
+ 2006 - Product Release: MarkLogic Server 3.1
+ 2007 - Product Release: MarkLogic Server 3.2
+ 2008 - Product Release: MarkLogic Server 4.0
+ 2009 - Product Release: MarkLogic Server 4.1
+ 2010 - Product Release: MarkLogic Server 4.2
+ 2011 - Product Release: MarkLogic Server 5.0
+ 2012 - Product Release: MarkLogic Server 6.0
+ 2013 - Product Release: MarkLogic Server 7.0
+ 2014 - Product Release: MarkLogic Server 8.0
+
+Licensing and Support
+MarkLogic Server is available under various licensing and delivery models. These were announced in October 2013:
+
+ MarkLogic Developer: Free, full-featured version. Included API's extend to all versions of MarkLogic. Not for production use
+
+ MarkLogic Essential Enterprise: Full-featured Enterprise NoSQL database that includes search engine, replication, backup, high availability, recovery, fine-grained security, location services, and alerting. Semantics and advanced language packs are options. Available as perpetual license, term/yearly license or hourly.
+
+ MarkLogic Global Enterprise: Version designed for use for large, globally distributed applications. Semantics, tiered storage, geospatial alerting and advanced language packs are options.
+
+Technology
+MarkLogic is a NoSQL document database that has evolved from its XML database roots to embrace the "enterprise NoSQL" label. In addition to the distributed, scale-out architecture expected from a NoSQL database, it has role-based security features, JSON storage, direct use of Apache Hadoop Distributed File System (HDFS), multiple indexing strategies and ACID consistency. It is the most popular native XML DBMS as of April 2013. The product combines a database, search engine and application services together in one platform.
+
+MarkLogic features include replication, rollback, automated failover, point-in-time recovery, backup/restore, backup to Amazon S3, JSON, can run directly on Hadoop Distributed File System, parallelized ingest, role-based security, full text search, location services, geospatial alerting, RDF triple store and SPARQL query support.
+
+MarkMail is a free public mailing list archive service that emphasizes interactivity and search analytics. Every search result shows a histogram traffic chart of the messages matching the query, and also the top matching lists and senders. MarkMail started in November 2007 with approximately four million email messages. As of 24 November 2013, the service claims inclusion of 66,058,071 messages across 8,761 lists, of which 2,975 were active lists. The archive includes complete list histories for Apache, FreeBSD, GNOME, Jabber, Java.net, KDE, Mozilla, MySQL, OpenOffice.org, Perl.org, PostgreSQL, Python, Red Hat, Ruby, W3C, and Xen, among others.
+
+Sample Applications
+MarkLogic's Enterprise NoSQL database platform is widely used in publishing, government, finance and other sectors, with some hundreds of large-scale systems in production. Below are some of the organizations using MarkLogic.
+
+ American Lawyer Media—content management, processing, publication and repurposing
+ American Psychological Association—semantic search, improved search speed, and accelerated delivery of new content
+ Bank of America Merrill Lynch
+ BBC—supports the site that reported the 2012 London Olympics
+ Boeing—develops and maintains a mission-critical government security application
+ Centers for Medicare and Medicaid Services
+ The Church of Jesus Christ of Latter-day Saints
+ CQ Roll Call—applications that help users search and find US legislation
+ Dow Jones—Three services planned including Factiva, WSJ.com and Dow Jones Financial Services
+ Fairfax County, Virginia—property records management application
+ Federal Aviation Administration—Emergency Operations Network
+ Informatics Corporation of America—help healthcare providers find and analyze patient information
+ J.P. Morgan
+ Lagardère Active—"[E]enables managers to control content, and supplement the semantic contents through automated processing, and create joins between trades in response to their needs."
+ LexisNexis—legal research products
+ Lex Paradigm—Xquire component content management system
+ Library of Congress—The largest library in the world is responsible for making its contents available for Congress and the American public. It uses MarkLogic to search, retrieve and display video, data and digitized documents from the Library’s collections.
+ MBS Digital Direct—digital publishing platform
+ McGraw Hill Financial—prototyping program that creates new products and develop mobile applications
+ Mitchell 1—auto information application
+ New England Journal of Medicine
+ Press Association—content management and publishing platform
+ Really Strategies—RSuite content management system
+ Royal Society of Chemistry—manage and publish content for its RSC Publishing site, Learn Chemistry site, and the Merck Index
+ Springer—content platform
+ Sony-Ebook operations.
+ Thomson Corporation
+ UBS
+ United States Army
+ US Patent Office—speed patent application process
+ Warner Bros.—Technical Operations Platform Solution (TOPS) automates digital servicing processes
+ Wiley—Strategic publishing application
+ Zynx Health—evidence-based, clinical decision support solutions for healthcare
+
+US Affordable Care Act
+
+The Centers for Medicaid and Medicare, responsible for implementation of the Patient Protection and Affordable Care Act (ACA) uses MarkLogic to power its database, including the Federal Data Services Hub and parts of Federally Facilitated Marketplace.
+
+According to the New York Times, the main contractor for ACA originally objected to using MarkLogic.
+
+Further reading
+ Fowler, Adam. eBook, "Enterprise NoSQL for Dummies". ISBN 9781118905746.
+ Hunter, Jason. "Inside MarkLogic Server"
+ McCreary, Dan, and Ann Kelly. Making Sense of NoSQL. Manning Publications Co. August 2012. ISBN 9781617291074. 
+ Zhang, Andy. Beginning Mark Logic with XQuery and MarkLogic Server. Champion Writers, Inc. 24 June 2009. ISBN 1608300153.
+
+See also
+NoSQL
+Unstructured Data
+ACID
+Big data
+Bitemporal
+Hadoop
+JavaScript
+JSON
+Node.js
+RDF
+SPARQL
+Semantic Web
+XML databases
+XQuery
+
+References
+
+External links
+ MarkLogic home page
+ MarkMail home page
+
+Category:NoSQL
+Category:Software companies based in California
+Category:Computer companies of the United States
+Category:Companies established in 2001
+Category:Companies based in San Carlos, California
+Category:Big data
+Category:Semantic Web
+Category:XML databases
+Category:XQuery

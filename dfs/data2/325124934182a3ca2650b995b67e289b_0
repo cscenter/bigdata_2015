@@ -1,0 +1,121 @@
+CloverETL is a Java-based data integration framework designed to transform, cleanse, and distribute data into applications, databases, and data warehouses. A family of products that starts with an open source runtime engine, CloverETL's commercial offerings include a fully featured Designer and Server platform. The Server adds automation and workflow orchestration, allowing customers to deploy full production environments, with the possibility to scale to a cluster for added performance and robustness. Its goal is to be flexible and light-footed, so that it can be customized and embedded into third party applications. The open source and commercial products are developed and supported by Javlin, a data integration software and solutions provider.
+
+Javlin's offices are located in the Washington DC area; London, UK; and Prague, Czech Republic and serve customers in North America, Europe, Asia, and Australia. With approximately 60 employees, Javlin serves more than 3,000 customers, including five OEM partners.Topsy. N.p., n.d. Web. 20 June 2013. <http://topsy.com/s/cloveretl>. Parts of the CloverETL platform – the Engine, Designer, and Server – can be embedded on an OEM basis.
+
+Customers include Oracle, Initiate Systems/IBM, Comcast, SUNY, and other Fortune 500 companies.
+
+ History 
+
+In 2002, the CloverETL project – named jETeL – was launched as the first Java-based open source ETL tool. In 2006, it was renamed to clover.ETL, followed by CloverETL, now a registered trademark, in 2009. Starting out as a proof of concept, its purpose was to bring the performance and functionality of big enterprise ETL tools to regular users who, at the time, did not have access to enterprise-level systems. Over time, it evolved into a data integration toolset ranging from the original core library (CloverETL Engine) to a full-fledged enterprise platform.
+
+The CloverETL Engine is offered for free under LGPL with vendor support for the open-source ETL community.Roy, Krishna. "Javlin Elucidates CloverETL Strategy as It Continues to Take Aim at Data Integration." MIS Impact Report (2013): 1–4. In 2010, a visual data transformation designer was also made public for free use.
+
+Javlin, the official developer and support of CloverETL, was founded in 2005 under the name “Javlin Consulting”. The company’s founder and president, David Pavlis, is also the creator of CloverETL.
+
+ Architecture 
+
+CloverETL is a Java-based ETL tool with open source components. It is either used in standalone mode – as a command-line or server application – or embedded in other applications – as a Java library.  CloverETL is accompanied by the CloverETL Designer graphical user interface available as either an Eclipse plug-in or standalone application.
+
+A data transformation in CloverETL is represented by a transformation dataflow, or graph, containing a set of interconnected components joined by edges. A component can either be a source (reader), a transformation (reformat, sort, filter, joiner, etc.) or a target (writer). The edges act as pipes, transferring data from one component to another. Each edge has a certain metadata assigned to it that describes the format of the data it transfers. The transformation graphs are represented in  XML files and can be dynamically generated.
+
+Each component runs in a separate thread and acts either as a consumer or a producer. This is used to drive data through the transformation for both simple and complex graphs and makes the platform extendable by building custom components, connections etc. Transformation graphs can then be combined into a jobflow, which defines the sequence in which the individual graphs are executed.
+
+Fundamental aspects
+ Java based – supported platforms include Windows, Unix, Linux, OS X and others
+ Visual design – data transformations are designed visually in the CloverETL Designer (based on Eclipse java)
+ XML-based resources – resources such as graphs, connections, metadata, etc. are stored in XML format
+ Engine based – deploy a data transformation engine that executes transformation prescriptions
+ CloverETL Transformation Language (CTL) –  A data-oriented programming language used to define business logic for data transformations. Offers direct access to data and functions. Syntax highlighting,    code assist, and automatic code generation included.
+ Performance – utilizes multiple CPUs/cores and can run on a cluster of computers to increase performance – see Massively parallel (computing)
+ Transaction-oriented setups – Web-services, SOA, ESB
+
+The Server version of CloverETL supports parallel execution of transformations and runs inside a JavaEE application container.
+
+ Suite of Products 
+
+ CloverETL Engine – the core for running data transformation graphs- available under LGPLv2 or commercial license (consulting)
+ CloverETL Designer – a commercial visual data integration tool for standalone or enterprise, used to design and execute transformation graphs
+ CloverETL Server – an enterprise automation and monitoring data integration platform. Offers features such as workflows, scheduling, monitoring, user management, or real-time ETL abilities.
+ CloverETL Cluster – an offering for big data, parallel data processing, and robustness – uses a pipeline for parallel data processing
+
+ Commercial Extras  
+
+These come packaged with all commercial licenses.
+
+ CloverETL Data Quality– a data profiling and validation extension for data quality tasks and assessing the current condition of data quality
+
+Open Source solutions typically appeal to independent software vendors (ISVs) and systems integrators (SIs) who see these solutions as attractive alternatives to writing code."Data Integration Vendors." Adeptia. N.p., n.d. Web. 20 June 2013. <http://www.adeptia.com/products/etl_vendor_comparison.html>. Products can be embedded into solutions for Enterprise Service Bus (ESB), Business Intelligence (BI), etc."GoodData Selects CloverETL to Enrich Data Integration – GoodData." GoodData. N.p., 6 December 2012. Web. 20 June 2013. <http://www.gooddata.com/in-the-news/gooddata-selects-cloveretl-to-enrich-data-integration/>
+Wang, Qian. "Research of ETL on University Data Exchange Platform." IEEE Xplore. N.p., n.d. Web. 20 June 2013. <http://ieeexplore.ieee.org/xpl/articleDetails.jsp?reload=true>.
+
+CloverETL is embedded in the Oracle Endeca Information Discovery Integrator as well as GoodData CloudConnect"Oracle Endeca Information Discovery- CloverETL." OBIEE, Endeca and ODI. N.p., 25 Oct. 2012. Web. 20 June 2013. <http://www.varanasisaichand.com/2012/10/oracle-endeca-information-discovery.html>."Introduction – Oracle Identity Analytics Business Administrator's Guide." Oracle. N.p., n.d. Web. 20 June 2013. <http://docs.oracle.com/cd/E27119_01/doc.11113/e23124/businessadministratorsguideprintable23.html>."Endeca – Information Discovery Integrator (CloverETL)." GerardNicocom Weblog RSS. N.p., n.d. Web. 20 June 2013. <http://gerardnico.com/wiki/cloveretl/cloveretl>.
+
+CloverETL Community Edition
+The CloverETL Community Edition is based on the Open Source transformation engine and also includes a limited CloverETL Designer. It is for users with modest data transformations and ETL requirements. The CloverETL Community Edition is free. The current version of CloverETL Community comes with a Graphic User Interface (GUI). In the past, the Community Edition used a command line style prompt to create and design data management projects.
+
+CloverETL Community is Java-based and has been deployed on the following Operating System platforms: Linux both 32 & 64 bit), Windows (both 32 & 64 bit), HP-UX, AIX, AS/400 (IBM System I), Solaris, and Mac OS X. The Community edition contains connectors for the following data sources: text file delimited, fix-length and combined, XML, XLS, RDBMS through JDBC, WebServices through REST/SOAP protocols, JMS, LDAP, dBase/FoxBase/FoxPro, bulk-loaders for Oracle, DB2, MS SQL, Informix, MySQL and PostgreSQL, and QuickBase.Gutierrez, Jeremiah, Kent Lawson, Eddie Molina, Nestor Rodriguez. “Data Warehousing Tool Evaluation – ETL Focused." Southwest Decision Sciences Institute. 2012. 8-9. <http://www.swdsi.org/swdsi2012/proceedings_2012/papers/Papers/PA151.pdf>
+
+With the Community Edition, users have access to the transformation components that allow them to accomplish common data transformations tasks such as reformatting, filtering, and sorting data. Users also can use available components for aggregating, merging, or deduplicating data. The CloverETL Community Edition provides the Hash Join component and allows use of the DBExecute, System Execute, and HTTPConector components as well.
+
+ Partners 
+
+ GoodData
+ IBM
+ Oracle
+ MuleSoft
+ AddressDoctor
+ DataMotion
+ ProcessGold
+
+ Technical specifications 
+
+ Java/JavaEE/Eclipse (Java 6+)
+ Supported platforms
+ Windows 32/64
+ Linux 32/64
+ Mac OS X (64)
+ Amazon AWS
+ HP-UX
+ AIX
+ AS/400
+ Solaris
+ Embeddable as a library or service
+ Parallel data processing / bulk & transaction processing
+
+ Connectors 
+
+ CSV and text files delimited, fix-length & combined
+ XML, large XML files support
+ XLS/XLSX (MS Excel)
+ Most RDBMS through JDBC
+ Amazon Redshift, Amazon S3
+ WebServices through XML/JSON protocols
+ Hadoop MapReduce, HDFS
+ HP Vertica
+ JMS
+ LDAP, Lotus Notes
+ dBase/FoxBase/FoxPro
+ bulk-loaders for Oracle, DB2, MS SQL, Informix, MySQL and PostgreSQL
+ QuickBase (by Intuit), Infobright
+ Supports remote reading/writing through FTP/SFTP/HTTP/HTTPS protocols and also from ZIP/GZIP/TAR archives
+
+ Competitors 
+
+Other ETL frameworks include:
+
+ Ab Initio
+ Microsoft SSIS
+ Talend Open Studio
+ Pentaho Data Integration
+ Informatica
+ Apatar
+ Astera Software
+
+ References 
+
+ External links 
+ CloverETL website
+ Oracle Endeca123 blog embedded CloverETL
+
+Category:Extract, transform, load tools
+Category:Big data
+Category:Data warehousing products

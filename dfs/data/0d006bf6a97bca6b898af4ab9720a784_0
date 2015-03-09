@@ -1,0 +1,39 @@
+Cask is a cloud-based Big Data application platform for developers. Rather than simply providing another cloud service for writing and running Hadoop jobs, Cask allows developers to more easily build, deploy and manage Big Data applications on top of the components within the Hadoop ecosystem.http://gigaom.com/data/ex-yahoo-facebook-big-data-vets-launch-paas-for-hadoop/
+
+Naming
+The word “cask” signals that Cask’s software provides containers, a way for different types of applications to run in concert and share data, for instance. “Cask is short, sweet and ‘developer-y,’” he (Jonathan Gray, CEO) said. http://blogs.wsj.com/venturecapital/2014/09/25/hadoop-developer-cask-formerly-continuuity-goes-open-source/
+
+Product
+The Cask Data Application Platform (CDAP) is an open source project for distributed data and applications. CDAP is a layer of software running on top of Hadoop platforms. 
+Cask Coopr is open source cluster management software that provisions, manages and scales clusters on public clouds and private clouds.
+Tigon is a distributed framework built on Apache Hadoop™ and Apache HBase™ for real-time, high-throughput, low-latency data processing and analytics applications. http://cask.co/products/
+
+The company’s primary offering CDAP, its data application platform, helps users build apps that use Hadoop in smarter ways beyond to build a low-cost, large data warehouse.
+Cask also offers Coopr, a tool that helps users quickly and easily provision clusters in the cloud, such as Hadoop. In part due to its distributed nature, Hadoop can be difficult to deploy. In fact, Cask built Coopr as an internal tool but customers started asking about it. Cooper works in public, private and OpenStack clouds, so developers can use it to provision CDAP/Hadoop in any of those locations. http://thenewstack.io/continuuity-becomes-cask-and-keeps-focus-on-bringing-hadoop-to-the-enterprise/
+
+Cask (formerly Continuuity) has teamed with AT&T Labs on an open source project called Tigon (formerly jetStream) that pairs a high-throughput SQL database with a real-time data-processing engine. The goal is to underpin applications that can handle multiple levels of latency, consistency and analysis on streaming data. https://gigaom.com/2014/06/03/att-labs-continuuity-will-open-source-a-hadoop-streaming-engine-called-jetstream/
+
+Leadership
+Papaioannou, along with cofounders Nitin Motgi and Jonathan Gray, were reportedly early adopters of the Hbase big data technology while working at companies such as Facebook and Yahoo.http://adtmag.com/articles/2012/10/24/continuuity-targets-big-data-developers.aspx
+
+Funding
+Cask’s approach to Hadoop virtualization has attracted attention from renowned venture capital firm Andreessen Horowitz, which participated in Series A and A2 rounds totaling $12.5 million. Also backing the data and app virtualization approach is Mike Olson, chief strategy officer at Cloudera, who says that it will “expand the market by enabling new use cases and accelerating application development.http://www.datanami.com/2014/09/25/hadoop-data-virtualization-cask-now-open-source/
+
+See also
+ Platform as a Service
+ Big Data
+ Cloudera
+ Hadoop
+ AT&T
+
+References
+
+External links
+ Cask's Corporate Site 
+ Cask's Blog 
+
+Category:Big data
+Category:Hadoop
+Category:Information technology companies of the United States
+Category:Privately held companies based in California
+Category:Companies established in 2011

@@ -2,8 +2,6 @@ from collections import namedtuple
 #Use this import if you're using Python3
 import urllib2
 from urllib2 import urlopen
-#Use this import if you're using Python2
-#from urllib2 import urlopen
 import json
 from poster.encode import multipart_encode
 from poster.streaminghttp import register_openers

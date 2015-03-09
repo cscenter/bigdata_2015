@@ -1,0 +1,16 @@
+Alpine Data Labs is an advanced analytics interface working with Apache Hadoop and big data. It provides a collaborative, visual environment to create and deploy analytics workflow and predictive models. This aims to make analytics more suitable for business analyst level staff, like sales and other departments using the data, rather than requiring a "data scientist" who understands languages like MapReduce or Pig.
+
+Co-founded by Anderson Wong and Yi-Ling Chen, Joe Otto serves as president and CEO of Alpine Data Labs.
+
+History
+
+Greenplum commissioned its then employees Anderson Wong and Yi-Ling Chen to develop an app that could work with databases. Greenplum was acquired by EMC Corporation and Alpine Data Labs was co-founded by Wong and Chen in 2010. The site launched in May 2011 with Wong serving as CEO. That month, Alpine raised 7.5 million in Series A round funding from EMC Greenplum, Sierra Ventures, Mission Ventures, and Sumitomo Corp. Equity Asia. The funding was used in part to move Alpine’s headquarters from Beijing to San Mateo, California. It’s core product then, Alpine Miner, allowed for non-data scientists to create predictive analytics data models without using code and used an "In-Database" model. In June 2011, Alpine Miner 2.0 for Oracle Database was released.
+
+Tom Ryan was appointed CEO and president of Alpine Data Labs in January 2012 and served until April 2013. The following month, Joe Otto was appointed to serve as CEO and president. In November 2013, Alpine Data Labs raised $16 million in Series B venture funding. Investors included Sierra Ventures, Mission Ventures, UMC Capital, and Robert Bosch Venture Capital GmbH. That same month, it also released Alpine 3.0, which introduced a drag and drop interface and access to data from any device that with internet capabilities, including tablets and phones. This makes it possible for analysts to access data on Hadoop, and other databases and data warehouses, without IT having to move the data into another interface. Alpine also moved its headquarters from San Mateo to San Francisco in November 2013. In February 2014, Alpine Data Labs was added to the Gartner Magic Quadrant as a "Niche Player."
+
+In March 2014, Alpine Data Labs was certified by Databricks on Apache Spark.
+
+References
+
+Category:Big data
+Category:Companies established in 2010

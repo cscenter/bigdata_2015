@@ -16,4 +16,3 @@ with dfs.file_appender("/wikipedia/__toc__") as toc:
 			f.write(mwparser.parse(page.text()).strip_code().encode('utf-8'))
 		toc.write("%s %s" % (page_filename, page.name))
 		counter += 1
-
