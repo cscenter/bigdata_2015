@@ -1,4 +1,6 @@
 # encoding: utf-8
+from collections import Counter
+import json
 import mincemeat
 import os
 
@@ -16,8 +18,9 @@ import client as dfs
 # Этот конвейер пока что работает только на одной машине 
 # (потому что результаты первого MR записываются в локальные файлы)
 
-# Первый Map-Reduce отображает терм в документ
+# Первый Map-Reduce отображает терм в документ и tf
 def mapfn(k, v):
+	import cPickle as pickle
 	import util
 	filename, pagetitle = v.split(" ", 1)
 	print v
@@ -26,21 +29,25 @@ def mapfn(k, v):
 	sys.path.append("../dfs/")
 
 	import client as dfs
-	words = {}
+	words = Counter()
 	for l in dfs.get_file_content(filename):
 		for word in l.encode("utf-8").split():
-			words[word] = True
+			words[word] += 1
+	total_words = sum(words.values())
 	for word in words:
-		yield util.encode_term(word), filename
+		yield util.encode_term(word), pickle.dumps((filename, float(words[word])/total_words))
 
 # и записывает список документов для каждого терма во временный файл
 def reducefn(k, vs):
+	import cPickle as pickle
 	import util
+	vs = [pickle.loads(x) for x in vs]
 	if len(k) > 100:
 		print "Skipping posting list for term %s" % (util.decode_term(k))
 		return {}
 	with open("tmp/plist/%s" % k, "w") as plist:
-		plist.write("\n".join(vs))
+		for v in vs:
+			plist.write("%s %s\n" % v)
 	return {}
 
 s = mincemeat.Server() 
@@ -84,4 +91,3 @@ s.mapfn = mapfn1
 s.reducefn = reducefn1
 
 results = s.run_server(password="") 
-

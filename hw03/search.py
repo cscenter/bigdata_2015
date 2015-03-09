@@ -1,3 +1,4 @@
+# encoding: utf-8
 from collections import defaultdict
 import json
 import math
@@ -11,6 +12,7 @@ import client as dfs
 
 __author__ = 'root'
 
+# подсчитываем общее число документов.
 def iterlen(x):
   n = 0
   try:
@@ -26,6 +28,8 @@ USERNAME = "plflok"
 parser = argparse.ArgumentParser()
 parser.add_argument("--query", required = True)
 args = parser.parse_args()
+# валидация запроса. Убираем повторяющиеся слова, чтобы повторы не меняли вес документа
+original_query = args.query
 query = {term for term in args.query.split()}
 if not query:
     print("Query can't be empty")
@@ -34,6 +38,7 @@ if not query:
 metadata = dfs.CachedMetadata()
 results = defaultdict(float)
 
+# для каждого слова находим содержащие его документы и считаем их tf * idf
 for term in query:
     enc_term = util.encode_term(term)
     try:
@@ -45,15 +50,17 @@ for term in query:
     # todo: count tf
     idf = math.log(PAGES_AMOUNT / len(docs))
     for d in docs:
-        text = metadata.get_file_content(d)
-        tf = 0
-        for w in [term for line in text for term in line]:
-            if w == term:
-                tf += 1
-        results[d] += tf * idf
+        try:
+            doc, tf = d.split()
+            tf = float(tf)
+            results[doc] += tf * idf
+        except:
+            # на случай, если что-то не так с индексом (пустые строки и т.п.)
+            pass
 
+print("results:")
 if results:
     for page in sorted(results, key=operator.itemgetter(1), reverse=True)[:10]:
         print(page)
 else:
-    print("no results found for query \"%s\"" % query)
+    print("no results found for query \"%s\"" % original_query)
