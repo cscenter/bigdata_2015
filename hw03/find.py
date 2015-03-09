@@ -35,7 +35,7 @@ def docs_for_terms(group, terms):
     shard = ''.join(list(metadata.get_file_content('/%s/posting_list/%s' %
                          (USERNAME, group))))
     plists = json.loads(shard)
-    return [(term, plists[term]) for term in terms]
+    return [(term, plists[term]) for term in terms if term in plists]
 
 
 def main():
