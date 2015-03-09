@@ -1,0 +1,161 @@
+ 
+
+Teradata Corporation is an American computer company that sells analytic data platforms, applications and related services. Its products are meant to consolidate data from different sources and make the data available for analysis. Formerly a division of NCR Corporation, Teradata was incorporated in 1979 and separated from NCR in October 2007. Michael Koehler became president and CEO of Teradata after its 2007 spin off from NCR.^ Hallett, Tony. "Q&A: Teradata CEO Mike Koehler". Interview 10/22/07. Silicon.com. Retrieved 20 December 2011. Teradata's Applications business is led by Darryl McDonald,http://www.teradata.com/bios.aspx?id=6258 and the corporate headquarters are in Miamisburg, Ohio.
+
+Corporate Overview
+Teradata is an enterprise software company that develops and sells a relational database management system (RDBMS) with the same name. Teradata is publicly traded on the New York Stock Exchange (NYSE) under the stock symbol TDC.
+
+The Teradata product is referred to as a "data warehouse system" and stores and manages data. The data warehouses use a "shared nothing" architecture, which means that each server node has its own memory and processing power.http://www.teradatatech.com/?p=103 Adding more servers and nodes increases the amount of data that can be stored. The database software sits on top of the servers and spreads the workload among them. Teradata sells applications and software to process different types of data. In 2010, Teradata added text analytics to track unstructured data, such as word processor documents, and semi-structured data, such as spreadsheets.
+
+Teradata's product can be used for business analysis. Data warehouses can track company data, such as sales, customer preferences, product placement, etc.
+
+Teradata has a supplier diversity program that designates a minimum of 3 to 5% of spending on minority, women, veteran, or small business vendors.
+
+In 2013, the Ethisphere Institute named Teradata as one of the "World's Most Ethical Companies."http://ethisphere.com/worlds-most-ethical/wme-honorees/
+
+History
+Timeline information taken from Teradata company history unless otherwise cited.
+
+1976–1979: concept of Teradata grows from research at California Institute of Technology (Caltech) and from the discussions of Citibank's advanced technology group.Teradata Milestones
+Incorporated in 1979 in Brentwood, CA by Dr. Jack E. Shemer, Dr. Philip M. Neches, Walter E. Muir, Jerold R. Modes, William P. Worth, and Carroll Reed.
+1980: Enough funding for a research and development team.
+1983: First beta system shipped to Wells Fargo Bank.
+1984: Teradata releases the world's first parallel data warehouses and data marts.
+1986: Fortune Magazine names Teradata "Product of the Year."
+1987: Teradata initial public offering in August
+1989: Teradata partners with NCR to build new database computers.
+September 1991: AT&T Corporation acquires NCR.
+December 1991: NCR announces acquisition of Teradata.
+1992: Teradata creates the first system over 1 terabyte, which goes live at Wal-Mart.
+1994: Gartner names Teradata the "Leader in Commercial Parallel Processing."
+1995: IDC consulting group names Teradata number one in massively parallel processing in Computerworld Magazine.
+1996: A Teradata database becomes the world's largest database at 11 terabytes.
+1997: NCR becomes independent from AT&T.
+1997: Teradata customer creates world's largest production database at 24 terabytes.
+1998: Teradata ported to Microsoft Windows NT.
+1999: Teradata customer has world's largest database with 130 terabytes.On November 4, 1999, Survey.com announced that NCR's Teradata product received the highest ranking overall in a survey of data warehouse implementers.
+2000: NCR acquires Ceres Integrated Solutions and reconfigures their customer relationship management software into Teradata CRM.
+2000: NCR acquired Stirling Douglas Group and its demand chain management software.
+2002: Teradata Warehouse 7.0 was announced.
+2003: More than 120 companies migrate from Oracle Corporation to Teradata after Oracle-to-Teradata migration program.
+2003: Teradata University is created. Nearly 170 universities in 27 countries included in network.
+2004: Teradata creates partnerships with SAP and Siebel Systems, Inc.
+2005: Teradata launches Teradata Warehouse 8.1.
+2005: Teradata acquires DecisionPoint software and rebrands it as Teradata Decision Experts.
+2005: Teradata adds Linux as an operating system choice for enterprise-class data warehouses.
+2006: Teradata launches Enterprise Master Data Management Solution.
+2006: Microsoft and Teradata collaborate on business intelligence application.
+2007: NCR announces that NCR and Teradata will separate into two independent businesses.
+2007: Intelligent Enterprise magazine names Teradata the best global data warehouse-business intelligence appliance vendor.
+2007: Teradata partners with DFA Capital Management, Inc.
+2007: Agilent Technologies and Teradata established the first partnership between a data warehouse company and an instrument measurement company in order to integrate network and customer data for telecommunications industry.
+2007: Teradata University network consists of 850 universities in 70 countries.
+2007: On Oct 1, Teradata completes spin-off from NCR and is traded as its own stock. Mike Koehler becomes the CEO of Teradata.
+2007: Teradata launches Teradata 12
+2007: Teradata announces partnership with SAS involving further technical integration of their respective products and coordinated marketing, sales, and services activities.
+2008: Teradata acquires Claraview.
+2008: Teradata Purpose Built Platform Family launches.
+2008: Teradata Petabyte Power Players announced: a group of five Teradata customers with data warehouse environments exceeding one petabyte.
+2008: Teradata Labs becomes the first to unveil a working prototype demonstrating the innovative use of solid state disk (SSD) drives in a data warehouse environment at the 2008 Teradata PARTNERS User Group Conference & Expo.
+2008: Teradata Accelerate launches
+2009: Forrester Research ranks Teradata as number 1 amongst enterprise data warehousing.
+2009: Teradata announces that database administrators can now rewind Teradata Viewpoint monitoring applications and portlets to check database activity or performance at a specific point in time.
+2009: Teradata ranked among BusinessWeek’s “InfoTech 100," the world’s best-performing tech companies” and Fortune’s 1000.
+2009: Teradata Database 13 releases
+2010: Teradata introduces Teradata Extreme Data Appliance 1600.
+2010: Teradata is named “one of the world’s most ethical companies” by The Ethisphere Institute.
+2011: Teradata acquires Aprimo and Aster Data Systems.
+2011: Gartner names Teradata as the global leader in data warehousing databases.Henschen, 2011. http://www.informationweek.com/news/software/info_management/229215658?pgno=1
+2011: Teradata adds Aprimo Real-Time Interaction Manager to its Marketing Solution suite.
+2012: Teradata acquires eCircle, a direct marketing company with focus on email
+2013: Teradata is named a leader in Gartner's Data Warehouse DBMS Magic Quadrant in February 2013 
+2013: Teradata Teradata Applications and ADAM Software Announce Strategic Global Partnership
+
+Technology and products
+Teradata is a massively parallel processing system running a shared-nothing architecture.http://searchdatamanagement.techtarget.com/answer/How-to-select-an-MPP-database-DB2-vs-Teradata Its technology consists of hardware, software, database, and consulting. The system moves data to a data warehouse where it can be recalled and analyzed.
+
+The systems can be used as back-up for one another during downtime, and in normal operation balance the work load across themselves.
+
+In 2009, Forrester Research issued a report, "The Forrester Wave: Enterprise Data Warehouse Platform," by James Kobielus,"The Forrester Wave: Enterprise Data Warehouse Platform," by James Kobielus, February 6, 2009. rating Teradata the industry's number one enterprise data warehouse platform in the "Current Offering" category.
+
+Marketing research company Gartner Group placed Teradata in the "leaders quadrant" in its 2009, 2010, and 2012 reports, "Magic Quadrant for Data Warehouse Database Management Systems".
+
+Teradata is the most popular data warehouse DBMS in the DB-Engines database ranking.
+
+In 2010, Teradata was listed in Fortune’s annual list of Most Admired Companies.
+
+Active enterprise data warehouse
+Teradata Active Enterprise Data Warehouse is the platform that runs the Teradata Database, with added data management tools and data mining software.
+
+The data warehouse differentiates between “hot and cold” data – meaning that the warehouse puts data that is not often used in a slower storage section. As of October 2010, Teradata uses Xeon 5600 processors for the server nodes.
+
+Teradata Database 13.10 was announced in 2010 as the company’s database software for storing and processing data.Dignan, Larry. “Teradata rolls out latest database, pushes time aware analysis.” ZDnet. October 25, 2010. http://www.zdnet.com/blog/btl/teradata-rolls-out-latest-database-pushes-time-aware-analysis/40865Vizard, Mike. “Teradata Extends Analytics Engine.” CTOEdge. October 25, 2010.
+
+Teradata Database 14 was sold as the upgrade to 13.10 in 2011 and runs multiple data warehouse workloads at the same time.Russom, Philip. “Big Data Analytics:  The News from Teradata.” TDWI blog. September 22, 2011. It includes column-store analyses.Henschen, Doug. “Teradata Upgrades Break Down Database Barriers.” InformationWeek. September 22, 2011.
+
+Teradata Integrated Analytics is a set of tools for data analysis that resides inside the data warehouse.Winter, Richard. InformationWeek. September 18, 2010. “Research: State of Enterprise Databases.”
+
+Backup, archive, and restore
+BAR is Teradata’s backup and recovery system.Teradata brochure. “Teradata Backup Archive Restore.”
+
+The Teradata Disaster Recovery Solution is automation and tools for data recovery and archiving. Customer data can be stored in an offsite recovery center.Fratto, Mike. “Teradata Disaster Recovery Solution Helps Reduce the Panic of Catastrophic Events.” Network Computing. June 29, 2009.
+
+Platform family 
+Teradata Platform Family is a set of products that include the Teradata Data Warehouse, Database, and a set of analytic tools. The platform family is marketed as smaller and less expensive than the other Teradata solutions.IT Reseller Magazine. “Teradata announces new family of powerful analytic platforms.”
+
+Acquisitions
+ Acquisition date Company Valuation in millions USD Purpose References July 17, 2014 Hadapt 50 Big Data, SQL-on-Hadoop July 16, 2014 Revelytix  Big Data, Metadata May 2, 2012 eCircle Marketing Tools March 3, 2011 Aster Data Systems 263 MapReduce, Big Data December 22, 2010 Aprimo 550 Marketing tools August 10, 2010 Kickfire March 20, 2008 Claraview November 30, 2005 under NCR DecisionPoint Sourcing and integration of data July 14, 2000 under NCR Stirling Douglas Group Demand chain management
+
+Partners
+Below is a partial list of Teradata partners.
+
+TIBCO Spotfire 
+Capgemini
+Cloudera
+IBM
+Informatica: Dual Load solution
+Intel
+Kalido: Teradata and Kalido Accelerate product
+MapR
+Microsoft
+MicroStrategy: joint business intelligence products
+NetApp
+Oracle
+SAP: Netweaver datawarehouse
+SAS
+Symantec
+Tableau Software: interactive data visualization products focused on business intelligence
+Attunity
+WhereScape: data warehouse development and management tools
+
+Teradata Partners conference
+Teradata holds an annual user group conference and expo known as Teradata Partners with keynote industry speakers, educational sessions led by customers and other vendors. The Teradata Partners Conference has been an annual event since 1985. The conference involves lectures and speeches on technical and business topics and announcements about new products.
+
+Big data
+Teradata began to associate itself with the term “Big Data” in 2010. CTO Stephen Brobst attributes the rise of big data to “new media sources, such as social media.” The increase in semi-structured and unstructured data gathered from online interactions prompted Teradata to form the “Petabyte club” in 2011 for its heaviest big data users.
+
+The rise of big data resulted in many traditional data warehousing companies updating their products and technology. For Teradata, big data prompted the acquisition of Aster Data Systems in 2011 for the company’s MapReduce capabilities and ability to store and analyze semi-structured data.
+
+Public interest in big data resulted in a 13% increase in Teradata’s global sales.
+
+Competition
+Teradata's main competitors are similar products from vendors such as Oracle, IBM, Microsoft and Sybase IQ. Also, competitors include data warehouse appliance vendors such as NetezzaTeradata decides to compete head-on as a data warehouse appliance vendor (acquired in November 2010 by IBM), DATAllegro (acquired in August 2008 by Microsoft), ParAccel, Greenplum (acquired in July 2010 by EMC), and Vertica Systems (acquired in February 2011 by HP), and from packaged data warehouse applications such as SAP BW and Kalido.
+
+Philanthropy
+In 2012, over 4500 employees completed over 15,000 hours of volunteerism. Since the launch of Teradata Cares in May 2008 more than over 46,000 hours of volunteerism have been completed.http://www.teradata.com/corporate-social-responsibility/?ICID=Acsr Teradata Cares supports data philanthropy, youth science and technology education programs and established charities such as Junior Achievement and United Way."Teradata Cares". Teradata. Retrieved December 13, 2011.
+
+References
+
+External links
+Company Home page
+Teradata Applications President Darryl McDonald's Blog
+Teradata PARTNERS Conference – Teradata user group conference and expo
+Teradata Knowledge Blog
+
+Category:Companies listed on the New York Stock Exchange
+Category:Software companies based in Ohio
+Category:Data warehousing products
+Category:Teradata
+Category:Companies based in Dayton, Ohio
+Category:NCR Corporation
+Category:Big data

@@ -1,0 +1,32 @@
+Sessions, or visits, is a unit of measurement in web analytics, capturing either a user's actions within a particular time period, or a user's actions in completing a particular task. As well as being directly useful as a metric within web analytics, sessions are also used in operational analytics and to provide personalised features, such as user-specific recommendations for other pages or items to view. These uses are dependent on session reconstruction - taking a series of user events and splitting the series into a set of sessions - which tends to use one of two classes of methodologies: time-oriented approaches, which use user inactivity as a signal to end a session and begin a new one, and navigation-based approaches, which divide requests into sessions based on an unbroken chain of hyperlinks between the requested pages.
+
+ Definition 
+The definition of "session" varies, particularly when applied to search engines. Generally, a session is understood to consist of "a sequence of requests made by a single end-user during a visit to a particular site", In the specific context of search engines, "sessions" and "query sessions" have multiple, contradictory and interchangeable definitions; some researchers consider a session or query session to be all queries made by a user in a particular time period, while others argue that sessions can be divided thematically, and a "session" is a series of queries with a consistent underlying user need, and that sessions terminate when that need does, even if the user continues searching for other purposes.
+
+ Uses 
+Sessions can be used directly in web analytics, with sessions-per-user serving as a metric of website usage. Other metrics used within research and applied web analytics include session length, and user actions per session; session length, particularly, is seen as a more accurate alternative to measuring page views. With all of these metrics, and with sessions as a concept, the goal is to improve the website's usability, due to the substantial impact that usability has on website usage and operator profits. Sessions are also used to provide personalised features such as user-specific recommendations and search term suggestions.
+
+Reconstructed sessions have also been used to measure total user input, including to measure the number of labour hours taken to construct Wikipedia. Sessions are also used for operational analytics, including developing data anonymisation methodologies, identifying anomalies in networking, and synthetic workload generation for testing servers with artificial traffic. Some writers have argued that sessions are not appropriate as a workload characterisation metric within the context of e-commerce platforms, due to substantial variations in how different classes of user interact with that type of site. Instead, a state transition network is suggested.
+
+ Session reconstruction 
+thumb|right|an illustration of the different criteria used by different session reconstruction approaches.
+Essential to the use of sessions in web analytics is being able to identify them. This is known as "session reconstruction". Approaches to session reconstruction can be divided into two main categories: time-oriented, and navigation-oriented.
+
+ Time-oriented approaches 
+Time-oriented approaches to session reconstruction look for a period of inactivity, or "inactivity threshold": a span of time between requests by a user. Once this period of inactivity is reached, the user is assumed to have left the site or stopped using the browser entirely, and the session is ended: further requests from the same user are considered a second session. A common value for the inactivity threshold is 30 minutes, a well-established value sometimes described as the industry standard. The utility of this value has been questioned: some researchers have argued that it produces artefacts around naturally long sessions, and have experimented with other thresholds, including 10 and 60 minutes. Despite this, Jones & Klinkner argue in a paper at the 2008 Conference on Information and Knowledge Management that, at least in relation to search data, "no time threshold is effective at identifying [sessions]".
+
+One alternative that has been proposed is using user-specific thresholds rather than a single, global threshold for the entire dataset. This has the problem of assuming that the thresholds follow a bimodal distribution, and is not suitable for datasets that cover a long period of time.
+
+ Navigation-oriented approaches 
+Navigation-oriented approaches exploit the structure of websites - specifically, the presence of hyperlinks and the tendency of users to navigate between pages on the same website by clicking on them, rather than typing the full URL into their browser. One way of identifying sessions by looking at this data is to build a map of the website: if the user's first page can be identified, the "session" of actions lasts until they land on a page which cannot be accessed from any of the previously-accessed pages. This takes into account backtracking, where a user will retrace their steps before opening a new page. A simpler approach, which does not take backtracking into account, is to simply require that the HTTP referer of each request be a page that is already in the session. If it is not, a new session is created. This class of heuristics "exhibits very poor performance" on websites that contain framesets.
+
+ References 
+
+ Bibliography 
+
+Category:Marketing terminology
+Category:Business intelligence
+Category:Data mining
+Category:Big data
+Category:Web analytics
+Category:Internet marketing

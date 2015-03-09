@@ -1,0 +1,19 @@
+Axibase is an American corporation based in Cupertino, California, which develops software for collecting and analyzing IT infrastructure data. The founding ideas behind Axibase were established as part of the Venture Initiation program in 2001-2003 at the Wharton School of the University of Pennsylvania.
+
+Products
+Axibase Time-Series Database, released in 2013, is a statistics database built on top of Apache HBase. It can be categorized as a time series database. The product provides long-term persistence for time-series data, its analysis with aggregation and grouping functions as well as HTTP API and built-in visualization.
+
+Axibase Enterprise Reporter (AER), released in 2007, is a Java application that integrates with multiple external monitoring tools to provide a layer of abstraction for the purpose of creating performance and capacity planning reports.
+
+Axibase Fabrica, released in 2005, is a visualization product that connects to real-time alert feeds exposed by external monitoring tools in order to display consolidated service views based on custom topologies.
+
+Axibase Cloud Reporter, deprecated in 2011, is a cloud performance reporting tool.
+
+External links
+ 
+
+Category:System administration
+Category:Big data
+Category:Information technology companies of the United States
+Category:Companies based in Cupertino, California
+Category:Companies established in 2004
