@@ -47,14 +47,14 @@ def reducefn(k, vs):
         print "Skipping posting list for term %s" % (util.decode_term(k))
         return {}
 
-    # Нужно узнать сколько всего документов в корпусе
+    # Нужно узнать сколько всего документов в корпусе для расчета idf
     import sys
     sys.path.append("../dfs/")
     import client as dfs
     corpus_size = sum(1 for i in dfs.get_file_content("/wikipedia/__toc__"))
 
     with open("tmp/plist/%s" % k, "w") as plist:
-        # записываем во временный файлы название файла, в котором находится терм и его it-idf
+        # записываем во временные файлы название файла, в котором находится терм и его it-idf
         def tfidf(tf):
             import math
             idf = math.log(float(corpus_size) / float(len(vs)))

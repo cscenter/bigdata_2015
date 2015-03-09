@@ -12,6 +12,9 @@ import operator
 def pull_max_doc_tdidf(plists):
     """
     Функция вынимает из plists документ с максимальным tfidf
+    Для каждого терма документы уже были отсортированы при составлении
+    индекса, поэтому будем сравнивать только первые документы в списках
+    каждого терма
     """
     max_doc_filename = None
     max_doc_tdidf = 0
@@ -48,6 +51,7 @@ for word in args.words:
     query[word] = {"freq": raw_freq}
 
 for word in query:
+    # собираем шарды для всех слов в запросе
     USERNAME = "arkichek"
     shard = "".join([l for l in metadata.get_file_content("/%s/posting_list/%s" % (USERNAME, util.encode_term(word)[0:1]))])
     shard_decoded = json.JSONDecoder().decode(shard)
@@ -66,6 +70,7 @@ else:
     top = {}
     while len(plists) > 0:
         term, filename, tdidf = pull_max_doc_tdidf(plists)
+        # считаем итоговый рейтинг каждого документа среди отобранных
         score = query[term]["tf"] * tdidf
         top[filename] = top[filename] + score if top.get(filename) else score
         
