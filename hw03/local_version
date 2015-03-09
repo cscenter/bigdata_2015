@@ -1,6 +1,5 @@
 # encoding: utf-8
 from __future__ import division
-
 import mincemeat
 import os
 import util
@@ -19,7 +18,7 @@ import util
 # Этот конвейер пока что работает только на одной машине 
 # (потому что результаты первого MR записываются в локальные файлы)
 
-# Первый Map-Reduce отображает терм в документ
+# Первый Map-Reduce отображает терм в документ,
 # а также сохраняет число вхождений терма в документ и длину документа
 def mapfn(k, v):
     import util
@@ -71,7 +70,7 @@ def mapfn1(k, v):
     yield k[0:1], v
 
 # свертка собирает все списки вхождений для термов, начинающихся на одну и ту же букву, 
-# составляет из них словарь, сериализует его и записывает в файл на DFS
+# составляет из них словарь, сериализует его и записывает в локальный файл
 # файлы с названием, начинающимся на _, записываются в отдельный файл tf_idf
 def reducefn1(k, vs):
     term_plist = {}
@@ -222,10 +221,10 @@ def answer_query(query):
     for i in range(min(10, len(dist))):
         print("doc #{0}:  {1}   dist = {2}".format(i, dist[i][1], dist[i][0]))
 
+# достаточно запустить один раз, потом можно просто отвечать на запросы
+prepare_stuff()
 
-#prepare_stuff()
+print("all stuff prepared successful")
 
-print("all stuff prepared")
-
-query = "just file"
+query = "just file"     # содержит два слова из четырех в файле №4 -- проверка корректности tf_idf
 answer_query(query)
