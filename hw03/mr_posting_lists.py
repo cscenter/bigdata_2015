@@ -29,9 +29,10 @@ def mapfn(k, v):
 	words = {}
 	for l in dfs.get_file_content(filename):
 		for word in l.encode("utf-8").split():
-			words[word] = True
+			words[word] = words.get(word,0) + 1
+	lenOfDoc = sum(words.values()) #Длина документа в словах
 	for word in words:
-		yield util.encode_term(word), filename
+		yield util.encode_term(word), "%s %s" % (filename, float(words[word])/ lenOfDoc)
 
 # и записывает список документов для каждого терма во временный файл
 def reducefn(k, vs):
@@ -73,7 +74,7 @@ def reducefn1(k, vs):
 	import json
 
 	# Ваш псевдоним в виде строковой константы
-	#USERNAME=
+	USERNAME='kozmirchuk'
 	with dfs.file_appender("/%s/posting_list/%s" % (USERNAME, k)) as buf:
 		buf.write(json.JSONEncoder().encode(term_plist))
 
