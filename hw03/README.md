@@ -1,5 +1,6 @@
 Скрипт подсчета IFIDF:
 ```
+// Нужен каталог tmp/task_1/
 python calc_tf_idf.py
 // Затем два раза
 python mincemeat.py localhost
