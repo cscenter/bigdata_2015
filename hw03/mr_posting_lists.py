@@ -18,30 +18,50 @@ import client as dfs
 
 # Первый Map-Reduce отображает терм в документ
 def mapfn(k, v):
-	import util
-	filename, pagetitle = v.split(" ", 1)
-	print v
+    import util
+    filename, pagetitle = v.split(" ", 1)
+    print v
 
-	import sys
-	sys.path.append("../dfs/")
+    import sys
+    sys.path.append("../dfs/")
 
-	import client as dfs
-	words = {}
-	for l in dfs.get_file_content(filename):
-		for word in l.encode("utf-8").split():
-			words[word] = True
-	for word in words:
-		yield util.encode_term(word), filename
+    import client as dfs
+
+    words = {}
+    doc_len = 0
+    for l in dfs.get_file_content(filename):
+        for word in l.encode("utf-8").split():
+            # заодно подсчитываем количество слов в документе
+            doc_len += 1
+            # считаем сырую частоту слов
+            words[word] = words[word] + 1 if words.get(word) else 1
+    for word in words:
+        # нормализуем частоту 
+        tf = float(words[word]) / float(doc_len)
+        yield util.encode_term(word), {"filename": filename, "freq": tf}
 
 # и записывает список документов для каждого терма во временный файл
 def reducefn(k, vs):
-	import util
-	if len(k) > 100:
-		print "Skipping posting list for term %s" % (util.decode_term(k))
-		return {}
-	with open("tmp/plist/%s" % k, "w") as plist:
-		plist.write("\n".join(vs))
-	return {}
+    import util
+    if len(k) > 100:
+        print "Skipping posting list for term %s" % (util.decode_term(k))
+        return {}
+
+    # Нужно узнать сколько всего документов в корпусе
+    import sys
+    sys.path.append("../dfs/")
+    import client as dfs
+    corpus_size = sum(1 for i in dfs.get_file_content("/wikipedia/__toc__"))
+
+    with open("tmp/plist/%s" % k, "w") as plist:
+        # записываем во временный файлы название файла, в котором находится терм и его it-idf
+        def tfidf(tf):
+            import math
+            idf = math.log(float(corpus_size) / float(len(vs)))
+            return tf * idf
+
+        plist.write("\n".join(["%s %f" % (record["filename"], tfidf(record["freq"])) for record in vs]))
+    return {}
 
 s = mincemeat.Server() 
 
@@ -56,26 +76,31 @@ results = s.run_server(password="")
 
 # Второй Map-Reduce читает временные файлы и отображает первую букву файла в терм
 def mapfn1(k, v):
-	yield k[0:1], v
+    yield k[0:1], v
 
 # свертка собирает все списки вхождений для термов, начинающихся на одну и ту же букву, 
 # составляет из них словарь, сериализует его и записывает в файл на DFS
 def reducefn1(k, vs):
-	term_plist = {}
-	for term in vs:
-		with open("tmp/plist/%s" % term) as f:
-			term_plist[term] = f.read().split("\n")
+    term_plist = {}
+    for term in vs:
+        with open("tmp/plist/%s" % term) as f:
+            # Для каждого терма отсортируем документы по убыванию tf-idf
+            records = f.read().split("\n")
+            plist = [{"filename":record.split(" ")[0], "tfidf": float(record.split(" ")[1])} for record in records]
+            plist.sort(key=lambda v: v["tfidf"], reverse=True)
+            # Возращаем в представление "на одной строке через пробел документ и tf-idf"
+            term_plist[term] = ["%s %f" % (record["filename"], record["tfidf"]) for record in plist]
 
-	import sys
-	sys.path.append("../dfs/")
+    import sys
+    sys.path.append("../dfs/")
 
-	import client as dfs
-	import json
+    import client as dfs
+    import json
 
-	# Ваш псевдоним в виде строковой константы
-	#USERNAME=
-	with dfs.file_appender("/%s/posting_list/%s" % (USERNAME, k)) as buf:
-		buf.write(json.JSONEncoder().encode(term_plist))
+    # Ваш псевдоним в виде строковой константы
+    USERNAME = "arkichek"
+    with dfs.file_appender("/%s/posting_list/%s" % (USERNAME, k)) as buf:
+        buf.write(json.JSONEncoder().encode(term_plist))
 
 s = mincemeat.Server() 
 plist_files = os.listdir("tmp/plist/")
