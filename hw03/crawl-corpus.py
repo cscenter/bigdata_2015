@@ -9,6 +9,7 @@ site = mwclient.Site('en.wikipedia.org')
 category = site.Pages['Category:Big_data']
 counter = 0
 
+
 with dfs.file_appender("/wikipedia/__toc__") as toc:
 	for page in category:
 		page_filename = "/wikipedia/page%d" % counter
