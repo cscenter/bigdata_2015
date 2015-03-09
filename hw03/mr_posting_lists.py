@@ -1,6 +1,7 @@
 # encoding: utf-8
 import mincemeat
 import os
+import math
 
 import sys
 sys.path.append("../dfs/")
@@ -29,9 +30,12 @@ def mapfn(k, v):
 	words = {}
 	for l in dfs.get_file_content(filename):
 		for word in l.encode("utf-8").split():
-			words[word] = True
-	for word in words:
-		yield util.encode_term(word), filename
+			if not word in words:
+				words[word] = 0
+			words[word] += 1
+
+	for word, count in words.items():
+		yield util.encode_term(word), (filename, count)
 
 # и записывает список документов для каждого терма во временный файл
 def reducefn(k, vs):
@@ -40,7 +44,8 @@ def reducefn(k, vs):
 		print "Skipping posting list for term %s" % (util.decode_term(k))
 		return {}
 	with open("tmp/plist/%s" % k, "w") as plist:
-		plist.write("\n".join(vs))
+		for v in vs:
+			plist.write(v[0] + " " + str(v[1]) + "\n")
 	return {}
 
 s = mincemeat.Server() 
@@ -72,10 +77,30 @@ def reducefn1(k, vs):
 	import client as dfs
 	import json
 
+	wikipedia_files = [l for l in dfs.get_file_content("/wikipedia/__toc__")]
+	tokens_count = len(wikipedia_files)
+
+	index = {}
+	for term, value in term_plist.items():
+		idf = math.log(tokens_count / (len(value) - 1))
+		if not term in index:
+			index[term] = {}
+
+		# this hack allows us to store idf value
+		index[term][term + "_idf"] = idf
+
+		for v in value:
+			data = v.split(" ")
+			if len(data) != 2:
+				continue
+
+			tf = 1 + math.log(int(data[1]))
+			index[term][data[0]] = tf
+
 	# Ваш псевдоним в виде строковой константы
-	#USERNAME=
+	USERNAME = "dzaycev"
 	with dfs.file_appender("/%s/posting_list/%s" % (USERNAME, k)) as buf:
-		buf.write(json.JSONEncoder().encode(term_plist))
+		buf.write(json.JSONEncoder().encode(index))
 
 s = mincemeat.Server() 
 plist_files = os.listdir("tmp/plist/")
