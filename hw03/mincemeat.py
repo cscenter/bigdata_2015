@@ -439,7 +439,7 @@ class MapInputSequenceWithData(MapInput):
     data = None
 
     def __init__(self, values, data):
-        self.str_data = data
+        self.data = data
         self.generator = self.get_generator(values)
 
     def get_generator(self, values):

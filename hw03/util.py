@@ -1,6 +1,6 @@
 import base64
 
-DEF_DELIM = "_"
+DEF_DELIM = " "
 
 
 def encode_term(term):
@@ -33,7 +33,7 @@ def str_to_arg(delimiter, args_str, schema):
                         else:
                             raise Exception("Unsupported type in schema: %s" % schema_type)
                     except ValueError:
-                        raise Exception("cant convert arg: %s to type: %s" % (arg, schema_type))
+                        raise Exception("cant convert arg: %s to type: %s in string: %s" % (arg, schema_type, args_str))
                 if len(result) == 1:
                     return result[0]
                 else:
