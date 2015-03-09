@@ -49,9 +49,20 @@ def reducefn(k, vs):
 
     # Нужно узнать сколько всего документов в корпусе для расчета idf
     import sys
+    import os.path
     sys.path.append("../dfs/")
     import client as dfs
-    corpus_size = sum(1 for i in dfs.get_file_content("/wikipedia/__toc__"))
+
+    corpus_size = 0
+    # Проверяем сначала если есть закэшированные данные
+    if os.path.isfile("cache_corpus_size"):
+        with open("cache_corpus_size") as f:
+            corpus_size = int(f.read())
+    else:
+        # иначе обращаемся к dfs и кэшируем
+        corpus_size = sum(1 for i in dfs.get_file_content("/wikipedia/__toc__"))
+        with open("cache_corpus_size", "w") as f:
+            f.write(str(corpus_size))
 
     with open("tmp/plist/%s" % k, "w") as plist:
         # записываем во временные файлы название файла, в котором находится терм и его it-idf
