@@ -19,7 +19,7 @@ doc_vectors = {}
 for l in dfs.get_file_content("/%s/d_vectors_len" % USERNAME):
     doc_id, sqr_len = l.split('///', 1)
     doc_vectors[doc_id] = float(sqr_len)
-
+#создаём файл в котором будем аккумулировать длину вектора запроса в мапперах
 with open("vector_q_len", "w") as file:
     pass
 #считываем запрос
@@ -108,7 +108,7 @@ with open("vector_q_len", "r") as file:
 
 scores = dict(results.values())
 
-# закомментированный код - тоже самое, без map-reduce
+# закомментированный код - тоже самое, без map-reduce, и без группировки слов по первой букве
 # D = len([l for l in dfs.get_file_content("/wikipedia/__toc__")]) # количество документов в корпусе
 # q_vector_sqr_len = 0.0
 #
@@ -132,6 +132,7 @@ scores = dict(results.values())
 #     except KeyError:
 #         # print "corpus not contain this word %s" % word
 #         pass
+
 #нормируем евклидовами длинами
 for doc_id in scores:
     doc_vector_sqr_len = doc_vectors[doc_id]
