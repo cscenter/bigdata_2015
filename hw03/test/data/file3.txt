@@ -1,0 +1,11 @@
+On day 4, we saw how to process text data using the Enron email dataset. In reality, we only processed a small fraction of the entire dataset: about 15 megabytes of Kenneth Lay's emails. The entire dataset containing many Enron employees' mailboxes is 1.3 gigabytes, about 87 times than what we worked with. And what if we worked on GMail, Yahoo! Mail, or Hotmail? We'd have several petabytes worth of emails, at least 71 million times the size of the data we dealt with.
+
+All that data would take a while to process, and it certainly couldn't fit on or be crunched by a single laptop. We'd have to store the data on many machines, and we'd have to process it (tokenize it, calculate tf-idf) using multiple machines. There are many ways to do this, but one of the more popular recent methods of parallelizing data computation is based on a programming framework called MapReduce, an idea that Google presented to the world in 2004. Luckily, you do not have to work at Google to benefit from MapReduce: an open-source implementation called Hadoop is available for your use!
+
+You might worry that we don't have hundreds of machines sitting around for us to use them. Actually, we do! Amazon Web Services offers a service called Elastic MapReduce (EMR) that gives us access to as many machines as we would like for about 10 cents per hour of machine we use. Use 100 machines for 2 hours? Pay Amazon aroud $2.00. If you've ever heard the buzzword cloud computing, this elastic service is part of the hype.
+
+Let's start with a simple word count example, then rewrite it in MapReduce, then run MapReduce on 20 machines using Amazon's EMR, and finally write a big-person MapReduce workflow to calculate TF-IDF!
+
+Setup
+
+We're going to be using two files, dataiap/day5/term_tools.py and dataiap/day5/package.tar.gz. Either write your code in the dataiap/day5 directory, or copy these files to the directory where your work lives.
