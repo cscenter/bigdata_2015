@@ -48,8 +48,10 @@ def mapfn(k, v):
         yield util.encode_term(word), (str(filename) + '///' + str(tf))
 # запомним заодно квадрат длины вектора документа
     USERNAME='PhilippDolgolev'
-    with dfs.file_appender("/%s/vectors/%s" % (USERNAME, filename)) as buf:
-        buf.write(str(sqr_len_vector_d))
+    # with dfs.file_appender("/%s/vectors/%s" % (USERNAME, filename)) as buf:
+    #     buf.write(str(sqr_len_vector_d))
+    with dfs.file_appender("/%s/d_vectors_len" % USERNAME) as buf:
+        buf.write(filename + '///' + str(sqr_len_vector_d))
 
 
 # и записывает список документов для каждого терма во временный файл
@@ -86,7 +88,7 @@ def mapfn1(k, v):
 # составляет из них словарь, сериализует его и записывает в файл на DFS
 def reducefn1(k, vs):
     term_plist = {}
-    for term in vs:            # в norms считаем квадрат длины вектора документа
+    for term in vs:
         with open("tmp/plist/%s" % term) as f:
             term_plist[term] = f.read().split("\n")
 
