@@ -11,6 +11,8 @@ query = str(raw_input("query:\n"))
 
 metadata = dfs.CachedMetadata()
 
+K = 10 # Top K
+
 wikipedia_files = [l for l in metadata.get_file_content("/wikipedia/__toc__")]
 D = len(wikipedia_files)
 
@@ -21,7 +23,7 @@ for q in query.split(" "):
     base = util.encode_term(q.lower())
     shard = "".join([d for d in metadata.get_file_content("/%s/posting_list/%s" % (USERNAME, base[0:1]))])
     f_list = json.JSONDecoder().decode(shard)
-    d_cnt = len(f_list[base])
+    d_cnt = len(f_list[base]) # для idf
     for l in f_list[base]:
         if l == "":
             continue
@@ -34,21 +36,26 @@ for q in query.split(" "):
     #    idf_word_query = math.log(float(D + 1) / (d_cnt + 1))
      #   tf_idf_word_query = tf_word_query * idf_word_query
 
-        rev = tf * idf
+        rev = tf_idf
         if score.has_key(doc_name):
             score[doc_name] += rev
         else:
             score[doc_name] = rev
-            
-mx = 0.0
-n = "";
+
+k = min(K, len(score)) # Выведем не больше 10 документов
+used = {} # сортировать долго, K раз за O(len(score)) пробежимся
 for s in score.keys():
- #   print(score[s])
-    if score[s] > mx:
-        mx = score[s];
-        n = s            
+    used[s] = False
+for i in range(0, k):
+    best = ""
+    mx = 0.0
+    for s in score.keys():
+        if used[s] == False and score[s] > mx:
+            mx = score[s];
+            best = s
+    used[best] = True
+    print(best)            
          
-for l1 in dfs.get_file_content(n):
-	print l1
-print(n)  
+#for l1 in dfs.get_file_content(best):
+#	print l1
        
