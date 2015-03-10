@@ -46,14 +46,14 @@ def reducefn(k, vs):
 	import util  
 #	if util.decode_term(k)[0:1] == 'h':
 #		print(util.decode_term(k))     
-	idf = len(vs)        
+#	idf = len(vs)        
 
 #	print vs 
 	if len(k) > 100:
 		print "Skipping posting list for term %s" % (util.decode_term(k))
 		return {}
 	with open("tmp/plist/%s" % k, "w") as plist:
-		plist.write(str(idf) + "\n")             
+#		plist.write(str(idf) + "\n")             
 		plist.write("\n".join(vs) + "\n")
 	return {}
 

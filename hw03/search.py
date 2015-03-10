@@ -19,19 +19,22 @@ for q in query.split(" "):
     base = util.encode_term(q.lower())
     f = "".join([d for d in dfs.get_file_content("/%s/posting_list/%s" % (USERNAME, base[0:1]))])
     f_list = json.JSONDecoder().decode(f)
-    id = -1
+    d_cnt = len(f_list[base])
     for l in f_list[base]:
         if l == "":
-            continue
-        if id == -1:
-            id = int(l)
-     #       print(id)
             continue
         doc_name, tf, count = l.split(" ", 2)
         tf = float(tf)
         count = float(count)
         import math
-        rev = tf * math.log(float(D) / id)
+        idf = math.log(float(D) / d_cnt) 
+        tf_idf = tf * idf
+        tf_word_query = 1.0 / (count + 1)
+        idf_word_query = math.log(float(D + 1) / (d_cnt + 1))
+        tf_idf_word_query = tf_word_query * idf_word_query
+
+        # нормированное скалярное произведение
+        rev = tf * idf
         if score.has_key(doc_name):
             score[doc_name] += rev
         else:
