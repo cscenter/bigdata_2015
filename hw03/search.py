@@ -54,24 +54,24 @@ for v, k in page_scores_inv[:10]:
     print k
 
 
-#==========================+MAPREDUCE
+#==========================+MAPREDUCE (not working yet)
 
-import sys
-
-sys.path.append("../dfs/")
-import argparse
-import client as dfs
-import logging
-import util
-import mincemeat
-
-metadata = dfs.CachedMetadata()
-
-logging.basicConfig(level=logging.INFO)
-
-parser = argparse.ArgumentParser()
-parser.add_argument('--query', required=True)
-args = parser.parse_args()
+# import sys
+#
+# sys.path.append("../dfs/")
+# import argparse
+# import client as dfs
+# import logging
+# import util
+# import mincemeat
+#
+# metadata = dfs.CachedMetadata()
+#
+# logging.basicConfig(level=logging.INFO)
+#
+# parser = argparse.ArgumentParser()
+# parser.add_argument('--query', required=True)
+# args = parser.parse_args()
 
 
 
@@ -135,7 +135,7 @@ args = parser.parse_args()
 #s.mapfn = mapfn
 #s.reducefn = reducefn
 
-results = s.run_server(password="")
+#results = s.run_server(password="")
 
 #page_scores = dict(results.values())
 
