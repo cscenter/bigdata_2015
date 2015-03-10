@@ -34,9 +34,17 @@ else:
     doc_list.sort(reverse = True)
     iden = 0
     i = 0
-    while i < 10:
-        for doc_name in docs:
-            if docs[doc_name] == doc_list[iden]:
-                print doc_name
-                iden += 1
-                i += 1
+    if len(docs) >= 10:
+        while i < 10:
+            for doc_name in docs:
+                if docs[doc_name] == doc_list[iden]:
+                    print doc_name
+                    iden += 1
+                    i += 1
+    else:
+        while i < len(docs):
+            for doc_name in docs:
+                if docs[doc_name] == doc_list[iden]:
+                    print doc_name
+                    iden += 1
+                    i += 1
