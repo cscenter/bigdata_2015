@@ -35,7 +35,7 @@ def mapfn(k, v):
         buf.write('%s %f\n' % (filename, sqrt(squared_vector_len)))
 
 
-# write posting list (with tf-idf) in a temp file on local disc
+# write posting list (with tf) in a temp file on local disc
 def reducefn(k, vs):
     import util
     import sys

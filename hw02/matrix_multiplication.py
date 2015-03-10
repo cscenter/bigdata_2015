@@ -65,9 +65,9 @@ if result_matrix[-1][0][0] != rows or result_matrix[-1][0][1] != cols:
 
 # r = 2
 #
-# files_number = len(matrix_files) / 2
-# rows_per_file = rows / files_number
-# lines_per_row = cols / r
+# files_number = len(matrix_files) // 2
+# rows_per_file = rows // files_number
+# lines_per_row = cols // r
 #
 # row = 1
 # col = 1
@@ -89,10 +89,10 @@ if result_matrix[-1][0][0] != rows or result_matrix[-1][0][1] != cols:
 #     if line == lines_per_row * rows_per_file:
 #         line = 0
 #         row += rows_per_file
-
-with open('result.dat', 'w') as out:
-    for key, value in result_matrix:
-        out.write('{} '.format(value) if key[1] < cols else '{}\n'.format(value))
+#
+# with open('result.dat', 'w') as out:
+#     for key, value in result_matrix:
+#         out.write('{} '.format(value) if key[1] < cols else '{}\n'.format(value))
 
 # Result matrix is written on local disc, in file called 'result.dat', one row per line.
 # You can see code writing result matrix into different chunks similarly to input matrix, but it wouldn't work while
