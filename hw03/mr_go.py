@@ -138,5 +138,6 @@ for doc_id in scores:
     doc_vector_sqr_len = doc_vectors[doc_id]
     scores[doc_id] /= m.sqrt(doc_vector_sqr_len * q_vector_sqr_len) # значения в идеале будут от 0 до 1, чем ближе к 1, тем более похоже (arccos(1) = 0), считать дополнительно arccos не вижу смысла
 
-for doc_id in sorted(scores, None, None, True)[:10]:
+for doc_id in sorted(scores, None, lambda x : scores[x], True)[:10]:
     print(doc_id)
+
