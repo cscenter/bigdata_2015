@@ -1,0 +1,116 @@
+Prescriptive analytics is the third and final phase of business analytics (BA) which includes descriptive, predictive and prescriptive analytics.http://www.analytics-magazine.org/november-december-2010/54-the-analytics-journey
+
+Referred to as the "final frontier of analytic capabilities,"https://www.globys.com/2013/06/gartner-terms-prescriptive-analytics-%E2%80%9Cfinal-frontier%E2%80%9D-analytic-capabilities Prescriptive analytics automatically synthesizes big data, multiple disciplines of mathematical sciences and computational sciences, and business rules, to make predictions and then suggests decision options to take advantage of the predictions.http://ayata.com/the-evolution-of-big-data-analytics/  The first stage of business analytics is descriptive analytics, which still accounts for the majority of all business analytics today. Descriptive analytics answers the questions what happened and why did it happen. Descriptive analytics looks at past performance and understands that performance by mining historical data to look for the reasons behind past success or failure. Most management reporting - such as sales, marketing, operations, and finance - uses this type of post-mortem analysis.
+
+thumb|left|350px|Prescriptive Analytics extends beyond predictive analytics by specifying both the actions necessary to achieve predicted outcomes, and the interrelated effects of each decisionThe next phase is predictive analytics. Predictive analytics answers the question what will happen. This is when historical performance data is combined with rules, algorithms, and occasionally external data to determine the probable future outcome of an event or the likelihood of a situation occurring. The final phase is prescriptive analytics, which goes beyond predicting future outcomes by also suggesting actions to benefit from the predictions and showing the implications of each decision option.
+
+Prescriptive analytics not only anticipates what will happen and when it will happen, but also why it will happen. Further, prescriptive analytics suggests decision options on how to take advantage of a future opportunity or mitigate a future risk and shows the implication of each decision option. Prescriptive analytics can continually take in new data to re-predict and re-prescribe, thus automatically improving prediction accuracy and prescribing better decision options. Prescriptive analytics ingests hybrid data, a combination of structured (numbers, categories) and unstructured data (videos, images, sounds, texts), and business rules to predict what lies ahead and to prescribe how to take advantage of this predicted future without compromising other priorities.
+
+All three phases of analytics can be performed through professional services or technology or a combination.  In order to scale, prescriptive analytics technologies need to be adaptive to take into account the growing volume, velocity, and variety of data that most mission critical processes and their environments may produce.
+
+One criticism of prescriptive analytics is that its distinction from predictive analytics is ill-defined and therefore ill-conceived. 
+
+History
+
+thumb|350px|Prescriptive Analytics incorporates both structured and unstructured data, and uses a combination of advanced analytic techniques and disciplines to predict, prescribe, and adapt.Prescriptive Analytics, a term first coined by IBM and later trademarked by Ayata,http://trademarks.justia.com/852/06/prescriptive-analytics-85206495.html has been around since about 2003. The technology behind prescriptive analytics synergistically combines hybrid data, business rules with mathematical models and computational models. The data inputs to prescriptive analytics may come from multiple sources: internal, such as inside a corporation; and external, also known as environmental data.  The data may be structured, which includes numbers and categories, as well as unstructured data, such as texts, images, sounds, and videos. Unstructured data differs from structured data in that its format varies widely and cannot be stored in traditional relational databases without significant effort at data transformation. More than 80% of the world's data today is unstructured, according to IBM.  
+
+thumb|left|450px|The scientific disciplines that comprise Prescriptive Analytics
+
+In addition to this variety of data types and growing data volume, incoming data can also evolve with respect to velocity, that is, more data being generated at a faster or a variable pace. Business rules define the business process and include objectives constraints, preferences, policies, best practices, and boundaries. Mathematical models and computational models are techniques derived from mathematical sciences, computer science and related disciplines such as applied statistics, machine learning, operations research, natural language processing, computer vision, pattern recognition, image processing, speech recognition, and signal processing.
+
+Applications in Oil and Gas
+
+thumb|right|450px|Key Questions Prescriptive Analytics software answers for oil and gas producersEnergy is the largest industry in the world ($6 trillion in size). The processes and decisions related to oil and natural gas exploration, development and production generate large amounts of data. Many types of captured data are used to create models and images of the Earth’s structure and layers 5,000 - 35,000 feet below the surface and to describe activities around the wells themselves, such as depositional characteristics, machinery performance, oil flow rates, reservoir temperatures and pressures. Prescriptive analytics software can help with both locating and producing hydrocarbons
+by taking in seismic data, well log data, production data, and other related data sets to prescribe specific recipes for how and where to drill, complete, and produce wells in order to optimize recovery, minimize cost, and reduce environmental footprint.
+
+Unconventional Resource Development
+
+thumb|right|450px|Examples of structured and unstructured data sets generated and by the oil and gas companies and their ecosystem of service providers that can be analyzed together using Prescriptive Analytics softwareWith the value of the end product determined by global commodity economics, the basis of competition for operators in upstream E&P is the ability to effectively deploy capital to locate and extract resources more efficiently, effectively, predictably, and safely than their peers.  In unconventional resource plays, operational efficiency and effectiveness is diminished by reservoir inconsistencies, and decision-making impaired by high degrees of uncertainty.   These challenges manifest themselves in the form of low recovery factors and wide performance variations.
+
+Prescriptive Analytics software can accurately predict production and prescribe optimal configurations of controllable drilling, completion, and production variables by modeling numerous internal and external variables simultaneously, regardless of source, structure, size, or format. Prescriptive analytics software can also provide decision options and show the impact of each decision option so the operations managers can proactively take appropriate actions, on time, to guarantee future exploration and production performance, and maximize the economic value of assets at every point over the course of their serviceable lifetimes.
+
+Oilfield Equipment Maintenance
+
+In the realm of oilfield equipment maintenance, Prescriptive Analytics can optimize configuration, anticipate and prevent unplanned downtime, optimize field scheduling, and improve maintenance planning. According to General Electric, there are more than 130,000 electric submersible pumps (ESP's) installed globally, accounting for 60% of the world's oil production.{http://www.ge-energy.com/products_and_services/products/electric_submersible_pumping_systems/}  Prescriptive Analytics has been deployed to predict when and why an ESP will fail, and recommend the necessary actions to prevent the failure.
+
+In the area of Health, Safety, and Environment, prescriptive analytics can predict and preempt incidents that can lead to reputational and financial loss for oil and gas companies.
+
+Pricing
+
+Pricing is another area of focus. Natural gas prices fluctuate dramatically depending upon supply, demand, econometrics, geopolitics, and weather conditions. Gas producers, pipeline transmission companies and utility firms have a keen interest in more accurately predicting gas prices so that they can lock in favorable terms while hedging downside risk. Prescriptive analytics software can accurately predict prices by modeling internal and external variables simultaneously and also provide decision options and show the impact of each decision option.
+
+Applications in healthcare
+
+Multiple factors are driving healthcare providers to dramatically improve business processes and operations as the United States healthcare industry embarks on the necessary migration from a largely fee-for service, volume-based system to a fee-for-performance, value-based system. Prescriptive analytics is playing a key role to help improve the performance in a number of areas involving various stakeholders: payers, providers and pharmaceutical companies.
+
+Prescriptive analytics can help providers improve effectiveness of their clinical care delivery to the population they manage and in the process achieve better patient satisfaction and retention.  Providers can do better population health management by identifying appropriate intervention models for risk stratified population combining data from the in-facility care episodes and home based telehealth.
+
+Prescriptive analytics can also benefit healthcare providers in their capacity planning by using analytics to leverage operational and usage data combined with data of external factors such as economic data, population demographic trends and population health trends, to more accurately plan for future capital investments such as new facilities and equipment utilization as well as understand the trade-offs between adding additional beds and expanding an existing facility versus building a new one.
+
+Prescriptive analytics can help pharmaceutical companies to expedite their drug development by identifying patient cohorts that are most suitable for the clinical trials worldwide - patients who are expected to be compliant and will not drop out of the trial due to complications.  Analytics can tell companies how much time and money they can save if they choose one patient cohort in a specific country vs. another.
+
+In provider-payer negotiations, providers can improve their negotiating position with health insurers by developing a robust understanding of future service utilization. By accurately predicting utilization, providers can also better allocate personnel.
+
+See also
+
+ Analytics
+ Applied Statistics
+ Big Data
+ Business analytics
+ Business Intelligence
+ Data mining
+
+ Forecasting
+ Hadoop
+ MapReduce
+ OLTP
+ Operations Research
+ Statistics
+
+References
+<div class="references-small">
+
+Further reading
+
+ Davenport, Thomas H., Kalakota, Ravi, Taylor, James, Lampa, Mike, Franks, Bill, Jeremy, Shapiro, Cokins, Gary, Way, Robin, King, Joy, Schafer, Lori, Renfrow, Cyndy and Sittig, Dean,  Predictions for Analytics in 2012 International Institute for Analytics (December 15, 2011)
+ Bertolucci, Jeff, Prescriptive Analytics and Data: Next Big Thing? InformationWeek. (April 15, 2013).
+ Basu, Atanu, Five Pillars of Prescriptive Analytics Success Analytics. (March / April 2013).
+ Laney, Douglas and Kart, Lisa, (March 20, 2012). Emerging Role of the Data Scientist and the Art of Data Science Gartner.
+ McCormick Northwestern Engineering Prescriptive analytics is about enabling smart decisions based on data.
+ Business Analytics Information Event, I2SDS and Department of Decision Sciences, School of Business, The George Washington University (February 10, 2011).
+ "The Difference Between Operations Research and Business Analysis" OR Exchange / Informs (April 2011).
+ Farris, Adam, "How Big Data is Changing the Oil & Gas Industry" Analytics. (November / December 2012).
+ Venter, Fritz and Stein, Andrew "Images & Videos: Reall Big Data" Analytics. (November / December 2012).
+ Venter, Fritz and Stein, Andrew "The Technology Behind Image Analytics" Analytics. (November / December 2012).
+ Horner, Peter and Basu, Atanu, Analytics and the Future of Healthcare Analytics. (January / February 2012).
+ Ghosh, Rajib, Basu, Atanu and Bhaduri, Abhijit, From ‘Sick’ Care to ‘Health’ Care Analytics. (July / August 2011).
+ Fischer, Eric, Basu, Atanu, Hubele, Joachim and Levine, Eric, TV ads, Wanamaker’s Dilemma & Analytics Analytics. (March / April 2011)
+ Basu, Atanu and Worth, Tim, Predictive Analytics Practical ways to Drive Customer Service, Looking Forward Analytics. (July / August 2010).
+ Jain, Rajeev, Basu, Atanu, and Levine, Eric, Putting Major Energy Decisions through their Paces, A Framework for a Better Environment through Analytics OR/MS Today (December 2010).
+ Bhaduri, Abhijit and Basu, Atanu, Predictive Human Resources, Can Math Help Improve HR Mandates in an Organization? OR/MS Today (October 2010).
+ Brown, Scott, Basu, Atanu and Worth, Tim, [http://www.analytics-magazine.org/november-december-2010/98-predictive-analytics-in-field-service Predictive Analytics in Field Service, Practical Ways to Drive Field Service, Looking Forward] Analytics. (November / December 2010).
+ Pease, Andrew Bringing Optimization to the Business, SAS Global Forum 2012, Paper 165-2012 (2012).
+ Wheatley, Malcolm "Underground Analytics- The Value of Predicting When an Oil Pump Fails" DataInformed, May 29, 2013.
+ Presley, Jennifer "ESP for ESPs Exploration & Production Magazine, July 1, 2013
+ Basu, Atanu "How Prescriptive Analytics Can Reshape Fracking in Oil & Gas" DataInformed, December 10, 2013.
+ Basu, Atanu "What The Frack: U.S. Energy Prowess with Shale, Big Data Analytics" WIRED Blog. (January 2014).
+ Logan, Amy "Science Fiction Now a Fact in the E&P World" Unconventional Oil & Gas Center, June 2, 2014.
+ Mohan, Daniel "Your Data Already Know What You Don't" Exploration & Production Magazine, September, 2014.
+ van Rijmenam, Mark Future of Big Data? Three Use Cases of Prescriptive Analytics" Datafloq, December 29, 2014.
+
+External links
+
+ INFORMS' bi-monthly, digital magazine on the analytics profession
+ Northwestern University Master of Science in Analytics
+ The George Washington University
+ AYATA
+ Prescriptive Analytics Overview
+ Menon, Jai "Why Data Matters: Moving Beyond Prediction" IBM
+ University of Ghent Analytics program
+
+Category:Analytics
+analytics
+Category:Business intelligence
+Category:Business terms
+Category:Formal sciences
+Category:Health care

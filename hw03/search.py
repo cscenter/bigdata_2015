@@ -16,7 +16,7 @@ import util
 score = {}
 USERNAME = "andreybalakshiy"
 for q in query.split(" "):
-    base = util.encode_term(q)
+    base = util.encode_term(q.lower())
     f = "".join([d for d in dfs.get_file_content("/%s/posting_list/%s" % (USERNAME, base[0:1]))])
     f_list = json.JSONDecoder().decode(f)
     id = -1
@@ -44,8 +44,9 @@ for s in score.keys():
     if score[s] > mx:
         mx = score[s];
         n = s            
-print(n)           
+         
 
 for l1 in dfs.get_file_content(n):
 	print l1
+print(n)  
        

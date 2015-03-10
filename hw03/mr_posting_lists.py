@@ -30,10 +30,11 @@ def mapfn(k, v):
 	count = 0 
 	for l in dfs.get_file_content(filename):
 		for word in l.encode("utf-8").split():
-                   if (words.has_key(word)):
-                       words[word] += 1
+                   w = word.lower()                 
+                   if (words.has_key(w)):
+                       words[w] += 1
                    else:
-                       words[word] = 1
+                       words[w] = 1
                    count += 1
 	if count == 0:
 		raise Exception("File %s is empty" % filename)                

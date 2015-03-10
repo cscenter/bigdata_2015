@@ -40,6 +40,7 @@ def get_file_content(filename):
   for f in files():
     if f.name == filename:
       chunks = f.chunks
+#  yield chunks    
   if len(chunks) == 0:
     return
   clocs = {}
