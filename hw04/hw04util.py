@@ -32,8 +32,8 @@ def read_edges(vertices, filename):
           if not dst_id in vertices:
             raise Exception("ERROR when creating a link from %d to %d: destination not found" % (docid, dst_id))
           dst = vertices[dst_id]
-          src.out_vertices.append(dst)
-
+          # src.out_vertices.append(dst) #оптимизация, допустимо если только одно ребро ведёт из вершины в вершину
+          src.out_vertices.add(dst)
 def read_graph(filename, vertexConstructor):
   vertices = {}
   read_vertices(vertices, filename, vertexConstructor)

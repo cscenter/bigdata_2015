@@ -5,6 +5,7 @@ from pregel import Vertex, Pregel
 from hw04util import *
 from random import randint
 import sys
+import time
 
 vertices = {}
 num_workers = 1
@@ -21,9 +22,12 @@ def main(filename):
     v.value = randint(1, len(vertices) * 2)
 
   # Запускаем подсчет, ограничивая количеством итераций
+  start = time.time()
   p = Pregel(vertices.values(),num_workers,max_supersteps)
   p.run()
   print "Completed in %d supersteps" % p.superstep
+  finish = time.time()
+  # print(finish - start)
   for vertex in p.vertices:
       print vertex.id, sorted([out_vertex.id for out_vertex in vertex.out_vertices])
 
@@ -32,6 +36,7 @@ class Transitive_Vertex(Vertex):
       Vertex.__init__(self, id, None, [])
 
     def update(self):
+        # print self.id
         global vertices
         #на нулевом шаге "звоним" достижимым , тем самым "подписываясь" на их обновления
         if self.superstep == 0:
@@ -53,7 +58,8 @@ class Transitive_Vertex(Vertex):
                 for (_, maybe_new) in self.incoming_messages:
                     if maybe_new not in self.out_vertices:
                         new_friends.append(maybe_new)
-                        self.out_vertices.append(maybe_new)
+                        # self.out_vertices.append(maybe_new)
+                        self.out_vertices.add(maybe_new) #оптимизация, допустимо если только одно ребро ведёт из вершины в вершину
 
                 if len(new_friends) > 0:
                     self.active = True

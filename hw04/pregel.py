@@ -20,7 +20,7 @@ class Vertex():
         # synchronous nature lets us get away with it.
         self.id = id 
         self.value = value
-        self.out_vertices = out_vertices
+        self.out_vertices = set(out_vertices) #оптимизация, допустимо если только одно ребро ведёт из вершины в вершину
         self.incoming_messages = []
         self.outgoing_messages = []
         self.active = True
