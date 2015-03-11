@@ -1,3 +1,4 @@
+# encoding: utf-8
 """pregel.py is a python 2.6 module implementing a toy single-machine
 version of Google's Pregel system for large-scale graph processing."""
 
@@ -5,7 +6,7 @@ import collections
 import threading
 
 class Vertex():
-
+# encoding: utf-8
     def __init__(self,id,value,out_vertices):
         # This is mostly self-explanatory, but has a few quirks:
         #
