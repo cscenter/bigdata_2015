@@ -24,6 +24,8 @@ class Vertex():
         self.outgoing_messages = []
         self.active = True
         self.superstep = 0
+        #для удобства добавил поле подписчиков, по сути оно содержит те вершины, которые ссылаются на текущую
+        self.subscribers = []
    
 class Pregel():
 
