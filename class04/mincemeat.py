@@ -46,7 +46,7 @@ VERSION = 0.0
 
 
 DEFAULT_PORT = 11235
-
+WORKER_NAME = ""
 
 class Protocol(asynchat.async_chat):
     def __init__(self, conn=None):
@@ -374,6 +374,7 @@ def run_client():
     parser.add_option("-P", "--port", dest="port", type="int", default=DEFAULT_PORT, help="port")
     parser.add_option("-v", "--verbose", dest="verbose", action="store_true")
     parser.add_option("-V", "--loud", dest="loud", action="store_true")
+    parser.add_option("-w", "--worker", dest="worker")
 
     (options, args) = parser.parse_args()
                       
@@ -382,10 +383,13 @@ def run_client():
     if options.loud:
         logging.basicConfig(level=logging.DEBUG)
 
+    global WORKER_NAME
+    WORKER_NAME = options.worker
     client = Client()
     client.password = options.password
     client.conn(args[0], options.port)
                       
+
 
 if __name__ == '__main__':
     run_client()
