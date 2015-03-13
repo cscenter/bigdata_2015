@@ -27,15 +27,17 @@ class Vertex():
    
 class Pregel():
 
-    def __init__(self,vertices,num_workers):
+    def __init__(self,vertices,num_workers,max_supersteps=1):
         self.vertices = vertices
         self.num_workers = num_workers
+        self.max_supersteps = max_supersteps
+        self.superstep = 0
 
     def run(self):
         """Runs the Pregel instance."""
         self.partition = self.partition_vertices()
         while self.check_active():
-            self.superstep()
+            self.do_superstep()
             self.redistribute_messages()
 
     def partition_vertices(self):
@@ -51,7 +53,7 @@ class Pregel():
         """Returns the id of the worker that vertex is assigned to."""
         return hash(vertex) % self.num_workers
 
-    def superstep(self):
+    def do_superstep(self):
         """Completes a single superstep.  
 
         Note that in this implementation, worker threads are spawned,
@@ -69,18 +71,21 @@ class Pregel():
             worker.join()
 
     def redistribute_messages(self):
-        """Updates the message lists for all vertices."""
+        self.superstep += 1
+        """Updates the message lists for all vertices."""        
         for vertex in self.vertices:
             vertex.superstep +=1
             vertex.incoming_messages = []
         for vertex in self.vertices:
             for (receiving_vertix,message) in vertex.outgoing_messages:
                 receiving_vertix.incoming_messages.append((vertex,message))
+                receiving_vertix.active = True
+            vertex.outgoing_messages = []
 
     def check_active(self):
         """Returns True if there are any active vertices, and False
         otherwise."""
-        return any([vertex.active for vertex in self.vertices])
+        return self.superstep < self.max_supersteps and any([vertex.active for vertex in self.vertices])
 
 class Worker(threading.Thread):
 
