@@ -20,12 +20,12 @@ max_supersteps = 50
 def main(filename):
   global vertices
   global num_vertices
-  # читаем граф из файла, используя конструкток MaxValueVertex
+  # читаем граф из файла, используя конструктор MaxValueVertex
   vertices = read_graph(filename, MaxValueVertex)
 
   # Заполняем случайными значениями
   for v in vertices.values():
-    v.value = randint(1, 50)
+    v.value = randint(1, len(vertices) * 2)
 
   # Запускаем подсчет, ограничивая количеством итераций
   p = Pregel(vertices.values(),num_workers,max_supersteps)
