@@ -159,6 +159,7 @@ def send_heartbeat():
     if response.getcode() != 200:
         sys.stderr.write("Heartbeat failed: %s" % str(response))
         return False
+    Timer(30, send_heartbeat, ()).start()
     return True
 
 class ChunkServerRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
