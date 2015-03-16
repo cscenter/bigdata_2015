@@ -22,8 +22,9 @@ def main(filename):
     end = time.time()
     print end - start
     print "Completed in %d supersteps" % p.superstep
-    for vertex in p.vertices:
-        print "#%s: %s" % (vertex.id, ' '.join([str(v.id) for v in vertex.out_vertices]))
+    # for vertex in p.vertices:
+        # print "#%s: %s" % (vertex.id, ' '.join([str(v.id) for v in vertex.out_vertices]))
+        # print "#%s: %s" % (vertex.id)
 
 
 class TransitiveClosureVertex(Vertex):
@@ -39,10 +40,10 @@ class TransitiveClosureVertex(Vertex):
             self.active = False
             if self.new_out_vertices:
                 self.active = True
+                self.out_vertices |= self.new_out_vertices
                 self.outgoing_messages = [(distant_vertex, self)
                                           for vertex in self.new_out_vertices
-                                          for distant_vertex in vertex.new_out_vertices | vertex.out_vertices]
-                self.out_vertices |= self.new_out_vertices
+                                          for distant_vertex in vertex.new_out_vertices | vertex.out_vertices - self.out_vertices]
                 self.new_out_vertices.clear()
 
         # In a second step vertex connects itself to all vertices to which it is a distant vertex
@@ -50,8 +51,6 @@ class TransitiveClosureVertex(Vertex):
             for _, new_distant_vertex in self.incoming_messages:
                 if self not in new_distant_vertex.out_vertices:
                     new_distant_vertex.new_out_vertices.add(self)
-
-# TODO: why is it so slow? :(
 
 if __name__ == "__main__":
     main(sys.argv[1])
