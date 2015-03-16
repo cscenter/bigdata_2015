@@ -4,9 +4,10 @@ version of Google's Pregel system for large-scale graph processing."""
 import collections
 import threading
 
+
 class Vertex():
 
-    def __init__(self,id,value,out_vertices):
+    def __init__(self, id, value, out_vertices):
         # This is mostly self-explanatory, but has a few quirks:
         #
         # self.id is included mainly because it's described in the
@@ -17,17 +18,18 @@ class Vertex():
         # self.superstep.  It's arguably not wise to store many copies
         # of global state in instance variables, but Pregel's
         # synchronous nature lets us get away with it.
-        self.id = id 
+        self.id = id
         self.value = value
         self.out_vertices = out_vertices
         self.incoming_messages = []
         self.outgoing_messages = []
         self.active = True
         self.superstep = 0
-   
+
+
 class Pregel():
 
-    def __init__(self,vertices,num_workers,max_supersteps=1):
+    def __init__(self, vertices, num_workers, max_supersteps=1):
         self.vertices = vertices
         self.num_workers = num_workers
         self.max_supersteps = max_supersteps
@@ -49,12 +51,12 @@ class Pregel():
             partition[self.worker(vertex)].append(vertex)
         return partition
 
-    def worker(self,vertex):
+    def worker(self, vertex):
         """Returns the id of the worker that vertex is assigned to."""
         return hash(vertex) % self.num_workers
 
     def do_superstep(self):
-        """Completes a single superstep.  
+        """Completes a single superstep.
 
         Note that in this implementation, worker threads are spawned,
         and then destroyed during each superstep.  This creation and
@@ -72,24 +74,26 @@ class Pregel():
 
     def redistribute_messages(self):
         self.superstep += 1
-        """Updates the message lists for all vertices."""        
+        """Updates the message lists for all vertices."""
         for vertex in self.vertices:
-            vertex.superstep +=1
+            vertex.superstep += 1
             vertex.incoming_messages = []
         for vertex in self.vertices:
-            for (receiving_vertix,message) in vertex.outgoing_messages:
-                receiving_vertix.incoming_messages.append((vertex,message))
+            for (receiving_vertix, message) in vertex.outgoing_messages:
+                receiving_vertix.incoming_messages.append((vertex, message))
                 receiving_vertix.active = True
             vertex.outgoing_messages = []
 
     def check_active(self):
         """Returns True if there are any active vertices, and False
         otherwise."""
-        return self.superstep < self.max_supersteps and any([vertex.active for vertex in self.vertices])
+        return self.superstep < self.max_supersteps and \
+            any([vertex.active for vertex in self.vertices])
+
 
 class Worker(threading.Thread):
 
-    def __init__(self,vertices):
+    def __init__(self, vertices):
         threading.Thread.__init__(self)
         self.vertices = vertices
 
@@ -102,5 +106,3 @@ class Worker(threading.Thread):
         for vertex in self.vertices:
             if vertex.active:
                 vertex.update()
-                
-
