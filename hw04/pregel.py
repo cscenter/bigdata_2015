@@ -62,6 +62,7 @@ class Pregel():
         make the workers persistent, and to use a locking mechanism to
         synchronize.  The Pregel paper suggests that this is how
         Google's Pregel implementation works."""
+        # print 'superstep #{} has been completed'.format(self.superstep + 1)
         workers = []
         for vertex_list in self.partition.values():
             worker = Worker(vertex_list)
