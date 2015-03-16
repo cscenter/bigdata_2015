@@ -13,13 +13,15 @@ def mapfn(k, v):
       reduce_key = matrix_num
       continue
     values = [int(v) for v in l.split(" ")]
+  #  print(reduce_key + ' ' + str(sum(values)))
     yield reduce_key, sum(values)
 
 # редьюсер суммирует значения с одинаковым ключом
 def reducefn(k, vs):
+   # print(k + ' ' + str(vs))
     result = sum(vs)
     return result
-
+    
 s = mincemeat.Server() 
 
 # читаем список файлов, из которых состоят матрицы
