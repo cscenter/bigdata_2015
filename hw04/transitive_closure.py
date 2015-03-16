@@ -19,15 +19,11 @@ def main(filename):
 def transitive_closure_pregel(vertices):
     p = Pregel(vertices, num_workers, num_iterations)
     p.run()
-    #вывод рёбер транзитивного замыкания (начало и конец ребра)
-    for vertex in p.vertices:
-        for val in vertex.value:
-            print "%s, %s" % (vertex.id, val)
 
 
 class TransitiveClosure(Vertex):
     def __init__(self, id):
-        Vertex.__init__(self, id, [], [])
+        Vertex.__init__(self, id, None, [])
 
     def update(self):
         global vertices
@@ -48,7 +44,8 @@ class TransitiveClosure(Vertex):
                                 break
                         if ind == True:
                             self.out_vertices.append(value[0])
-                            self.value.append(value[0].id)
+                            #вывод рёбер транзитивного замыкания (начало и конец ребра)
+                            print "%s, %s" % (self.id, value[0].id)
         #отсылаем вершинам, к которым у нас есть путь,состоящий из одного ребра, уведомление, что мы можем до них дойти из данной вершины
         if len(self.out_vertices) > 0:
             aim = 'notification'
