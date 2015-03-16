@@ -1,6 +1,6 @@
 ### Запуск 
 ```
-transitive_closure.py <filename>
+python transitive_closure.py <filename>
 ```
 
 Несколько готовых вариантов графов для теста:
