@@ -34,7 +34,6 @@ def main(filename):
   for vertex in p.vertices:
     print "#%s: %s" % (vertex.id, vertex.value)
 
-fiction_vertex = MaxValueVertex(-1)
 class MaxValueVertex(Vertex):
     def __init__(self, id):
       Vertex.__init__(self, id, None, [])
@@ -44,7 +43,7 @@ class MaxValueVertex(Vertex):
         # На нулевой итерации еще нет входящих
         if self.superstep > 0:
           # по умолчанию эта вершина станет пассивной
-          self.active = False
+     #     self.active = False
           if len(self.incoming_messages) > 0:
             # Если входящие сообщения есть то находим максимальное значение и если оно больше, чем свое,
             # то активизируемся
