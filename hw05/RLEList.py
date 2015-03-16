@@ -1,40 +1,167 @@
 class RLEList(object):
-	def __init__(self):
-		pass
+    def __init__(self):
+        pass
 
-	def append(self, value):
-		pass
+    def append(self, value):
+        pass
 
-	def insert(self, index, value):
-		pass
+    def insert(self, index, value):
+        pass
 
-	def get(self, index):
-		pass
+    def get(self, index):
+        pass
 
-	def iterator(self):
-		pass
+    def iterator(self):
+        pass
 
-class RLEListRefImpl(RLEList):
-	def __init__(self):
-		self.impl = []
+class my_cool_iterator:
+    def __init__(self, list):
+        self.currVal = None
+        self.listIter = iter(list)
+        self.toLeft = 0
 
-	def append(self, value):
-		self.impl.append(value)
+    def __iter__(self):
+        return self
 
-	def insert(self, index, value):
-		self.impl.insert(index, value)
-
-	def get(self, index):
-		return self.impl[index]
-
-	def iterator(self):
-		return iter(self.impl)
-
-def demo():
-	list = RLEListRefImpl()
-	list.append("foo")
-	list.insert(0, "bar")
-	print list.iterator().next()
-	print list.get(1)
+    def next(self):
+        if (self.toLeft == 0):
+            (v, r) = self.listIter.next()
+            self.toLeft = r
+            self.currVal = v
+        self.toLeft -= 1
+        return self.currVal
 
 
+
+class RLEListImpl(RLEList):
+    def __init__(self):
+        self.size = 0
+        self.impl = []
+
+    def append(self, value):
+        self.size += 1
+
+        if (self.size == 1):
+            self.impl.append((value, 1))
+            return
+
+        v, r = self.impl.pop()
+        if (v == value):
+            r += 1
+            self.impl.append((v, r))
+        else:
+            self.impl.append((v, r))
+            self.impl.append((value, 1))
+
+    def insert(self, index, value):
+
+        if index < 0 or index > self.size:
+            raise "Index out of range"
+
+        if index == self.size:
+            self.append(value)
+            return
+
+        self.size += 1;
+        currInd = -1
+        currImlpB = []
+        currImlpE = list(self.impl)
+
+        i = self.impl
+        for (v, r) in i:
+
+            del currImlpE[0]
+
+            currInd += r;
+            if (index == currInd):
+                if (value == v):
+                    currImlpB.append((v, r + 1))
+                    currImlpB.extend(currImlpE)
+                    self.impl = list(currImlpB)
+                    return
+                else:
+                    if (r - 1 > 0):
+                        currImlpB.append((v, r - 1))
+
+                    currImlpB.append((value, 1))
+                    currImlpB.append((v, 1))
+                    currImlpB.extend(currImlpE)
+                    self.impl = list(currImlpB)
+                    return
+            elif (index < currInd):
+                if (value == v):
+                    currImlpB.append((v, r + 1))
+                    currImlpB.extend(currImlpE)
+                    self.impl = list(currImlpB)
+                    return
+                else:
+                    t = index - (currInd - r) - 1
+                    if (t > 0): currImlpB.append((v, t))
+                    currImlpB.append((value, 1))
+                    if (currInd - index > 0): currImlpB.append((v, currInd - index + 1))
+                    currImlpB.extend(currImlpE)
+                    self.impl = list(currImlpB)
+                    return
+            else:
+                currImlpB.append((v, r))
+
+
+    def get(self, index):
+        if ((index >= self.size) or (index < 0)):
+            raise "Index out of range"
+
+        currInd = -1
+        for (v, r) in self.impl:
+            currInd += r
+            if currInd >= index:
+                return v
+
+    def __iter__(self):
+        return my_cool_iterator(self.impl)
+
+    def iterator(self):
+        return iter(self)
+
+
+def append_test():
+    l = RLEListImpl()
+    l.append('h')
+    l.append('e')
+    l.append('l')
+    l.append('l')
+    l.append('o')
+    l.append(' ')
+    l.append('w')
+    l.append('o')
+    l.append('r')
+    l.append('l')
+    l.append('d')
+    assert(l.impl == [('h', 1), ('e', 1), ('l', 2), ('o', 1), (' ', 1),
+                      ('w', 1), ('o', 1), ('r', 1), ('l', 1), ('d', 1)])
+
+    print("Append - OK")
+
+def iterator_test():
+    original = ['h', 'e', 'l', 'l', 'o', ' ', 'w', 'o', 'r', 'l', 'd']
+    l = RLEListImpl()
+    l.append('h')
+    l.append('e')
+    l.append('l')
+    l.append('l')
+    l.append('o')
+    l.append(' ')
+    l.append('w')
+    l.append('o')
+    l.append('r')
+    l.append('l')
+    l.append('d')
+    l2 = []
+    for i in l:
+        l2.append(i)
+    assert (original == l2)
+    print("Iterator - OK")
+
+
+
+append_test()
+iterator_test()
