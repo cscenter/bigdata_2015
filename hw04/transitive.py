@@ -32,31 +32,26 @@ class TransitiveVertex(Vertex):
     def update(self):
         global vertices
 
-        # Спокойно засыпаем - если надо, нас разбудят
+        # Спокойно засыпаем - если придёт запрос о детях, или придёт ответ на наш предыдущий запрос - нас разбудят
         self.active = False
 
-        ### В python-е нет switch. Я страдаю и терзаюсь над каждым последующим if-elif.
+        # Шаг 0: Спрашиваем детей об их детях
+        if self.superstep == 0:
+            self.outgoing_messages = [(child, None) for child in self.out_vertices]
 
-        # Шаг 1: Спрашиваем "детей" о "внуках"
-        if self.superstep % 3 == 0:
-            self.outgoing_messages = [(child, self) for child in self.out_vertices]
+        # Последующие шаги: получаем информацию о "внуках", "усыновляем" их и тут же спрашиваем их об их детях
+        else:
+            for (sender, request) in self.incoming_messages:
+                if request is not None:
+                    if request not in self.out_vertices:
+                        self.out_vertices.append(request)
+                        self.outgoing_messages += [(request, None)]
+                else:
+                    for child in self.out_vertices:
+                        if sender != child:
+                            self.outgoing_messages += [(sender, child)]
 
-        # Шаг 2: Рассказываем "родителям" о своих "детях", т.е. об их "внуках"
-        elif self.superstep % 3 == 1:
-            for (_this, father) in self.incoming_messages:
-                for child in self.out_vertices:
-                    # Проверяем на сложные семейные ситуации (необходимо для ненаправленных графов)
-                    if father != child:
-                        self.outgoing_messages += [(father, child)]
-
-        # Шаг 3: "Усыновляем" своих "внуков", если таковые имеются и остаёмся активными,
-        # чтобы спросить своих новых детей уже об их детях.
-        elif self.superstep % 3 == 2:
-            for (_this, grandchild) in self.incoming_messages:
-                if grandchild not in self.out_vertices:
-                    self.out_vertices.append(grandchild)
-                    self.active = True # чтобы финальный граф был весь транзитивен
-                
+               
 
 if __name__ == "__main__":
     main(sys.argv[1])
