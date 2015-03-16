@@ -32,15 +32,17 @@ class TransitiveClosureVertex(Vertex):
 
     def update(self):
         global vertices
-        new_edges = []
-        # self.active = False
+
         if self.superstep > 0:
-            # по умолчанию эта вершина станет пассивной
+            # (конец, начало) для каждого нового ребра
+            new_edges = []
+
+            # по умолчанию эта вершина будет пассивной
             self.active = False
 
             if self.incoming_messages:
-                # Если входящие сообщения есть, то попробуем найти
-                # чем свое, то активизируемся
+                # Если входящие сообщения есть, то попробуем найти ребра, содержащие текущую
+                # вершину в качестве переходной
                 for _, start_vertex in self.incoming_messages:
                     for end_vertex in self.out_vertices:
                         if end_vertex not in start_vertex.out_vertices:
@@ -48,18 +50,12 @@ class TransitiveClosureVertex(Vertex):
                             start_vertex.out_vertices.append(end_vertex)
                             new_edges.append((end_vertex, start_vertex))
 
-        # Активная вершина рассылает свое значение по исходящим дугам
-        # self.outgoing_messages = [(vertex, self.value) for vertex in self.out_vertices]
-
-        if self.superstep == 0:
-            self.outgoing_messages = [(vertex, self)
-                                      for vertex in self.out_vertices]
-        else:
-            # if self.active:
             self.outgoing_messages = new_edges
 
-        if self.superstep > 0 and self.active:
-            print [(y.id, x.id) for x, y in new_edges]
+        else:
+            # на первом шаге отсылаем всем вершинам, в которые можно перейти
+            self.outgoing_messages = [(vertex, self)
+                                      for vertex in self.out_vertices]
 
 if __name__ == '__main__':
     main(sys.argv[1])
