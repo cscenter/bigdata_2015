@@ -97,7 +97,16 @@ class RLEListImpl(RLEList):
                 else:
                     t = index - (currInd - r) - 1
                     if (t > 0): currImlpB.append((v, t))
-                    currImlpB.append((value, 1))
+
+                    if ((len(currImlpB) > 0) and (t == 0)):
+                        (vl, rl) = currImlpB.pop()
+                        if (vl == value):
+                            currImlpB.append((vl, rl + 1))
+                        else:
+                            currImlpB.append((vl, rl))
+                            currImlpB.append((value, 1))
+                    else:
+                        currImlpB.append((value, 1))
                     if (currInd - index > 0): currImlpB.append((v, currInd - index + 1))
                     currImlpB.extend(currImlpE)
                     self.impl = list(currImlpB)
@@ -161,7 +170,20 @@ def iterator_test():
     assert (original == l2)
     print("Iterator - OK")
 
+def insert_test():
+    l = RLEListImpl()
+    h = "qqwweerrttyy"
+    for c in h:
+        l.append(c)
+        
+    l.insert(2, 'q')
+    l.insert(3, 'e')
+    l.insert(5, 'e')
+    l.insert(3, 'e')
+    assert(l.impl == [('q', 3), ('e', 2), ('w', 1), ('e', 1), ('w', 1), ('e', 2), ('r', 2), ('t', 2),('y',2)])
+    print("Insert - OK")
 
 
 append_test()
 iterator_test()
+insert_test()
