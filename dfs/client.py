@@ -8,6 +8,7 @@ import json
 from poster.encode import multipart_encode
 from poster.streaminghttp import register_openers
 from contextlib import closing
+import argparse
 
 register_openers()
 
@@ -99,3 +100,29 @@ class CachedMetadata:
     for chunk_id in self.file_chunks[filename]:
       for l in get_chunk_data(self.chunk_locations[chunk_id], chunk_id):
         yield l
+
+def put_file(from_file, to_file, master):
+  global MASTER_URL
+  MASTER_URL=master
+  with open(from_file) as f, file_appender(to_file) as buf:
+    for l in f:
+      buf.write(l.rstrip())
+
+def get_file(from_file, master):
+  global MASTER_URL
+  MASTER_URL=master
+  for l in get_file_content(from_file):
+    print l
+
+if __name__ == "__main__":
+  parser = argparse.ArgumentParser()
+  parser.add_argument("--command", required = True)
+  parser.add_argument("--f")
+  parser.add_argument("--t")
+  parser.add_argument("--master", required=True, default="localhost:8000")
+  args = parser.parse_args()
+
+  if "put" == args.command:
+    put_file(args.f, args.t, args.master)
+  elif "get" == args.command:
+    get_file(args.f, args.master)  
