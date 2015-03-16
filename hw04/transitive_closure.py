@@ -9,7 +9,7 @@ num_iterations = 50
 def main(filename):
     global vertices
     global num_vertices
-    # читаем граф из файлп используя конструктор TransitiveClosure
+    # читаем граф из файла используя конструктор TransitiveClosure
     vertices = read_graph(filename, TransitiveClosure)
 
     num_vertices = len(vertices)
@@ -19,6 +19,7 @@ def main(filename):
 def transitive_closure_pregel(vertices):
     p = Pregel(vertices, num_workers, num_iterations)
     p.run()
+    #вывод рёбер транзитивного замыкания (начало и конец ребра)
     for vertex in p.vertices:
         for val in vertex.value:
             print "%s, %s" % (vertex.id, val)
@@ -27,37 +28,30 @@ def transitive_closure_pregel(vertices):
 class TransitiveClosure(Vertex):
     def __init__(self, id):
         Vertex.__init__(self, id, [], [])
-        self.value_notification = []
-        self.value_recommendation = []
 
     def update(self):
         global vertices
         self.outgoing_messages = []
         if self.superstep > 0:
             for (vertex, value) in self.incoming_messages:
+                #отсылаем рекомендации на добавление ребра предыдущим вершинам
                 if value[1] == 'notification':
-                    self.value_notification.append((vertex, value[0]))
+                    aim = 'recommendation'
+                    self.outgoing_messages += [(value[0], [val, aim]) for val in self.out_vertices]
+                #рассматриваем рекомендации  от предыдущих вершин на добавление ребра,если такого ребра у нас нет, то добавляем
                 if value[1] == 'recommendation':
-                    self.value_recommendation.append((vertex,value[0]))
-            #отсылаем рекомендации предыдущим вершинам
-            for note in self.value_notification:
-                aim = 'recommendation'
-                self.outgoing_messages += [(note[1], [val, aim]) for val in self.out_vertices]
-            for rec in self.value_recommendation:
-                ind = True
-                if rec[1] != self:
-                    for v in self.out_vertices:
-                        if rec[1] == v:
-                            ind = False
-                            break
-                    if ind == True:
-                        #добавили новое ребро в граф
-                        self.out_vertices.append(rec[1])
-                        #здесь надо ещё реализовать его вывод(можно воспользоваться self.value)
-                        self.value.append(rec[1].id)
+                    ind = True
+                    if value[0] != self:
+                        for v in self.out_vertices:
+                            if value[0] == v:
+                                ind = False
+                                break
+                        if ind == True:
+                            self.out_vertices.append(value[0])
+                            self.value.append(value[0].id)
+        #отсылаем вершинам, к которым у нас есть путь,состоящий из одного ребра, уведомление, что мы можем до них дойти из данной вершины
         if len(self.out_vertices) > 0:
             aim = 'notification'
             self.outgoing_messages += [(vertex, [self, aim]) for vertex in self.out_vertices]
 if __name__ == "__main__":
     main(sys.argv[1])
-
