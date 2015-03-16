@@ -22,25 +22,21 @@ def main(filename):
     end = time.time()
     print end - start
     print "Completed in %d supersteps" % p.superstep
-    # for vertex in p.vertices:
-        # print "#%s: %s" % (vertex.id, ' '.join([str(v.id) for v in vertex.out_vertices]))
-    # print "#%s: %s" % (vertex.id)
+    for vertex in p.vertices:
+        print "#%s: %s" % (vertex.id, ' '.join([str(v.id) for v in vertex.out_vertices]))
 
 
 class TransitiveClosureVertex(Vertex):
     def __init__(self, id):
         Vertex.__init__(self, id, None, [])
         self.new_out_vertices = set()
-        # self.in_vertices = set()
 
     def __hash__(self):
         return self.id
 
-    def __eq__(self, other):
-        return self.id == other.id
-
     def update(self):
         if self.id % 100 == 0:
+            # Makes waiting much less boring
             print 'processing {}th superstep for {}th vertex'.format(self.superstep, self.id)
         # Superstep consists of two step
         # In a first step vertex sends itself to all of its new direct successors
@@ -49,8 +45,8 @@ class TransitiveClosureVertex(Vertex):
             self.active = False
             if self.new_out_vertices:
                 self.active = True
-                self.outgoing_messages = [(vertex, self) for vertex in self.new_out_vertices]
                 self.out_vertices |= self.new_out_vertices
+                self.outgoing_messages = [(vertex, self) for vertex in self.new_out_vertices]
                 self.new_out_vertices.clear()
         else:
             if self.incoming_messages:
