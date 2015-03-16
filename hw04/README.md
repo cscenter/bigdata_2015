@@ -1,8 +1,14 @@
-### Реализация Pregel машины
-Нужно унаследовать класс от `pregel.Vertex` и определить метод `update`. Смотрите пример в файле `pagerank.py`
+### Запуск 
+```
+transitive_closure.py <filename>
+```
 
-### Запуск Pregel
+Несколько готовых вариантов графов для теста:
 
-Подсчет pagerank запускается командой `python pagerank.py <filename>` где <filename> -- имя файла с графом. Есть два  графа из лекции: в файле `small_graph.txt` записан граф из 20 вершин и двух компонент связности (полный граф из 4 вершин + бинарное дерево из 16 вершин), в файле `random_1000.txt` записан сгенерированный случайным образом граф из 1000 вершин.
-
-Подсчет максимального значения запускается командой `python maxvalue.py <filename>`. В файле `maxvalue.txt` записан слегка модифицированный граф `small_graph`, в котором обе компоненты стали сильно связными 
+for_transitive.txt   
+for_transitive_chain.txt   
+for_transitive_full.txt   
+for_transitive_long_chain.txt   
+for_transitive_ring.txt   
+for_transitive_ring2.txt   
+for_transitive_two_component.txt   
