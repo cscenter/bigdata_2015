@@ -19,7 +19,6 @@ def main(filename):
 def transitive_closure_pregel(vertices):
     p = Pregel(vertices, num_workers, num_iterations)
     p.run()
-    print p.superstep
 
 
 class TransitiveClosure(Vertex):
