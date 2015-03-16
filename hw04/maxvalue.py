@@ -22,10 +22,10 @@ def main(filename):
   global num_vertices
   # читаем граф из файла, используя конструктор MaxValueVertex
   vertices = read_graph(filename, MaxValueVertex)
-
+  
   # Заполняем случайными значениями
   for v in vertices.values():
-    v.value = randint(1, len(vertices) * 2)
+      v.value = randint(1, len(vertices) * 2)
 
   # Запускаем подсчет, ограничивая количеством итераций
   p = Pregel(vertices.values(),num_workers,max_supersteps)
@@ -34,6 +34,7 @@ def main(filename):
   for vertex in p.vertices:
     print "#%s: %s" % (vertex.id, vertex.value)
 
+fiction_vertex = MaxValueVertex(-1)
 class MaxValueVertex(Vertex):
     def __init__(self, id):
       Vertex.__init__(self, id, None, [])
