@@ -27,9 +27,9 @@ def main(filename):
   p.run()
   print "Completed in %d supersteps" % p.superstep
   finish = time.time()
-  # print(finish - start)
-  for vertex in p.vertices:
-      print vertex.id, sorted([out_vertex.id for out_vertex in vertex.out_vertices])
+  print(finish - start)
+  # for vertex in p.vertices:
+  #     print vertex.id, sorted([out_vertex.id for out_vertex in vertex.out_vertices])
 
 class Transitive_Vertex(Vertex):
     def __init__(self, id):

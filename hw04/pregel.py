@@ -27,6 +27,9 @@ class Vertex():
         self.superstep = 0
         #для удобства добавил поле подписчиков, по сути оно содержит те вершины, которые ссылаются на текущую
         self.subscribers = []
+
+    def __hash__(self): #даёт буст примерно раза в 2
+        return self.id
    
 class Pregel():
 
