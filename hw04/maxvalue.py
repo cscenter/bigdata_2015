@@ -30,9 +30,9 @@ def main(filename):
   # Запускаем подсчет, ограничивая количеством итераций
   p = Pregel(vertices.values(),num_workers,max_supersteps)
   p.run()
-  print "Completed in %d supersteps" % p.superstep
+  print ("Completed in %d supersteps" % p.superstep)
   for vertex in p.vertices:
-    print "#%s: %s" % (vertex.id, vertex.value)
+    print ("#%s: %s" % (vertex.id, vertex.value))
 
 class MaxValueVertex(Vertex):
     def __init__(self, id):
@@ -57,4 +57,5 @@ class MaxValueVertex(Vertex):
           self.outgoing_messages = [(vertex,self.value) for vertex in self.out_vertices]
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    # main(sys.argv[1])
+    main("maxvalue.txt")

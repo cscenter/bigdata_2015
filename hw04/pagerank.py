@@ -10,15 +10,15 @@ import sys
 
 vertices = {}
 num_workers = 1
-num_iterations = 50
+num_iterations = 10
 
 def main(filename):
   global vertices
   global num_vertices
-  # читаем граф из файла, используя конструкток PageRankVertex
+
   vertices = read_graph(filename, PageRankVertex)
 
-  # Инициализируем начальное распределение pagerank
+
   num_vertices = len(vertices)
   for v in vertices.values():
     v.value = 1.0/num_vertices
@@ -32,8 +32,8 @@ def pagerank_pregel(vertices):
     p = Pregel(vertices,num_workers,num_iterations)
     p.run()
     for vertex in p.vertices:
-      print "#%s: %s" % (vertex.id, vertex.value)
-    print "Sum=%f" % sum(v.value for v in p.vertices)
+      print ("#%s: %s" % (vertex.id, vertex.value))
+    print ("Sum=%f" % sum(v.value for v in p.vertices))
 
 class PageRankVertex(Vertex):
     def __init__(self, id):
@@ -58,4 +58,6 @@ class PageRankVertex(Vertex):
                                     for vertex in self.out_vertices]
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    # main("small_graph.txt")
+    main("random_1000.txt")
+    # main(sys.argv[1])
