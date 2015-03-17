@@ -26,39 +26,33 @@ class MrTransitiveClosure(Vertex):
       
     def update(self):
         global vertices
-        addNeighborEdge = False # Добавил ли хоть один из соседей ребро
-        weAddEdge = False # Добавили ли мы ребро
+        addNeighborEdge = False # добавил ли хоть один из соседей ребро
+        weAddEdge = False # добавили ли мы ребро
         if self.superstep > 0: 
           if len(self.incoming_messages) > 0:
             for (vertex, v) in self.incoming_messages:
                 if v[0] == "add": # сначала выполняем операции по добавлению ребра, делаем это в отдельном порядке
-                                  # чтобы узнать, а добавили
-           #         print(v.id)
-                    if v[1] - self.out_vertices != set():
-                        weAddEdge = True
+                                  # чтобы узнать, а добавили ли мы хоть одно ребро, чтобы далее оповестить об этом
+                                  # наших предков
+                    if v[1] - self.out_vertices != set(): # если есть что добавлять
+                        weAddEdge = True 
                     dif = v[1] - self.out_vertices
-                    if self in dif:                    
+                    if self in dif:   # петли нам не нужны                 
                         dif.remove(self)
                     for a in dif:
-                        print(str(self.id) + "," + str(a.id))
-                    self.out_vertices |= v[1]    
-               #     if self in self.out_vertices:
-                #        self.out_vertices.remove(self)
-         #           if self.doHaveEdgeToVertex(v[0]) == False:
-          #              print(str(self.id) + ',' + str(v[0].id))
-           #             self.out_vertices.add((v[0]))
-            #            addEdge = True
-                    #объяснить тем, что тип может быть намного меньше итераций и все равно выйграем по скорости
-                    #потестить на тысяче вершинах
-            for (vertex, v) in self.incoming_messages:
-                if v[2] == True:
+                        print(str(self.id) + "," + str(a.id)) # вывожу ребра, ктороые будут добавлены
+                    self.out_vertices |= v[1] # update   
+
+            for (vertex, v) in self.incoming_messages: # второй забег, теперь мы точно знаем добавляли ли мы ребра 
+                                                       # т.е. weAddEdge определен и уже не изменится 
+                if v[2] == True: # добавил ли хоть один наш сосед ребро
                     addNeighborEdge = True
                 if v[0] == "walk":
-           #         for e in self.out_vertices:
-                  #      print e.id
- #                       if vertex.doHaveEdgeToVertex(e) == False: 
-                        self.outgoing_messages.append((vertex, ("add", self.out_vertices, weAddEdge))) #Здесь может не всегда нужно пересылатьь? 
+                    self.outgoing_messages.append((vertex, ("add", self.out_vertices, weAddEdge))) 
 
+        # добавление ребер может породить возможности для появления новых ребер
+        # однако если наши соседи не добавили ни одного ребра, и при этом мы сами не можем добавить ребер
+        # то делаем вершину неактивной
         if self.superstep > 4:
             if addNeighborEdge == False:
                 self.active = False
