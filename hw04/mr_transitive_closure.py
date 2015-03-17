@@ -6,8 +6,8 @@ import sys
 
 vertices = {}
 num_workers = 1
-max_supersteps = 50
-fiction_vertex = -1
+max_supersteps = 100000
+fiction_vertex = -1 #используется как заглушка когда мы не хотим добавлять ребро, а хотим просто гулять по графу
 
 def main(filename):
   global vertices
@@ -19,38 +19,52 @@ def main(filename):
   
   p = Pregel(vertices.values(),num_workers,max_supersteps)
   p.run()
+  print 'Количество итераций: ' + str(p.superstep)
   
 
 class MrTransitiveClosure(Vertex):
     def __init__(self, id):
-      Vertex.__init__(self, id, None, [])
+      Vertex.__init__(self, id, None, set())
+      
+    def doHaveEdgeToVertex(self, v):
+        return (self.id == v.id) or (v in self.out_vertices)
       
     def update(self):
         global vertices
         # На нулевой итерации еще нет входящих
+        addNeighborEdge = False
+        addEdge = False
         if self.superstep > 0:
           # по умолчанию эта вершина станет пассивной
       #    self.active = False
           if len(self.incoming_messages) > 0:
-            # Если входящие сообщения есть то находим максимальное значение и если оно больше, чем свое,
             # то активизируемся            
     #        self.outgoing_messages = []
             for (vertex, v) in self.incoming_messages:
               #  print(v)
-                if v == fiction_vertex:
-                    for e in self.out_vertices:
-                  #      print e.id
-                        self.outgoing_messages.append((vertex, e)) #Здесь может не всегда нужно пересылатьь? 
-                else:
+                if v[0].id != fiction_vertex.id:
            #         print(v.id)
-                    if v not in self.out_vertices and v.id != self.id:
-                        print(str(self.id) + ',' + str(v.id))
-                        self.out_vertices.append((v))
+                    if self.doHaveEdgeToVertex(v[0]) == False:
+                        print(str(self.id) + ',' + str(v[0].id))
+                        self.out_vertices.add((v[0]))
+                        addEdge = True
                     #объяснить тем, что тип может быть намного меньше итераций и все равно выйграем по скорости
                     #потестить на тысяче вершинах
-        #else:            
-        for vertex in self.out_vertices:
-            self.outgoing_messages.append((vertex, fiction_vertex))
+            for (vertex, v) in self.incoming_messages:
+                if v[1] == True:
+                    addNeighborEdge = True
+                if v[0].id == fiction_vertex.id:
+                    for e in self.out_vertices:
+                  #      print e.id
+ #                       if vertex.doHaveEdgeToVertex(e) == False: 
+                        self.outgoing_messages.append((vertex, (e, addEdge))) #Здесь может не всегда нужно пересылатьь? 
+        #else:           
+        if self.superstep > 4:
+            if addNeighborEdge == False:
+                self.active = False
+        if self.active:        
+            for vertex in self.out_vertices:
+                self.outgoing_messages.append((vertex, (fiction_vertex, addEdge)))
 
 if __name__ == "__main__":
     main(sys.argv[1])
