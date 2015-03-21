@@ -44,11 +44,10 @@ for term in query:
     try:
         shard = "".join([l for l in metadata.get_file_content("/%s/posting_list/%s" % (USERNAME, enc_term[0:1]))])
         plists = json.JSONDecoder().decode(shard)
-        docs = plists[enc_term]
+        docs =  filter(bool, plists[enc_term])
     except:
         continue
-    # todo: count tf
-    idf = math.log(PAGES_AMOUNT / len(docs))
+    idf = math.log(float(PAGES_AMOUNT) / len(docs))
     for d in docs:
         try:
             doc, tf = d.split()
@@ -60,7 +59,8 @@ for term in query:
 
 print("results:")
 if results:
-    for page in sorted(results, key=operator.itemgetter(1), reverse=True)[:10]:
-        print(page)
+    for page in sorted(results.items(), key=operator.itemgetter(1), reverse=True)[:10]:
+        print(page[0])
 else:
     print("no results found for query \"%s\"" % original_query)
+
