@@ -49,13 +49,9 @@ for term in query:
         continue
     idf = math.log(float(PAGES_AMOUNT) / len(docs))
     for d in docs:
-        try:
-            doc, tf = d.split()
-            tf = float(tf)
-            results[doc] += tf * idf
-        except:
-            # на случай, если что-то не так с индексом (пустые строки и т.п.)
-            pass
+        doc, tf = d.split()
+        tf = float(tf)
+        results[doc] += tf * idf
 
 print("results:")
 if results:
