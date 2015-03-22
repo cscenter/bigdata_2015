@@ -28,6 +28,7 @@ class RLEListRefImpl(RLEList):
             self.count += 1
         if len(self.impl) == 0:
             self.impl.append(value)
+            return
         last_index = len(self.impl) - 1
         if type(self.impl[last_index]) == int:
             if self.impl[last_index - 1] != value:
@@ -70,14 +71,17 @@ class RLEListRefImpl(RLEList):
                 if cur_index + 1 == index: #если следующий после закодированной последовательности
                 # НЕ ЗАБЫТЬ
                 #           ОБЪЕДИНИТЬ если есть чо
-                    if self.impl[list_index + 1] != prev_value:# list_index + 1 всегда существует т.к. случай когда его нет может быть 
+                    next = 0
+                    if type(self.impl[list_index]) == int:
+                        next += 1
+                    if self.impl[list_index + next] != prev_value:# list_index + 1 всегда существует т.к. случай когда его нет может быть 
                                                             #только если элемент последний, а я это обрабатываю выше
-                        self.impl.insert(list_index + 1, value)
+                        self.impl.insert(list_index + next, value)
                     else:
-                        if len(self.impl) > list_index + 1 and type(self.impl[list_index + 2]) == int:
-                            self.impl[list_index + 2] += 1
+                        if len(self.impl) > list_index + next and type(self.impl[list_index + next + 1]) == int:
+                            self.impl[list_index + next + 1] += 1
                         else:
-                            self.impl.insert(list_index + 2, 1)
+                            self.impl.insert(list_index + next + 1, 1)
                 else: # иначе разбиваем наше иньожество на 2 части и вставляем значение посередине
                      if prev_value != value:
                         second_part = cur_index - index + 1
@@ -123,8 +127,8 @@ def demo():
     list.append(3)
     list.append("a")
     list.append(2)
+ #   list.insert(0, "aaa")
     list.insert(0, "aaa")
-    #list.insert(0, "aaa")
     list.insert(4, "foo") #Здесь типа, ев 2 части разбивать если че
    # list.append("mar")
    # list.append(2)
