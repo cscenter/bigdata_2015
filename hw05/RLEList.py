@@ -36,5 +36,6 @@ def demo():
 	list.insert(0, "bar")
 	print list.iterator().next()
 	print list.get(1)
+ #d
 
 
