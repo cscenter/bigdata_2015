@@ -1,7 +1,14 @@
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.Random;
 
+
+/**
+ * RLEList implementation based on Cartesian tree a.k.a. Treap
+ * All RLEList operation (append, insert, get) take O(log n) average time and amortized O(log n) time in worst case
+ */
 public class TreapRLEList<T> implements RLEList<T>, Iterable<T> {
 	private Node root;
 	private Random r;
@@ -45,7 +52,9 @@ public class TreapRLEList<T> implements RLEList<T>, Iterable<T> {
 
 		void fixPathToRoot() {
 			fix();
-			if (hasParent()) parent.fixPathToRoot();
+			if (hasParent()) {
+				parent.fixPathToRoot();
+			}
 		}
 
 	}
@@ -70,6 +79,10 @@ public class TreapRLEList<T> implements RLEList<T>, Iterable<T> {
 		return getLeftmost(h.left);
 	}
 
+	/**
+	 * Finds the next node
+	 * Makes it possible to iterate through the tree without a stack
+	 */
 	private Node getSuccessor(Node h) {
 		if (h.hasRight()) {
 			h.right.parent = h;
@@ -82,16 +95,25 @@ public class TreapRLEList<T> implements RLEList<T>, Iterable<T> {
 		}
 	}
 
+	/**
+	 * Returns size of tree with root = h. Size of tree is calculated regardless of occurrences.
+	 */
 	private int size(Node h) {
 		if (h == null) return 0;
 		return h.size;
 	}
 
+	/**
+	 * Returns size of tree with root = h. Size of tree is calculated with respect occurrences.
+	 */
 	private int sizeWithOccurrences(Node h) {
 		if (h == null) return 0;
 		return h.sizeWithOccurrences;
 	}
 
+	/**
+	 * Merges two trees in a new one
+	 */
 	private Node merge(Node left, Node right) {
 		if (left == null) {
 			return right;
@@ -110,6 +132,9 @@ public class TreapRLEList<T> implements RLEList<T>, Iterable<T> {
 		}
 	}
 
+	/**
+	 * Splits tree in a two trees - left one includes all nodes to the left of ith, other nodes go to the right one
+	 */
 	private NodePair split(Node h, int i) {
 		NodePair hSplitted = new NodePair();
 		if (h == null) {
@@ -132,6 +157,9 @@ public class TreapRLEList<T> implements RLEList<T>, Iterable<T> {
 		return hSplitted;
 	}
 
+	/**
+	 * Auxiliary class to make find method able to return three values instead of one
+	 */
 	private class SearchResult {
 		Node node;
 		int nodeIndex, nodeStartElementIndex;
@@ -164,13 +192,17 @@ public class TreapRLEList<T> implements RLEList<T>, Iterable<T> {
 		}
 	}
 
+	public boolean isEmpty() {
+		return size() == 0;
+	}
+
 	public int size() {
 		return sizeWithOccurrences(root);
 	}
 
 	@Override
 	public void append(T value) {
-		if (size() == 0) {
+		if (isEmpty()) {
 			root = insert(root, size(), value);
 		} else {
 			SearchResult result = find(root, size());
@@ -186,35 +218,48 @@ public class TreapRLEList<T> implements RLEList<T>, Iterable<T> {
 	@Override
 	public void insert(int index, T value) {
 		if (index < 0 || index > size()) {
-			throw new IndexOutOfBoundsException(String.format("%d should be in [0, %d]", index, size()));
+			throw new IndexOutOfBoundsException(String.valueOf(index));
 		}
 		if (index == size()) {
 			append(value);
+			return;
+		}
+		index++;
+		/**
+		 * When inserting a value, there can be three scenarios:
+		 * 1) value equals to ith element of the tree
+		 *      In that case it's possible not to insert any new node,
+		 *      but just increment corresponding 'occurrences' field
+		 * 2) ith element of the tree is the first element of RLE block (i.e. node)
+		 *      Just insert a new node to the left of RLE block
+		 * 3) ith element is somewhere in the middle of RLE block
+		 *      Split this block and insert a new node between them. Technically,
+		 *      it's not a 'splitting' - we just decrease 'occurrences' field of block, and then
+		 *      insert a two nodes - node with new value and right part of 'splitted' node.
+		 */
+		SearchResult result = find(root, index);
+		if (result.node.data.equals(value)) {
+			result.node.occurrences++;
+			result.node.fixPathToRoot();
+		} else if (index == result.nodeStartElementIndex) {
+			root = insert(root, result.nodeIndex - 1, value);
 		} else {
-			index++;
-			SearchResult result = find(root, index);
-			if (result.node.data.equals(value)) {
-				result.node.occurrences++;
-				result.node.fixPathToRoot();
-			} else if (index == result.nodeStartElementIndex) {
-				root = insert(root, result.nodeIndex - 1, value);
-			} else {
-				System.out.println("hey");
-				root = insert(root, result.nodeIndex, value);
-				root = insert(root, result.nodeIndex + 1, result.node.data);
-				Node copy = find(root, index + 2).node;
-				copy.occurrences = result.node.occurrences - index + result.nodeStartElementIndex;
-				copy.fixPathToRoot();
-				result.node.occurrences = index - result.nodeStartElementIndex;
-				result.node.fixPathToRoot();
-			}
+			root = insert(root, result.nodeIndex, value);
+			root = insert(root, result.nodeIndex + 1, result.node.data);
+
+			Node copy = find(root, index + 3).node;
+			copy.occurrences = result.node.occurrences - index + result.nodeStartElementIndex;
+			copy.fixPathToRoot();
+
+			result.node.occurrences = index - result.nodeStartElementIndex;
+			result.node.fixPathToRoot();
 		}
 	}
 
 	@Override
 	public T get(int index) {
 		if (index < 0 || index >= size()) {
-			throw new IndexOutOfBoundsException(String.format("%d should be in [0, %d)", index, size()));
+			throw new IndexOutOfBoundsException(String.valueOf(index));
 		}
 		return find(root, index + 1).node.data;
 	}
@@ -225,19 +270,29 @@ public class TreapRLEList<T> implements RLEList<T>, Iterable<T> {
 	}
 
 
+	/**
+	 * Auxiliary class to implement {@link java.lang.Iterable} interface
+	 */
 	private class TreeRLEIterator implements Iterator<T> {
 		int iterated, total;
 		Node current;
 		int iteratedWithinNode;
 
 		TreeRLEIterator() {
-			this.current = getLeftmost(root);
+			if (root != null) {
+				this.current = getLeftmost(root);
+			}
 			this.total = size();
 		}
 
+		/**
+		 * Checks if list was modified during iteration
+		 * If was, {@link java.util.ConcurrentModificationException} should be thrown
+		 *
+		 * Not very good test, but it's okay in our case, because 'remove' operation is unsupported
+		 * so the only way to change collection is to add a new element.
+		 */
 		void checkIfModified() {
-			// Not very good consistency test, but it's okay in our case, because there's no
-			// 'remove' operation so the only way to change collection is to add a new element.
 			if (total != size()) {
 				throw new ConcurrentModificationException();
 			}
@@ -270,5 +325,45 @@ public class TreapRLEList<T> implements RLEList<T>, Iterable<T> {
 		}
 		description.replace(description.length() - 2, description.length(), "]");
 		return description.toString();
+	}
+
+	/**
+	 * Some unit tests
+	 */
+	public static void main(String[] args) {
+		TreapRLEList<String> list = new TreapRLEList<>();
+		assert list.isEmpty();
+
+		Iterator<String> iter = list.iterator();
+		assert !iter.hasNext();
+
+		ArrayList<String> arrayList = new ArrayList<>(
+				Arrays.asList(new String[]{"a", "a", "a", "b", "b", "b", "c", "c", "c"}));
+		arrayList.forEach(list::append);
+		assert list.size() == arrayList.size();
+		assert list.find(list.root, list.size()).nodeIndex == 3; // checks if it's actually only 3 nodes in tree
+
+		arrayList.add(1, "d");
+		arrayList.add(1, "d");
+		list.insert(1, "d");
+		list.insert(1, "d");
+		assert list.size() == arrayList.size();
+		assert list.find(list.root, list.size()).nodeIndex == 5;
+
+
+		iter = list.iterator();
+		list.append("c");
+		arrayList.add("c");
+		boolean wasThrown = false;
+		try {
+			iter.next();
+		} catch (ConcurrentModificationException e) {
+			wasThrown = true;
+		}
+		assert wasThrown;
+
+		assert list.toString().equals(arrayList.toString());
+
+		System.out.println(list);
 	}
 }
