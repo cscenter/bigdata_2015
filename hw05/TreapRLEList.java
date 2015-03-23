@@ -2,20 +2,20 @@ import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.Random;
 
-public class CartesianRLEList<T> implements RLEList<T>, Iterable<T> {
+public class TreapRLEList<T> implements RLEList<T>, Iterable<T> {
 	private Node root;
 	private Random r;
 
-	public CartesianRLEList() {
+	public TreapRLEList() {
 		r = new Random();
 	}
 
 	private class Node {
 		int key;
-		int occurrences, size;
+		int occurrences, size, sizeWithOccurrences;
 		T data;
 		Node left, right;
-		Node parent;  // useful only in iteration, so correctness of this reference is not supported all the time
+		Node parent;
 
 		public Node(int key, T data) {
 			this.key = key;
@@ -37,7 +37,15 @@ public class CartesianRLEList<T> implements RLEList<T>, Iterable<T> {
 		}
 
 		void fix() {
-			size = size(left) + size(right) + occurrences;
+			size = size(left) + size(right) + 1;
+			sizeWithOccurrences = sizeWithOccurrences(left) + sizeWithOccurrences(right) + occurrences;
+			if (hasRight()) right.parent = this;
+			if (hasLeft()) left.parent = this;
+		}
+
+		void fixPathToRoot() {
+			fix();
+			if (hasParent()) parent.fixPathToRoot();
 		}
 
 	}
@@ -79,6 +87,10 @@ public class CartesianRLEList<T> implements RLEList<T>, Iterable<T> {
 		return h.size;
 	}
 
+	private int sizeWithOccurrences(Node h) {
+		if (h == null) return 0;
+		return h.sizeWithOccurrences;
+	}
 
 	private Node merge(Node left, Node right) {
 		if (left == null) {
@@ -120,6 +132,17 @@ public class CartesianRLEList<T> implements RLEList<T>, Iterable<T> {
 		return hSplitted;
 	}
 
+	private class SearchResult {
+		Node node;
+		int nodeIndex, nodeStartElementIndex;
+
+		public SearchResult(Node node, int nodeIndex, int nodeStartElementIndex) {
+			this.node = node;
+			this.nodeIndex = nodeIndex;
+			this.nodeStartElementIndex = nodeStartElementIndex;
+		}
+	}
+
 	private Node insert(Node h, int i, T value) {
 		Node toAdd = new Node(r.nextInt(), value);
 		NodePair hSplitted = split(h, i);
@@ -127,56 +150,95 @@ public class CartesianRLEList<T> implements RLEList<T>, Iterable<T> {
 		return merge(hSplitted.left, hSplitted.right);
 	}
 
-	private Node find(Node h, int i) {
-		int sizeLeft = size(h.left);
+	private SearchResult find(Node h, int i) {
+		int sizeLeft = sizeWithOccurrences(h.left);
 		if (i <= sizeLeft) {
 			return find(h.left, i);
 		} else if (i <= sizeLeft + h.occurrences) {
-			return h;
+			return new SearchResult(h, size(h.left) + 1, sizeWithOccurrences(h.left) + 1);
 		} else {
-			return find(h.right, i - sizeLeft - h.occurrences);
+			SearchResult result = find(h.right, i - sizeLeft - h.occurrences);
+			result.nodeIndex += size(h.left) + 1;
+			result.nodeStartElementIndex += sizeLeft + h.occurrences;
+			return result;
 		}
 	}
 
-
 	public int size() {
-		return size(root);
+		return sizeWithOccurrences(root);
 	}
 
 	@Override
 	public void append(T value) {
-		root = insert(root, size(root), value);
+		if (size() == 0) {
+			root = insert(root, size(), value);
+		} else {
+			SearchResult result = find(root, size());
+			if (value.equals(result.node.data)) {
+				result.node.occurrences++;
+				result.node.fixPathToRoot();
+			} else {
+				root = insert(root, size(), value);
+			}
+		}
 	}
 
 	@Override
 	public void insert(int index, T value) {
-		root = insert(root, index, value);
+		if (index < 0 || index > size()) {
+			throw new IndexOutOfBoundsException(String.format("%d should be in [0, %d]", index, size()));
+		}
+		if (index == size()) {
+			append(value);
+		} else {
+			index++;
+			SearchResult result = find(root, index);
+			if (result.node.data.equals(value)) {
+				result.node.occurrences++;
+				result.node.fixPathToRoot();
+			} else if (index == result.nodeStartElementIndex) {
+				root = insert(root, result.nodeIndex - 1, value);
+			} else {
+				System.out.println("hey");
+				root = insert(root, result.nodeIndex, value);
+				root = insert(root, result.nodeIndex + 1, result.node.data);
+				Node copy = find(root, index + 2).node;
+				copy.occurrences = result.node.occurrences - index + result.nodeStartElementIndex;
+				copy.fixPathToRoot();
+				result.node.occurrences = index - result.nodeStartElementIndex;
+				result.node.fixPathToRoot();
+			}
+		}
 	}
 
 	@Override
 	public T get(int index) {
-		return find(root, index + 1).data;
+		if (index < 0 || index >= size()) {
+			throw new IndexOutOfBoundsException(String.format("%d should be in [0, %d)", index, size()));
+		}
+		return find(root, index + 1).node.data;
 	}
 
 	@Override
 	public Iterator<T> iterator() {
-		return new TreeRLEIterator(root);
+		return new TreeRLEIterator();
 	}
+
 
 	private class TreeRLEIterator implements Iterator<T> {
 		int iterated, total;
 		Node current;
+		int iteratedWithinNode;
 
-		TreeRLEIterator(Node root) {
+		TreeRLEIterator() {
 			this.current = getLeftmost(root);
-			this.total = size(root);
+			this.total = size();
 		}
-
 
 		void checkIfModified() {
 			// Not very good consistency test, but it's okay in our case, because there's no
 			// 'remove' operation so the only way to change collection is to add a new element.
-			if (total != size(CartesianRLEList.this.root)) {
+			if (total != size()) {
 				throw new ConcurrentModificationException();
 			}
 		}
@@ -190,9 +252,11 @@ public class CartesianRLEList<T> implements RLEList<T>, Iterable<T> {
 		@Override
 		public T next() {
 			checkIfModified();
-			if (iterated != 0) {
+			if (iterated != 0 && iteratedWithinNode == current.occurrences) {
 				current = getSuccessor(current);
+				iteratedWithinNode = 0;
 			}
+			iteratedWithinNode++;
 			iterated++;
 			return current.data;
 		}
@@ -207,6 +271,4 @@ public class CartesianRLEList<T> implements RLEList<T>, Iterable<T> {
 		description.replace(description.length() - 2, description.length(), "]");
 		return description.toString();
 	}
-
-
 }
