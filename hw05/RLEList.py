@@ -14,27 +14,123 @@ class RLEList(object):
 	def iterator(self):
 		pass
 
+class MyIterator:
+	def __init__(self, obj):
+		self.curpos = 0
+		self.curVal = 0
+		self.obj = obj
+        
+	def __iter__(self):
+		return self
+
+	def next(self):
+		if self.curpos >= self.obj.size:
+			raise StopIteration()
+		self.curVal += 1
+		(a, b) = self.obj.impl[self.curpos]
+		if b >= self.curVal:
+			return a 
+		self.curpos += 1
+		self.curVal = 1
+		if self.curpos >= self.obj.size:
+			raise StopIteration()
+		(a, b) = self.obj.impl[self.curpos]
+		return a
+				
+
 class RLEListRefImpl(RLEList):
 	def __init__(self):
 		self.impl = []
+		self.size = 0
+		self.allSize = 0
 
 	def append(self, value):
-		self.impl.append(value)
+		self.insert(self.allSize, value)
+	
+	def add(self, index, value):
+		self.impl.insert(index, (value, 1))
+		self.size += 1
+
+	def go(self, index):
+		curpos = 0
+		if index == 0:
+			return 0
+		pos = 1
+		for (a,b) in self.impl:
+			if curpos == index:
+				return pos - 1
+			np = curpos + b
+			if np > index:
+				l = np - index
+				self.impl[pos - 1] = (a, b - l)
+				self.impl.insert(pos, (a, l))
+				self.size += 1
+				return pos
+			pos += 1
+			curpos = np
+		if curpos != index:
+			return pos 
+		return pos - 1
 
 	def insert(self, index, value):
-		self.impl.insert(index, value)
+
+		self.allSize += 1
+
+		index = self.go(index)
+
+		if index > self.size or index < 0:
+			raise IndexError
+
+		if self.size == 0:
+			self.add(index, value)
+			return
+
+		if index == 0 and self.size > 0:
+			(a, b) = self.impl[index]
+			if a == value:
+				b += 1
+				self.impl[index] = (a, b)
+				return
+			self.add(index, value)
+			return 
+
+		if index == self.size and self.size > 0:
+			(a, b) = self.impl[index - 1]
+			if a == value:
+				b += 1
+				self.impl[index - 1] = (a, b)
+				return
+			self.add(index, value)
+			return
+
+		if index == 0:
+			self.add(index, value)
+			return
+
+		(a, b) = self.impl[index - 1]
+		if a == value:
+			self.impl[index - 1] = (a, b + 1)
+			return
+
+		if index < self.size:
+			(a, b) = self.impl[index]
+			if a == value:
+				self.impl[index] = (a, b + 1)
+				return
+
+		self.add(index, value)
 
 	def get(self, index):
-		return self.impl[index]
+		index += 1
+		curSum = 0
+		for (a, b) in self.impl:
+			curSum += b
+			if curSum >= index:
+				return a
+		raise IndexError
 
 	def iterator(self):
-		return iter(self.impl)
+		return MyIterator(self)
 
-def demo():
-	list = RLEListRefImpl()
-	list.append("foo")
-	list.insert(0, "bar")
-	print list.iterator().next()
-	print list.get(1)
-
-
+if __name__ == '__main__':
+	pass
