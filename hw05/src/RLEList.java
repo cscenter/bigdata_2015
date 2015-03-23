@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public interface RLEList<T> {
+public interface RLEList<T> extends Iterable<T>  {
 	void append(T value);
 	void insert(int index, T value);
 	T get(int index);
