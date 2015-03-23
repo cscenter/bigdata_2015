@@ -1,5 +1,4 @@
-from collections import namedtuple
-# Record = namedtuple("Record", ["name", "number"])
+
 class RLEList(object):
 	def __init__(self):
 		pass
@@ -20,6 +19,9 @@ class RLEListRefImpl(RLEList):
 	def __init__(self):
 		self.impl = []
 
+	def __len__(self):
+		return sum(val[1] for val in self.impl)
+
 	def append(self, value):
 		if self.impl:
 			if self.impl[-1][0] == value:
@@ -38,7 +40,7 @@ class RLEListRefImpl(RLEList):
 		# insert same
 		if (j > 0) and (value == self.impl[j-1][0]):
 			self.impl[j-1][1] += 1
-		elif (j < len(self.impl)) and (value == self.impl[j][0]):
+		elif (j < len(self.impl)) and (value == self.impl[j][0]) and (i == index):
 			self.impl[j][1] += 1
 		else:
 			# insert after seria
@@ -71,17 +73,14 @@ class RLEListRefImpl(RLEList):
 
 def demo():
 	list = RLEListRefImpl()
-	list.append("rar")
-	list.append("foo")
-	list.append("foo")
-	list.append("foo")
-	list.append("foo")
-	list.append("bar")
-	list.append("rar")
-	list.append("rar")
-	list.append("rar")
-	list.insert(0, "rar")
-	list.insert(0, "bar")
+	list.append(0)
+	list.append(1)
+	list.append(1)
+	list.append(0)
+	list.append(0)
+	print list.impl
+	list.insert(2, 0)
+	# list.insert(1, 0)
 	print list.impl
 	# print list.get(0)
 	# print list.get(1)
@@ -98,5 +97,6 @@ def demo():
 
 if __name__ == '__main__':
 	demo()
+
 
 
