@@ -103,7 +103,6 @@ class RLEListRefImpl<T> implements RLEList<T> {
 
             @Override
             public void remove() {
-                // TODO finish it!
                 if(current.copies > 1){
                     current.copies--;
                 } else {
