@@ -43,10 +43,14 @@ class RLEListRefImpl(RLEList):
         #если база данных пуста, то просто добавляем в лист значение
         if (len(self.impl) == 0):
             self.impl.append(value)
+        #если база данных не пуста
         else:
+            #последнее встретившееся нам значение в бд
             place_of_prev_value = 0
+            #следующее значение в бд
             place_of_next_value = 0
             i = 0
+            #рассматриваем граничный случай вставки в начало
             if (index == 0):
                 if(len(self.impl) >= place_of_prev_value + 2 and isinstance(self.impl[place_of_prev_value + 1],int)):
                     if self.impl[place_of_prev_value] == value:
@@ -58,7 +62,7 @@ class RLEListRefImpl(RLEList):
                         self.impl.insert(1, 1)
                     else:
                         self.impl.insert(0, value)
-
+            #рассматриваем граничный случай вставки на вторую позицию
             elif (index == 1):
                 if(self.impl[place_of_prev_value] == value):
                     if(len(self.impl) >= place_of_prev_value + 2 and isinstance(self.impl[place_of_prev_value + 1],int)):
@@ -79,10 +83,12 @@ class RLEListRefImpl(RLEList):
                             self.impl.insert(place_of_prev_value + k, second_interval_length)
                         else:
                             self.impl.insert(1, value)
-
+            #если у нас не граничные случаи, действуем следующим образом:
             else:
+                #пока мы не дошли до места вставки
                 while(i < index-1):
                     place_of_prev_value = place_of_next_value
+                    #если после предыдущего значения в бд шло число повторов
                     if (len(self.impl) >= place_of_prev_value + 2 and isinstance(self.impl[place_of_prev_value + 1], int)):
                         i += self.impl[place_of_prev_value + 1] + 1
                         if (len(self.impl) >= place_of_prev_value + 3):
@@ -132,67 +138,7 @@ class RLEListRefImpl(RLEList):
                             self.impl.insert(place_of_prev_value + k, second_interval_length)
                 if (i < index - 1):
                     self.append(self, value)
-    '''def insert(self, index, value):
-        self.count += 1
-      #  print self.count
-        if index == 0:
-            if self.get(0) != value:
-                self.impl.insert(0, value)
-            else:
-                if len(self.impl) > 1 and type(self.impl[1]) == int:
-                    self.impl[1] += 1
-                else:
-                    self.impl.insert(1, 1)
-            return
-        if index == self.count - 1:
-            self.append(value)
-            return
-        cur_index = -1
-        prev_value = ""
-        list_index = -1
-        for i in self.impl:
-            list_index += 1
-            if type(i) == int:
-                cur_index += i
-            else:
-                prev_value = i
-                cur_index += 1
-            if cur_index + 1 >= index:
-                if cur_index + 1 == index: #если следующий после закодированной последовательности
-                # НЕ ЗАБЫТЬ
-                #           ОБЪЕДИНИТЬ если есть чо
-                    next = 0
-                    if type(self.impl[list_index]) == int:
-                        next += 1
-                    if self.impl[list_index + next] != prev_value:# list_index + 1 всегда существует т.к. случай когда его нет может быть
-                                                            #только если элемент последний, а я это обрабатываю выше
-                        self.impl.insert(list_index + next, value)
-                    else:
-                        if len(self.impl) > list_index + next and type(self.impl[list_index + next + 1]) == int:
-                            self.impl[list_index + next + 1] += 1
-                        else:
-                            self.impl.insert(list_index + next + 1, 1)
-                else: # иначе разбиваем наше иньожество на 2 части и вставляем значение посередине
-                     if prev_value != value:
-                        second_part = cur_index - index + 1
-                        self.impl[list_index] = i - second_part
-                        if self.impl[list_index] == 0:
-                            self.impl[list_index] = value
-                        else:
-                            list_index += 1
-                            self.impl.insert(list_index, value)
-                            list_index += 1
-                            self.impl.insert(list_index, prev_value)
-                            if second_part != 1:
-                                list_index += 1
-                                self.impl.insert(list_index, second_part - 1)
-                     else:
-                        self.impl[list_index] += 1
 
-                break
-
-      #  self.impl.insert(index, value)
-'''
     def get(self, index):
         #надо прописать ещё момент, когда мой список может быть пуст
         if (len(self.impl) == 0):
@@ -201,7 +147,7 @@ class RLEListRefImpl(RLEList):
         i = 0
         place_of_prev_value = 0
         place_of_next_value = 0
-        while (i < index):
+        while (i < index ):
             place_of_prev_value = place_of_next_value
             if (len(self.impl) >= place_of_prev_value + 2 and isinstance(self.impl[place_of_prev_value + 1], int)):
                 i += self.impl[place_of_prev_value + 1] + 1
@@ -215,10 +161,10 @@ class RLEListRefImpl(RLEList):
                 else:
                     break
                 i += 1
-        if (i < index):
+        if (i < index ):
             print 'Index is too large'
             return None
-        return self.impl[place_of_prev_value]
+        return self.impl[place_of_next_value]
 
 
     def iterator(self):
@@ -227,19 +173,6 @@ class RLEListRefImpl(RLEList):
         interval = 0
         first_iter = True
         while i < len(self.impl):
-            '''if(isinstance(self.impl[place_of_prev_value + 1], int)):
-                length_of_value_interval = 1 + self.impl[place_of_prev_value + 1]
-            else:
-                length_of_value_interval = 1
-            small_i = 0
-            while small_i < length_of_value_interval:
-                small_i += 1
-                yield self.impl[place_of_prev_value]
-            i += small_i
-            if(isinstance(self.impl[place_of_prev_value + 1], int)):
-                place_of_prev_value += 2
-            else:
-                place_of_prev_value += 1'''
             if (count == interval):
                 count = 0
                 if (len(self.impl) >= i + 2 and isinstance(self.impl[i + 1], int)):
@@ -254,8 +187,6 @@ class RLEListRefImpl(RLEList):
             yield self.impl[i]
 
 
-
-        #return iter(self.impl)
     def demonstrate(self):
         for i in self.impl:
             print i
@@ -263,36 +194,12 @@ class RLEListRefImpl(RLEList):
 def demo():
     list = RLEListRefImpl()
     list.append("foo")
-    print 'demonstration'
-    list.demonstrate()
     list.insert(0, "bar")
+    print list.iterator().next()
+    print list.get(1)
+    print list.get(0)
     print 'demonstration'
     list.demonstrate()
-    list.append('foo')
-    print 'demonstration'
-    list.demonstrate()
-    list.append('foo')
-    print 'demonstration'
-    list.demonstrate()
-    list.insert(1,'bar')
-    print 'demonstration'
-    list.demonstrate()
-    list.insert(0,'bar')
-    print 'demonstration'
-    list.demonstrate()
-    list.insert(2,'bar')
-    print 'demonstration'
-    list.demonstrate()
-    print 'work of iterator'
-    for i in range(8):
-        print list.iterator().next()
-    #list.insert(6, 'bar')
-    #print 'demonstration'
-    #list.demonstrate()
-
-    #print list.iterator().next()
-    #print list.get(1)
-    #print list.get(0)
 demo()
 
 
