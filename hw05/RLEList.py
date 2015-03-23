@@ -19,6 +19,7 @@ class MyIterator:
 		self.curpos = 0
 		self.curVal = 0
 		self.obj = obj
+		
         
 	def __iter__(self):
 		return self
@@ -29,13 +30,13 @@ class MyIterator:
 		self.curVal += 1
 		(a, b) = self.obj.impl[self.curpos]
 		if b >= self.curVal:
-			return a 
+			return self.obj.dic[a] 
 		self.curpos += 1
 		self.curVal = 1
 		if self.curpos >= self.obj.size:
 			raise StopIteration()
 		(a, b) = self.obj.impl[self.curpos]
-		return a
+		return self.obj.dic[a]
 				
 
 class RLEListRefImpl(RLEList):
@@ -43,6 +44,9 @@ class RLEListRefImpl(RLEList):
 		self.impl = []
 		self.size = 0
 		self.allSize = 0
+		self.distinct = 0
+		self.dic = {}
+		self.dic2 = {}
 
 	def append(self, value):
 		self.insert(self.allSize, value)
@@ -73,6 +77,14 @@ class RLEListRefImpl(RLEList):
 		return pos - 1
 
 	def insert(self, index, value):
+
+		if value in self.dic2:
+			value = self.dic2[value]
+		else:
+			self.distinct += 1
+			self.dic[self.distinct] = value
+			self.dic2[value] = self.distinct
+			value = self.distinct
 
 		self.allSize += 1
 
@@ -126,7 +138,7 @@ class RLEListRefImpl(RLEList):
 		for (a, b) in self.impl:
 			curSum += b
 			if curSum >= index:
-				return a
+				return self.dic[a]
 		raise IndexError
 
 	def iterator(self):
