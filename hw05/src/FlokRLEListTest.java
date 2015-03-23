@@ -1,5 +1,7 @@
 import com.sun.xml.internal.ws.util.StringUtils;
 
+import java.util.Iterator;
+
 import static org.junit.Assert.*;
 
 public class FlokRLEListTest {
@@ -114,6 +116,65 @@ public class FlokRLEListTest {
         rle.insert(-1, 'a');
     }
 
+
+    @org.junit.Test
+    public void testIterRemove() throws IndexOutOfBoundsException {
+        FlokRLEList<Character> rle = new FlokRLEList<>();
+        rle.append('a');
+        rle.append('a');
+        rle.append('a');
+
+        Iterator<Character> it = rle.iterator();
+        it.next();
+        it.remove();
+        boolean equals = rleToString(rle).equals("aa");
+        assertTrue(equals);
+
+        rle = new FlokRLEList<>();
+        rle.append('a');
+        it = rle.iterator();
+        it.next();
+        it.remove();
+        equals = rleToString(rle).equals("");
+        assertTrue(equals);
+
+        //decreasing amount
+        rle = new FlokRLEList<>();
+        rle.append('a');
+        rle.append('a');
+        it = rle.iterator();
+        it.next();
+        it.next();
+        it.remove();
+        equals = rleToString(rle).equals("a");
+        assertTrue(equals);
+
+        //decreasing amont with switching interval
+        rle = new FlokRLEList<>();
+        rle.append('a');
+        rle.append('a');
+        rle.append('b');
+        it = rle.iterator();
+        it.next();
+        it.next();
+        it.remove();
+        it.next();
+        it.remove();
+        equals = rleToString(rle).equals("a");
+        assertTrue(equals);
+
+        //gluing 2 intervals
+        rle = new FlokRLEList<>();
+        rle.append('a');
+        rle.append('b');
+        rle.append('a');
+        it = rle.iterator();
+        it.next();
+        it.next();
+        it.remove();
+        equals = rleToString(rle).equals("aa");
+        assertTrue(equals);
+    }
 
     private String rleToString(RLEList<Character> rle) {
         StringBuilder sb = new StringBuilder();

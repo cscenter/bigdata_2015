@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.Stack;
+
 /**
  * Created by Flok on 22.03.15.
  */
@@ -24,6 +26,14 @@ public class FlokRLEList<T> implements RLEList<T>{
 
         public void incAmount() {
             amount++;
+        }
+
+        private void decAmount() {
+            amount--;
+        }
+
+        private void addAmmount(int delta) {
+            amount += delta;
         }
 
         public int getAmount() {
@@ -123,9 +133,9 @@ public class FlokRLEList<T> implements RLEList<T>{
     public Iterator<T> iterator() {
         Iterator<T> it = new Iterator<T>() {
             private int currentIndex = 0;
-            private int currentPairIndex = 0;
+            private int currentInPairIndex = 0;
             private Pair<T> pair;
-            private Pair<T> prev;
+            private Stack<Pair<T>> prev = new Stack<>();
             private Iterator<Pair<T>> it = elems.iterator();
 
             @Override
@@ -135,19 +145,33 @@ public class FlokRLEList<T> implements RLEList<T>{
 
             @Override
             public T next() {
-                if(pair == null || currentPairIndex == pair.getAmount()) {
-                    prev = pair;
+                if(pair == null || currentInPairIndex >= pair.getAmount()) {
+                    if(pair != null) {prev.push(pair);}
                     pair = it.next();
-                    currentPairIndex = 0;
+                    currentInPairIndex = 0;
                 }
-                currentPairIndex++;
+                currentInPairIndex++;
                 currentIndex++;
                 return pair.getValue();
             }
 
             @Override
             public void remove() {
-                throw new UnsupportedOperationException();
+                pair.decAmount();
+                currentInPairIndex--;
+                size--;
+                if(pair.getAmount() == 0) {
+                    it.remove();
+                    if(it.hasNext()) {
+                        pair = it.next();
+                        if(prev.size() != 0 && Objects.equals(prev.peek().getValue(), pair.getValue())) {
+                            Pair<T> tempPair = prev.pop();
+                            tempPair.addAmmount(pair.getAmount());
+                            it.remove();
+                            pair = tempPair;
+                        }
+                    }
+                }
             }
         };
         return it;
