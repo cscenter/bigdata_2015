@@ -180,6 +180,10 @@ public class TreapRLEList<T> implements RLEList<T>, Iterable<T> {
 
 	private SearchResult find(Node h, int i) {
 		int sizeLeft = sizeWithOccurrences(h.left);
+		/**
+		 * Because keys are implicit, the most effective way to find ith element is to compare i with size of left subtree
+		 * After comparison we can understand where ith element is - in left subtree, in right subtree of just in the root
+		 */
 		if (i <= sizeLeft) {
 			return find(h.left, i);
 		} else if (i <= sizeLeft + h.occurrences) {
