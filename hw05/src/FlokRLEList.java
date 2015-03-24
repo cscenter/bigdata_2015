@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Objects;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * Created by Flok on 22.03.15.
@@ -45,7 +42,7 @@ public class FlokRLEList<T> implements RLEList<T>{
         }
     }
 
-    private ArrayList<Pair<T>> elems = new ArrayList<>();
+    private LinkedList<Pair<T>> elems = new LinkedList<>();
     private  Pair<T> lastPair;
     private int size = 0;
 
