@@ -36,7 +36,7 @@ class RLEListRefImpl(RLEList):
         self.size += 1
 
     # O(1) if index == len
-    # O(n) worst case
+    # O(n) in worst case
     # would be O(log(n)) in avg (but O(n) in worst case)
     # if I used binary search for run index calculation
     def insert(self, index, value):
@@ -51,7 +51,9 @@ class RLEListRefImpl(RLEList):
             self.impl[run_index] = (value, run_len + 1, self.get_run_bound(-1))
             self.update_run_bound()
 
-    # O(n) worst case
+    # O(n) in worst case
+	# it would be O(log(n)) in avg (but O(n) in worst case)
+    # if I used binary search for run index calculation	
     def get(self, index):
         if index > self.size:
             raise Exception("out of range")
