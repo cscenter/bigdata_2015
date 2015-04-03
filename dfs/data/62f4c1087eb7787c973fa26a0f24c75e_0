@@ -1,0 +1,68 @@
+SAP HANA is an in-memory, column-oriented,  relational database management system developed and marketed by SAP SE. (December 8, 2012) HANA's architecture is designed to handle both high transaction rates and complex query processing on the same platform.http://www.saphana.com/docs/DOC-3817 SAP HANA was previously called SAP High-Performance Analytic Appliance.http://searchsap.techtarget.com/definition/HANA-SAP-HANA
+
+In addition to the database engine, HANA includes an embedded web server and version control repository that can be used for application development. HANA applications can be created using server-side JavaScript and HTML.
+
+History
+SAP HANA originates from developed or acquired technologies, including TREX search engine -an in-memory column-oriented search engine-, P*TIME -an in-memory OLTP database acquired by SAP in 2005-, and MaxDB with its in-memory liveCache engine.
+In 2008, teams from SAP SE working with Hasso Plattner Institute and Stanford University demonstrated an application architecture for real-time analytics and aggregation, mentioned as "HAsso's New Architecture" in SAP executive Vishal Sikka's blog. Before the name "HANA" stabilised, people referred to this product as "New Database".
+
+The product provides Business Intelligence allowing real-time response.
+The first product shipped in late November 2010.
+By mid-2011, the technology had attracted interest but the conservative business customers still considered it "in early days".
+HANA support for SAP NetWeaver Business Warehouse was announced in September 2011 for availability by November.
+
+In 2012, SAP promoted aspects of cloud computing.
+In October 2012, SAP announced a variant called HANA One that used a smaller amount of memory on Amazon Web Services for an hourly fee.
+
+In January 2013, SAP enterprise resource planning software from its Business Suite was announced for HANA, and became available by May.
+In May 2013, a software as a service offering called the HANA Enterprise Cloud service was announced.
+
+Rather than versioning, the software utilizes service packs.
+
+Architecture
+The main process, called the index server, has a structure shown in the diagram to the right.http://www.saphana.com/community/blogs/blog/2012/12 right|500px|HANA indexer components The indexer performs session management,  authorization, transaction management and command processing. Note that HANA has both a row store and a column store. Users can create tables using either store, but the column store has more capabilities. The index server also manages persistence between cached memory images of database objects, log files and permanent storage files.
+
+The Authorization manager provides authentication and authorization services. The Authorization Manager can provide security based on SAML, OAuth or Kerberos authentication protocols.
+
+The Extended Services (XS) Engine is a web server with privileged access to the database. Applications written with server-side JavaScript or as Java Servlets can be deployed to the XS Engine.  These can either be HTML web applications or REST web service endpoints. Server-side JavaScript includes jQuery-based extensions for database access and to access HTTP request and response messages.  The JavaScript engine is based on the Mozilla SpiderMonkey project.
+
+Client applications access the HANA database directly using JDBC or via the Extended Services Engine using HTTP.
+
+To overcome input/output bottlenecks, HANA was designed as an in-memory server, meaning that the first access to a table causes the entire table to be read and maintained in memory. Background processes maintain log files and the long-term disk storage. The query processor uses massively parallel processing. The column data store reduces the amount of data that needs to be read and eliminates the need for indexing.
+
+Applications can bypass the SQL processor and access the Calculation Engine directly by composing XML-based queries. There are three types of non-SQL query objects: Attribute Views, Calculation Views and Analytic Views. In many cases, application performance can be increased by using these views instead of SQL queries.
+
+Application Development http://help.sap.com/hana/SAP_HANA_Developer_Guide_en.pdf
+
+Applications are developed using a plugin to the Eclipse development environment called HANA Studio. Using this environment, the database can be managed and applications can be developed. Database objects (tables, views, stored procedure, etc) can be created, deployed and debugged using the Eclipse plugin. Extended Services applications can be written, deployed and debugged using HANA Studio. Standard database management functions such as database creation, user account management, backups and data import/export can be performed from HANA Studio.
+
+The HANA server includes a version management system called the repository. Applications developed in HANA Studio are deployed via the repository which maintains a version history of each deployment artifact (table, view, procedure, JavaScript file, etc).
+
+Applications may be moved from one server to another by creating a Distribution Unit or DU. DU's are essentially compressed archives of the files that make up an application. This may be needed when there are separate development, test and production environments. They can be created, exported and imported using HANA Studio.
+
+While traditional client-server or multitier applications are supported via JDBC, SAP is recommending https://open.sap.com/courses/hana1 that business logic contained in the client or middle tier application be moved to the HANA server as XS application(s). This tends to increase performance by reducing the amount of data transmitted from the database server to the middle tier. It also allows the application to use the CPU power found on the large servers that HANA requires.
+
+Developers Community
+The focal point of the community of developers on SAP HANA platform is SAP HANA Developer Center or "the DevCenter". The DevCenter offers general information, education materials, community forums, plus access to SAP HANA database with free licenses hosted in the public cloud (like CloudShare, Amazon Web Services, Microsoft Azure).
+Access to some materials and features may require free registration.
+
+Physical Deploymenthttp://help.sap.com/hana/SAP_HANA_Administration_Guide_en.pdf
+
+HANA is available as an appliance (hardware with software preloaded) from a number of vendors such as Dell, HP and IBM.  HANA is also available as a cloud appliance (called HANA One) from a number of cloud service providers such as Amazon and Microsoft Azure. A free developer's edition is available from several cloud providers. HANA is not available as software alone.
+
+A SAP account is required to deploy SAP HANA and machines. To deploy a HANA instance, you must log into your SAP account and initiate the deployment from there. When all requirements are met at the SAP site, virtual machine(s) will be created by SAP on the selected cloud service provider. This is in contrast to the more conventional approach where virtual machines are created directly on the cloud service provider's web site.
+
+HANA requires substantial hardware resources.  For example, on Amazon, the recommended instance size is 8xlarge, which has 32 CPUs, 60GB memory and 640GB disk storage.https://aws.amazon.com/marketplace/pp/B009KA3CRY
+
+HANA can be deployed on a single machine or in a high-availability cluster. A single machine can run multiple instances of HANA.
+
+ External links 
+ SAP HANA Certification materials SAP HANA Certification course planning.
+
+References
+
+Category:2010 software
+Category:Proprietary database management systems
+Category:Big data
+Category:Column-oriented DBMS software for Linux
+Category:Proprietary commercial software for Linux

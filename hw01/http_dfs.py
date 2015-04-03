@@ -2,9 +2,9 @@
 # encoding: utf8
 from collections import namedtuple
 #Use this import if you're using Python3
-from urllib.request import urlopen
+#from urllib.request import urlopen
 #Use this import if you're using Python2
-#from urllib2 import urlopen
+from urllib2 import urlopen
 import json
 
 MASTER_URL = "bigdata-hw01.barashev.net"
@@ -30,7 +30,3 @@ def get_chunk_data(chunk_server_id, chunk_id):
     raise Exception("ERROR: can't get chunk %s from chunkserver %s" % (chunk_id, chunk_server_id))
   for line in resp:
     yield line.decode(encoding='UTF-8')
-
-
-
-

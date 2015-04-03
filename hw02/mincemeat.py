@@ -148,7 +148,6 @@ class Protocol(asynchat.async_chat):
 class Client(Protocol):
     def __init__(self):
         Protocol.__init__(self)
-        self.mapfn = self.reducefn = self.collectfn = None
         
     def conn(self, server, port):
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -177,9 +176,11 @@ class Client(Protocol):
             if k not in results:
                 results[k] = []
             results[k].append(v)
+       #     print(k + ' ' + str(results[k]))
         if self.collectfn:
             for k in results:
                 results[k] = [self.collectfn(k, results[k])]
+   #     print(str(results))        
         self.send_command('mapdone', (data[0], results))
 
     def call_reducefn(self, command, data):
@@ -434,3 +435,17 @@ class MapInputDFSFileName(MapInput):
 
     def next(self):
         return next(self.generator)
+        
+class MapInputDFSFileNameByMatrix1Matrix2(MapInput):
+    generator = None
+
+    def __init__(self, files_for_matrix_1, files_for_matrix_2):
+        self.generator = self.get_generator(files_for_matrix_1, files_for_matrix_2)
+
+    def get_generator(self, files_for_matrix_1, files_for_matrix_2):
+        for f1 in files_for_matrix_1:
+            for f2 in files_for_matrix_2:
+                yield f1, f2
+
+    def next(self):
+        return next(self.generator)        

@@ -1,0 +1,21 @@
+Hibari is a strongly consistent, highly available, distributed, key-value Big Data store. (NoSQL database) Hibari project homepage It was developed by Cloudian, Inc., formerly Gemini Mobile Technologies to support its mobile messaging and email services and released as open source on July 27, 2010.
+
+Hibari, a Japanese name meaning "Cloud Bird", can be used in cloud computing with services—such as social networking—requiring the daily storage of potentially terabytes or petabytes of new data.
+
+Distinctive Features
+Hibari uses chain replication for strong consistency, high-availability, and durability. Unlike many other NoSQL variants, Hibari support micro-transaction, which is ACID transaction within a certain range of keys.
+
+Hibari has excellent performance especially for read and large value (around 200KB) operations.
+
+Interfaces
+Hibari supports APIs such as Amazon S3, JSON-RPC and Universal Binary Protocol; plans have been announced for support of Apache Thrift; in addition to Erlang, the language it was developed in. Hibari supports language bindings such as Java, C, C++, Python, and Ruby.
+
+References
+
+Category:Free database management systems
+Category:2010 software
+Category:Erlang (programming language)
+Category:Cloud storage
+Category:Distributed data storage
+Category:NoSQL
+Category:Big data

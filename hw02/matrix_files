@@ -1,0 +1,20 @@
+[
+  {
+    "chunks": [
+      "chunk_1_1"
+    ], 
+    "name": "/matrix_1.dat"
+  }, 
+  {
+    "chunks": [
+      "chunk_2_1"
+    ], 
+    "name": "/matrix_2.dat"
+  }, 
+  {
+    "chunks": "matrix", 
+    "name": [
+      "/matrix"
+    ]
+  }
+]

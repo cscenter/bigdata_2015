@@ -22,10 +22,10 @@ def main(filename):
   global num_vertices
   # читаем граф из файла, используя конструктор MaxValueVertex
   vertices = read_graph(filename, MaxValueVertex)
-
+  
   # Заполняем случайными значениями
   for v in vertices.values():
-    v.value = randint(1, len(vertices) * 2)
+      v.value = randint(1, len(vertices) * 2)
 
   # Запускаем подсчет, ограничивая количеством итераций
   p = Pregel(vertices.values(),num_workers,max_supersteps)
@@ -43,7 +43,7 @@ class MaxValueVertex(Vertex):
         # На нулевой итерации еще нет входящих
         if self.superstep > 0:
           # по умолчанию эта вершина станет пассивной
-          self.active = False
+     #     self.active = False
           if len(self.incoming_messages) > 0:
             # Если входящие сообщения есть то находим максимальное значение и если оно больше, чем свое,
             # то активизируемся
