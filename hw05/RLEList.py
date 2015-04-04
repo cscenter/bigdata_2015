@@ -175,7 +175,7 @@ def insert_test():
     h = "qqwweerrttyy"
     for c in h:
         l.append(c)
-        
+
     l.insert(2, 'q')
     l.insert(3, 'e')
     l.insert(5, 'e')
