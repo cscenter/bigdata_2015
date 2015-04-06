@@ -44,18 +44,18 @@ class MyIter:
 
 class RLEListImpl(RLEList):
     def __init__(self):
-        # основа: массив состоящий из описаний групп подряд идущих одинаковых элементов: (значение, количество)
+        # РѕСЃРЅРѕРІР°: РјР°СЃСЃРёРІ СЃРѕСЃС‚РѕСЏС‰РёР№ РёР· РѕРїРёСЃР°РЅРёР№ РіСЂСѓРїРї РїРѕРґСЂСЏРґ РёРґСѓС‰РёС… РѕРґРёРЅР°РєРѕРІС‹С… СЌР»РµРјРµРЅС‚РѕРІ: (Р·РЅР°С‡РµРЅРёРµ, РєРѕР»РёС‡РµСЃС‚РІРѕ)
         self.arr = []
 
-        self.size = 0           # текущее количество элементов
+        self.size = 0           # С‚РµРєСѓС‰РµРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЌР»РµРјРµРЅС‚РѕРІ
 
     def get_group_no(self, index):
         if not 0 <= index < self.size:
             raise Exception("Out of border!")
 
-        cur_group_no = 0                            # номер текущей группы
-        cur_index = 0                               # исходный индекс первого элемента из текущей группы
-        cur_length = self.arr[cur_group_no][1]      # длина текущей группы
+        cur_group_no = 0                            # РЅРѕРјРµСЂ С‚РµРєСѓС‰РµР№ РіСЂСѓРїРїС‹
+        cur_index = 0                               # РёСЃС…РѕРґРЅС‹Р№ РёРЅРґРµРєСЃ РїРµСЂРІРѕРіРѕ СЌР»РµРјРµРЅС‚Р° РёР· С‚РµРєСѓС‰РµР№ РіСЂСѓРїРїС‹
+        cur_length = self.arr[cur_group_no][1]      # РґР»РёРЅР° С‚РµРєСѓС‰РµР№ РіСЂСѓРїРїС‹
         
         while cur_index + cur_length <= index:
             cur_index += cur_length
@@ -70,7 +70,7 @@ class RLEListImpl(RLEList):
         if len(self.arr) == 0:
             self.arr.append([value, 1])
         else:
-            # проверяем, дополнит ли новое значение последнюю группу
+            # РїСЂРѕРІРµСЂСЏРµРј, РґРѕРїРѕР»РЅРёС‚ Р»Рё РЅРѕРІРѕРµ Р·РЅР°С‡РµРЅРёРµ РїРѕСЃР»РµРґРЅСЋСЋ РіСЂСѓРїРїСѓ
             if self.arr[-1][0] == value:
                 self.arr[-1][1] += 1
             else:
@@ -82,18 +82,18 @@ class RLEListImpl(RLEList):
         group_no, cur_index = self.get_group_no(index)
 
         if self.arr[group_no][0] != value and cur_index != index:
-            # придется разбивать группу
+            # РїСЂРёРґРµС‚СЃСЏ СЂР°Р·Р±РёРІР°С‚СЊ РіСЂСѓРїРїСѓ
             old_group = self.arr[group_no]
             length = old_group[1]
 
-            # преобразуем правую половинку
+            # РїСЂРµРѕР±СЂР°Р·СѓРµРј РїСЂР°РІСѓСЋ РїРѕР»РѕРІРёРЅРєСѓ
             l = (cur_index + length) - index
             self.arr[group_no][1] = l
 
-            # вставляем новую группу
+            # РІСЃС‚Р°РІР»СЏРµРј РЅРѕРІСѓСЋ РіСЂСѓРїРїСѓ
             self.arr.insert(group_no, [value, 1])
 
-            # возвращаем в список левую половинку
+            # РІРѕР·РІСЂР°С‰Р°РµРј РІ СЃРїРёСЃРѕРє Р»РµРІСѓСЋ РїРѕР»РѕРІРёРЅРєСѓ
             l = index - cur_index
             self.arr.insert(group_no, [old_group[0], l])
 
