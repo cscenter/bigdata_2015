@@ -42,13 +42,11 @@ from collections import Counter
 import codecs
 import base64
 
-from dfs_client import *
-
 VERSION = 0.0
 
 
 DEFAULT_PORT = 11235
-
+WORKER_NAME = ""
 
 class Protocol(asynchat.async_chat):
     def __init__(self, conn=None):
@@ -183,12 +181,7 @@ class Client(Protocol):
         self.send_command('mapdone', (data[0], results))
 
     def call_reducefn(self, command, data):
-<<<<<<< HEAD
-       # logging.info("Reducing %s" % str(data[0].encode('utf-8')))     # !!! 
-       # запись в лог закомментирована, так как структура data[0] не поддается encode
-=======
         logging.info("Reducing %s" % str(data[0].encode('utf-8')))
->>>>>>> origin/master
         results = self.reducefn(data[0], data[1])
         self.send_command('reducedone', (data[0], results))
         
@@ -212,13 +205,6 @@ class Client(Protocol):
 
 
 class Server(asyncore.dispatcher, object):
-<<<<<<< HEAD
-    N = None
-    M = None
-    K = None
-
-=======
->>>>>>> origin/master
     def __init__(self):
         asyncore.dispatcher.__init__(self)
         self.mapfn = None
@@ -227,14 +213,6 @@ class Server(asyncore.dispatcher, object):
         self.map_input = None
         self.password = None
 
-<<<<<<< HEAD
-    def init_consts(self, n, k, m):
-        self.N = n
-        self.K = k
-        self.M = m
-
-=======
->>>>>>> origin/master
     def run_server(self, password="", port=DEFAULT_PORT):
         self.password = password
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -396,6 +374,7 @@ def run_client():
     parser.add_option("-P", "--port", dest="port", type="int", default=DEFAULT_PORT, help="port")
     parser.add_option("-v", "--verbose", dest="verbose", action="store_true")
     parser.add_option("-V", "--loud", dest="loud", action="store_true")
+    parser.add_option("-w", "--worker", dest="worker")
 
     (options, args) = parser.parse_args()
                       
@@ -404,10 +383,13 @@ def run_client():
     if options.loud:
         logging.basicConfig(level=logging.DEBUG)
 
+    global WORKER_NAME
+    WORKER_NAME = options.worker
     client = Client()
     client.password = options.password
     client.conn(args[0], options.port)
                       
+
 
 if __name__ == '__main__':
     run_client()
@@ -416,11 +398,7 @@ def dump_results(results):
     keys = results.keys()
     keys.sort()
     for key in keys:
-<<<<<<< HEAD
-        print (key + "\t" + str(results[key]))
-=======
         print key + "\t" + str(results[key])
->>>>>>> origin/master
 
 ##################################################################
 # Дополнительные входы для мапперов
@@ -446,19 +424,15 @@ class MapInputDFSFileLineByLine(MapInput):
         return next(self.generator)
 
 # Подает на вход мапперу пары (имя файла, имя файла)
-class MapInputDFSFileName(MapInput):
+class MapInputSequence(MapInput):
     generator = None
 
-    def __init__(self, files):
-        self.generator = self.get_generator(files)
+    def __init__(self, values):
+        self.generator = self.get_generator(values)
 
-    def get_generator(self, files):
-        for f in files:
-            yield f, f
+    def get_generator(self, values):
+        for v in values:
+            yield v, v
 
     def next(self):
-<<<<<<< HEAD
         return next(self.generator)
-=======
-        return next(self.generator)
->>>>>>> origin/master
