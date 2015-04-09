@@ -42,7 +42,7 @@ public class FlokRLEList<T> implements RLEList<T>{
         }
     }
 
-    private LinkedList<Pair<T>> elems = new LinkedList<>();
+    public LinkedList<Pair<T>> elems = new LinkedList<>();
     private  Pair<T> lastPair;
     private int size = 0;
 
@@ -85,11 +85,11 @@ public class FlokRLEList<T> implements RLEList<T>{
                         break;
                     }
                     // попали на конец интервала значений
-                    if(prevPair != null && Objects.equals(prevPair.getValue(), value) && totalOffset > index) {
+                    if(prevPair != null && Objects.equals(prevPair.getValue(), value) && totalOffset == index) {
                         prevPair.incAmount();
                         break;
                     }
-                    // попали в интервал, а в нём значения не совпадают value. разрезаем.
+                    // попали в интервал, а в нём значения не совпадают c value. разрезаем.
                     it.remove();
                     int idxTempOffset = 0;
                     if(index != totalOffset) { // если мы разрезаем не по левой границе, вставляем левую часть
