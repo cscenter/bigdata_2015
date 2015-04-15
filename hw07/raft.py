@@ -22,9 +22,9 @@ class RaftHandler(BaseHTTPRequestHandler):
             length = int(self.headers.getheader('content-length'))
             query = cgi.parse_qs(self.rfile.read(length), keep_blank_values=1)
 
-        keys = ['prev_ind', 'prev_gen', 'new_rec']
-        if not all(key in query for key in keys):
-            raise Exception('ERROR: wrong POST query. Query should contain all of following keys: %d' % ', '.join(keys))
+        parameters = ['prev_ind', 'prev_gen', 'new_rec']
+        if not all(parameter in query for parameter in parameters):
+            return None
 
         query['prev_ind'] = int(query['prev_ind'][0])
         query['prev_gen'] = int(query['prev_gen'][0])
@@ -33,7 +33,7 @@ class RaftHandler(BaseHTTPRequestHandler):
         return query
 
     def do_GET(self):
-        """ Узел (любой) принимает пустой GET запрос (без каких-либо путей или параметров) и возвращает свой журнал."""
+        """ Узел принимает пустой GET запрос (без каких-либо путей или параметров) и возвращает свой журнал."""
         self.send_response(OK_CODE)
         self.send_header('content-type', 'text/plain')
         self.end_headers()
@@ -42,15 +42,23 @@ class RaftHandler(BaseHTTPRequestHandler):
     def do_POST(self):
         """
         Ведомый принимает POST запрос вида 'new_rec=3:H&prev_ind=4&prev_gen=5'
-        и пытается добавить новую запись в журнал.
+        и пытается добавить запись new_rec в журнал.
         Возвращает код 200 в случае успеха, и 201 в случае неудачи.
         """
+        if is_leader:
+            self.send_response(FAIL_CODE, 'unsupported operation for leader')
+            return
+
         global log
 
         query = self.parse_POST_query()
 
-        prev_ind = int(query['prev_ind'])
-        prev_gen = int(query['prev_gen'])
+        if not query:
+            self.send_response(FAIL_CODE, 'wrong POST query. Query does not contain some necessary keys')
+            return
+
+        prev_ind = query['prev_ind']
+        prev_gen = query['prev_gen']
         new_gen, new_val = query['new_rec']
 
         index_is_within_bounds = 0 <= prev_ind < len(log)
@@ -143,8 +151,6 @@ if args.f:
     for port in follower_ports:
         replicate_to_follower(port)
         print 'Successfully replicated follower at %d, it\'s log: %s' % (port, get_log(port))
-
-
 else:
     print "Started follower"
 while True:
