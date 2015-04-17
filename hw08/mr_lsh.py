@@ -89,7 +89,7 @@ def reducefn(key, doc_id_list):
 """
 
 
-def mapfn4(key, doc_ids):
+def mapfn2(key, doc_ids):
     import util
 
     if doc_ids:
@@ -102,7 +102,7 @@ def mapfn4(key, doc_ids):
                     yield doc_id_pair, ""
 
 
-def reducefn4(doc_id_pair, vs):
+def reducefn2(doc_id_pair, vs):
     return vs
 
 
@@ -137,8 +137,8 @@ results = s.run_server(password="")
 
 # phase 2
 s.map_input = mincemeat.DictMapInput(results)
-s.mapfn = mapfn4
-s.reducefn = reducefn4
+s.mapfn = mapfn2
+s.reducefn = reducefn2
 
 results = s.run_server(password="")
 
