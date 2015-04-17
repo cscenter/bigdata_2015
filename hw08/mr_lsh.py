@@ -7,8 +7,7 @@ import mincemeat
 
 def mapfn1(docid, docvector):
     import math
-    R = 2
-    print(R)
+    R = 6
     for i in range(int(math.ceil(float(len(docvector)) / R))):
         yield docid, docvector[i * R : (i + 1) * R]
 
@@ -21,18 +20,19 @@ def reducefn1(k, vs):
 # закидываем (docid, stripid) в тот бакет, который вернул нам md5.
 def mapfn2(docinfo, docvector):
     from operator import mod
-    B = 1000
+    K = 1000
 
     def poly_hash(docvector):
         import hashlib
         m = hashlib.md5()
         str = "".join(chr(x) for x in docvector)
         m.update(str)
-        return mod(int(m.hexdigest(), 16), B)
+        return mod(int(m.hexdigest(), 16), K)
 
     yield str(poly_hash(docvector)), docinfo
 
-
+# третий mr просто делает результаты чуть красивее,
+# убирая дубликаты из разных корзин и дубликаты с реверсным порядком.
 def reducefn2(k, vs):
     candidates = []
     for doc1, strip1 in vs:
@@ -90,5 +90,9 @@ s.mapfn = mapfn3
 s.reducefn = reducefn3
 results = s.run_server(password="")
 
+
+res = []
 for key, value in sorted(results.items()):
-    print("%s: %s" % (key, value) )
+    for p in value:
+        res.append((key, p))
+print(res)
