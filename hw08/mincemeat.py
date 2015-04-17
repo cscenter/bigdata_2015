@@ -182,7 +182,7 @@ class Client(Protocol):
         self.send_command('mapdone', (data[0], results))
 
     def call_reducefn(self, command, data):
-        logging.info("Reducing %s" % str(data[0].encode('utf-8')))
+        logging.info("Reducing %s" % str(data[0]).encode('utf-8'))
         results = self.reducefn(data[0], data[1])
         self.send_command('reducedone', (data[0], results))
         
@@ -213,6 +213,8 @@ class Server(asyncore.dispatcher, object):
         self.collectfn = None
         self.map_input = None
         self.password = None
+        self.b = None
+        self.r = None
 
     def run_server(self, password="", port=DEFAULT_PORT):
         self.password = password
