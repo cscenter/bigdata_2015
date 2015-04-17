@@ -33,7 +33,7 @@ def map_2(band_id, docs):
 
 
 def reduce_2(doc, docs):
-    return set(docs)  # may be too expensive
+    return set(docs)
 
 
 def rows_in_band(n):
