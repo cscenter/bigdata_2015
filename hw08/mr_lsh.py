@@ -3,10 +3,10 @@ import mincemeat
 
 
 def map_1(doc_id, vector_and_bands):
-    doc_vector, bands = vector_and_bands
+    doc_vector, band_width = vector_and_bands
     band_id = 1
-    for i in xrange(0, len(doc_vector), bands):
-        yield band_id, (doc_id, doc_vector[i:i+bands])
+    for i in xrange(0, len(doc_vector), band_width):
+        yield band_id, (doc_id, doc_vector[i:i+band_width])
         band_id += 1
 
 
@@ -40,8 +40,7 @@ def rows_in_band(n):
     from math import log, ceil
 
     log_2 = log(2)
-    n_log_2 = n * log_2
-    log_n_log_2 = log(n_log_2)
+    log_n_log_2 = log(n * log_2)
     r = ceil((log_n_log_2 - log(log_n_log_2)) / log_2)
 
     return int(r)
