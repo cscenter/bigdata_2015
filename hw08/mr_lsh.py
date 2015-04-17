@@ -42,7 +42,10 @@ input0['doc4'] = [22, 5, 34, 96, 31, 41, 14, 89, 18, 100, 89,  63,  66, 96, 78, 
 
 n = len(input0)
 threshold = 0.75 # s похожесть
-r = math.log
+from math import log
+r = log(n * log(1. / threshold)) - log(log(n * log(1. / threshold))) / log(1. / threshold)
+r = int(r)
+
 input0_with_r = {k: (v, r) for k, v in input0.iteritems()}
 s.map_input = mincemeat.DictMapInput(input0_with_r) 
 s.mapfn = mapfn1
