@@ -29,18 +29,18 @@ def reducefn1(k, vs):
 
 s = mincemeat.Server()
 
-# input1 = {}
-# input1['doc1'] = [48, 25, 69, 36, 22, 24, 88, 37, 71, 8, 68, 60, 20, 33, 96, 9, 50, 77, 30, 32]
-# input1['doc2'] = [48, 25, 69, 12, 22, 24, 45, 37, 71, 8, 68, 60, 63, 78, 12, 9, 50, 77, 30, 32]
-# input1['doc3'] =[48, 25, 69, 36, 74, 100, 94, 14, 89, 18, 100, 89, 63, 66, 96, 9, 50, 77, 30, 32]
-# input1['doc4'] = [22, 5, 34, 96, 31, 41, 14, 89, 18, 100, 89, 63, 66, 96, 78, 19, 39, 53, 83, 20]
+input1 = {}
+input1['doc1'] = [48, 25, 69, 36, 22, 24, 88, 37, 71, 8, 68, 60, 20, 33, 96, 9, 50, 77, 30, 32]
+input1['doc2'] = [48, 25, 69, 12, 22, 24, 45, 37, 71, 8, 68, 60, 63, 78, 12, 9, 50, 77, 30, 32]
+input1['doc3'] =[48, 25, 69, 36, 74, 100, 94, 14, 89, 18, 100, 89, 63, 66, 96, 9, 50, 77, 30, 32]
+input1['doc4'] = [22, 5, 34, 96, 31, 41, 14, 89, 18, 100, 89, 63, 66, 96, 78, 19, 39, 53, 83, 20]
 
 # пример с лекции
-input1 = {}
-input1['docs1'] = [2, 0, 1, 3, 1, 3, 1, 0, 1]
-input1['docs2'] = [1, 3, 2, 2, 4, 1, 1, 2, 3]
-input1['docs3'] = [4, 0, 3, 1, 0, 2, 4, 4, 0]
-input1['docs4'] = [2, 0, 1, 3, 0, 3, 1, 2, 3]
+# input1 = {}
+# input1['docs1'] = [2, 0, 1, 3, 1, 3, 1, 0, 1]
+# input1['docs2'] = [1, 3, 2, 2, 4, 1, 1, 2, 3]
+# input1['docs3'] = [4, 0, 3, 1, 0, 2, 4, 4, 0]
+# input1['docs4'] = [2, 0, 1, 3, 0, 3, 1, 2, 3]
 
 
 # параметры r и k задаются в качестве keyword аргементов для MapInput'а
@@ -73,7 +73,7 @@ def mapfn2(k, v):
 
 
 def reducefn2(k, vs):
-    return vs, len(vs)
+    return tuple(vs), len(vs)
 
 
 input2 = results1.values()
@@ -89,32 +89,25 @@ results2 = s.run_server(password='')
 #     print('%s: %s' % (json.loads(key), value))
 
 
-# выберем все документы из бинов, в которых больше одного элемента
-res = [tuple(docs) for docs, counts in results2.values() if counts > 1]
-
-# выведем всех кандидатов с повторами
-# for d in res:
-#     print(', '.join(d))
-
-
 # уберем повторные записи
-
-# сначала для каждого множества имен документов найдем все множества его содержащие
+# выведем все пары (отсортированные), которые алгоритм определил кандидатами
 
 
 def mapfn3(k, v):
     import json
-    for d in k:
-        yield json.dumps(d), set(k)
+    for i in xrange(v[0] - 1):
+        for j in xrange(i + 1, v[0]):
+            yield json.dumps(sorted((k[i], k[j]))), None
 
 
 def reducefn3(k, vs):
-    return tuple(reduce(lambda acc, x: acc | x, vs))
+    import json
+    return json.loads(k)
 
 
-input3 = res
+input3 = results2.values()
 
-s.map_input = mincemeat.DummyListMapInput(input3)
+s.map_input = mincemeat.TupleListMapInput(input3)
 s.mapfn = mapfn3
 s.reducefn = reducefn3
 
@@ -124,31 +117,8 @@ results3 = s.run_server(password='')
 #     print('%s: %s' % (key, value))
 
 
-# и затем выберем наибольшее по размеру
+res_pairs = results3.values()
 
-def mapfn4(k, v):
-    import json
-    for d in k:
-        yield json.dumps(d), k
-
-
-def reducefn4(k, vs):
-    return max(vs, key=lambda t: len(t))
-
-
-input4 = results3.values()
-
-s.map_input = mincemeat.DummyListMapInput(input4)
-s.mapfn = mapfn4
-s.reducefn = reducefn4
-
-results4 = s.run_server(password='')
-
-# for key, value in sorted(results4.items()):
-#     print('%s: %s' % (key, value))
-
-
-res_uniq = set(results4.values())
-
-for d in res_uniq:
+# на каждой строке список документов-кандидатов
+for d in sorted(res_pairs):
     print(', '.join(d))
