@@ -127,7 +127,7 @@ class Protocol(asynchat.async_chat):
         if command in commands:
             commands[command](command, data)
         else:
-            logging.critical("Unknown command received: %s" % (command,)) 
+            logging.critical("Unknown command received: %s" % (command,))
             self.handle_close()
 
     def process_unauthed_command(self, command, data=None):
@@ -140,15 +140,15 @@ class Protocol(asynchat.async_chat):
         if command in commands:
             commands[command](command, data)
         else:
-            logging.critical("Unknown unauthed command received: %s" % (command,)) 
+            logging.critical("Unknown unauthed command received: %s" % (command,))
             self.handle_close()
-        
+
 
 class Client(Protocol):
     def __init__(self):
         Protocol.__init__(self)
         self.mapfn = self.reducefn = self.collectfn = None
-        
+
     def conn(self, server, port):
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
         self.connect((server, port))
@@ -185,7 +185,7 @@ class Client(Protocol):
         logging.info("Reducing %s" % str(data[0].encode('utf-8')))
         results = self.reducefn(data[0], data[1])
         self.send_command('reducedone', (data[0], results))
-        
+
     def process_command(self, command, data=None):
         commands = {
             'mapfn': self.set_mapfn,
@@ -224,7 +224,7 @@ class Server(asyncore.dispatcher, object):
         except:
             self.close()
             raise
-        
+
         return self.taskmanager.results
 
     def handle_accept(self):
@@ -238,7 +238,7 @@ class Server(asyncore.dispatcher, object):
     def set_map_input(self, map_input):
         self._map_input = map_input
         self.taskmanager = TaskManager(self._map_input, self)
-    
+
     def get_map_input(self):
         return self._map_input
 
@@ -292,7 +292,7 @@ class ServerChannel(Protocol):
         if self.server.collectfn:
             self.send_command('collectfn', marshal.dumps(self.server.collectfn.func_code))
         self.start_new_task()
-    
+
 class MapInput:
     def next(self):
         pass
@@ -349,7 +349,7 @@ class TaskManager:
         if self.state == TaskManager.FINISHED:
             self.server.handle_close()
             return ('disconnect', None)
-    
+
     def map_done(self, data):
         # Don't use the results if they've already been counted
         if not data[0] in self.working_maps:
@@ -360,7 +360,7 @@ class TaskManager:
                 self.map_results[key] = []
             self.map_results[key].extend(values)
         del self.working_maps[data[0]]
-                                
+
     def reduce_done(self, data):
         # Don't use the results if they've already been counted
         if not data[0] in self.working_reduces:
@@ -377,7 +377,7 @@ def run_client():
     parser.add_option("-V", "--loud", dest="loud", action="store_true")
 
     (options, args) = parser.parse_args()
-                      
+
     if options.verbose:
         logging.basicConfig(level=logging.INFO)
     if options.loud:
@@ -386,7 +386,7 @@ def run_client():
     client = Client()
     client.password = options.password
     client.conn(args[0], options.port)
-                      
+
 
 if __name__ == '__main__':
     run_client()
@@ -433,3 +433,37 @@ class MapInputDFSFileName(MapInput):
 
     def next(self):
         return next(self.generator)
+
+
+class ParamsDictMapInput(MapInput):
+
+    def __init__(self, datasource_dict, **kwargs):
+        self.datasource_dict = datasource_dict
+        self.dict_iter = iter(datasource_dict)
+        self.kwargs = kwargs
+
+    def next(self):
+        key = self.dict_iter.next()
+        return key, (self.datasource_dict[key], self.kwargs)
+
+
+class TupleListMapInput(MapInput):
+
+    def __init__(self, datasource_list):
+        self.datasource_list = datasource_list
+        self.list_iter = iter(datasource_list)
+
+    def next(self):
+        el = self.list_iter.next()
+        return el[0], el[1:]
+
+
+class DummyListMapInput(MapInput):
+
+    def __init__(self, datasource_list):
+        self.datasource_list = datasource_list
+        self.list_iter = iter(datasource_list)
+
+    def next(self):
+        el = self.list_iter.next()
+        return el, None
