@@ -1,12 +1,36 @@
-	# encoding: utf-8
+# encoding: utf-8
 import mincemeat
 
-def mapfn(docid, docvector):
-  for v in docvector:
-    yield docid, v
+b = 5
+def mapfn1(doc_id, doc_vector_with_r):
+    doc_vector, r = doc_vector_with_r
+    n = len(doc_vector)
+    band_id = 1
+    for band_num in range(0, n, r):
+        yield str(band_id), (doc_id, doc_vector[band_num : band_num + r])   
+        band_id += 1
 
-def reducefn(k, vs):
-  return vs
+def reducefn1(band_id, vs):
+    return vs
+    
+def mapfn2(band_id, band_vector):
+    from collections import defaultdict
+    hashes = defaultdict(list)
+    for doc_id, doc_vector in band_vector:
+        hashes[hash(str(doc_vector))].append(doc_id)
+    pairs = set()    
+    for h in hashes.iteritems():
+        if len(h[1]) > 1:
+            for first_doc in h[1]:
+                for second_doc in h[1]:
+                    if first_doc != second_doc and (second_doc, first_doc) not in pairs:
+                        pairs.add((first_doc, second_doc))   
+    for p in pairs:
+        yield str(band_id), p #нет смысла использовать один ключ и пихать всю информацию в редьюс
+                              #поэтому ключи разные, хотя в редьюсе проще было отфильтровать все все все пары   
+    
+def reducefn2(band_id, vs):
+    return vs
 
 s = mincemeat.Server() 
 
@@ -16,10 +40,26 @@ input0['doc2'] = [48, 25, 69, 12, 22, 24, 45, 37, 71, 8, 68, 60, 63, 78, 12, 9, 
 input0['doc3'] = [48, 25, 69, 36, 74, 100, 94, 14, 89, 18, 100, 89,  63,  66, 96, 9, 50, 77, 30, 32]
 input0['doc4'] = [22, 5, 34, 96, 31, 41, 14, 89, 18, 100, 89,  63,  66, 96, 78, 19, 39, 53, 83, 20]
 
-s.map_input = mincemeat.DictMapInput(input0) 
-s.mapfn = mapfn
-s.reducefn = reducefn
+n = len(input0)
+threshold = 0.75 # s похожесть
+r = math.log
+input0_with_r = {k: (v, r) for k, v in input0.iteritems()}
+s.map_input = mincemeat.DictMapInput(input0_with_r) 
+s.mapfn = mapfn1
+s.reducefn = reducefn1
 
-results = s.run_server(password="") 
-for key, value in sorted(results.items()):
-    print("%s: %s" % (key, value) )
+input2 = s.run_server(password="") 
+
+s2 = mincemeat.Server()
+s2.map_input = mincemeat.DictMapInput(input2)
+s2.mapfn = mapfn2
+s2.reducefn = reducefn2
+
+ans = s2.run_server(password="")
+pairs = set()
+for key, value in sorted(ans.iteritems()):
+    for pair in value:
+        if (pair[1], pair[0]) not in pairs:
+            pairs.add(pair)
+for p in pairs:
+    print p            
