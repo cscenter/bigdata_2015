@@ -213,8 +213,6 @@ class Server(asyncore.dispatcher, object):
         self.collectfn = None
         self.map_input = None
         self.password = None
-        self.b = None
-        self.r = None
 
     def run_server(self, password="", port=DEFAULT_PORT):
         self.password = password
