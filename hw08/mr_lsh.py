@@ -80,9 +80,8 @@ def mapfn(doc_id, docvector):
 
 
 def reducefn(key, doc_id_list):
-    # if len(doc_id_list) >= 2:
-    #     return doc_id_list
-    return doc_id_list
+    if len(doc_id_list) >= 2:
+        return doc_id_list
 
 """
 Второй Map-Reduce преобразует найденых кандидатов в пары.
