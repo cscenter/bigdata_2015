@@ -3,11 +3,27 @@
 
 import mincemeat
 
-# требуется задать константы R и B
+# в get_r в 26й строке первым параметром стоит передать simularity. 0.8, вторым - размер сигнатуры.
 
+# первый map-reduce нарезает сигнатуры на куски.
 def mapfn1(docid, docvector):
     import math
-    R = 6
+
+    # бинарным поиском вычисляет корень s = (r/n) ^ (1/r)
+    def get_r(s, n):
+        t = lambda r: (float(r) / n) ** (float(1) / r)
+        left = 2
+        right = n
+        middle = None
+        while (right - left) > 1:
+            middle = (left + right) / 2
+            if t(middle) > s:
+                right = middle
+            else:
+                left = middle
+        return middle
+
+    R = get_r(0.8, len(docvector))
     for i in range(int(math.ceil(float(len(docvector)) / R))):
         yield docid, docvector[i * R : (i + 1) * R]
 
