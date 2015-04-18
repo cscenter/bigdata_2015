@@ -1,12 +1,44 @@
-	# encoding: utf-8
+# encoding: utf-8
 import mincemeat
 
+# Приближенное значение порога можно вычислить по формуле threshold = (1/b) ^ (1/r), а n = r * b
+# Возьмём порог s=0.7, тогда решая уравнение (1/b)^(1/r) = 7/10
+# получим r * ln(10/7) = W(n * ln(10/7))    W(x) - Lambert W-function приближенно ln x - ln ln x
+
+# Первый mapreduce разбивает на rows столбцов каждый вектор
+# Второй раскидывает идентификаторы документов по корзинам
+
 def mapfn(docid, docvector):
-  for v in docvector:
-    yield docid, v
+    from math import log, ceil
+    n = len(docvector)
+    x = n * log(10.0/7.0)
+    rows = (log(x) - log(log(x))) / log(10.0/7.0)
+    rows = int(ceil(rows))
+    bands = int(ceil(n / rows))
+
+    for b in range(bands):
+        yield docid, (docvector[rows * b : rows * (b + 1)])
 
 def reducefn(k, vs):
-  return vs
+    return vs
+
+def mapfn2(docid, vectors):
+    import hashlib, json
+    bands = len(vectors)
+    for v in vectors:
+        backet = 0
+        for value in v:
+            m = hashlib.md5()
+            bts = str(value).encode("utf-8")
+            m.update(bts)
+            digest = m.hexdigest()
+            backet += int(digest, 16) % bands
+        yield str(backet), docid
+    
+
+def reducefn2(k, vs):
+    # убираем дубликаты
+    return set(vs)
 
 s = mincemeat.Server() 
 
@@ -20,6 +52,16 @@ s.map_input = mincemeat.DictMapInput(input0)
 s.mapfn = mapfn
 s.reducefn = reducefn
 
-results = s.run_server(password="") 
-for key, value in sorted(results.items()):
+result1 = s.run_server(password="") 
+
+# for key, value in sorted(result1.items()):
+#     print("%s: %s" % (key, value) )
+
+s.map_input = mincemeat.DictMapInput(result1) 
+s.mapfn = mapfn2
+s.reducefn = reducefn2
+
+result2 = s.run_server(password="")
+
+for key, value in sorted(result2.items()):
     print("%s: %s" % (key, value) )
