@@ -165,17 +165,19 @@ def reducefn5(k, vs):
 parser = argparse.ArgumentParser()
 parser.add_argument("-n", help="Iterations count", required = True, type = int)
 parser.add_argument("-c", help="Initial centroids separated by commas and semicolons, like 1,1;2,6;6,2", required = True)
+parser.add_argument("-t1", help="T1 - Outter radius", required = True, type = int)
+parser.add_argument("-t2", help="T1 - Inner radius", required = True, type = int)
 
 args = parser.parse_args()
 
+T1 = args.t1
+T2 = args.t2
 # Начальные центроиды и количество итераций принимаются параметрами
 centroids = [(float(c.split(",")[0]), float(c.split(",")[1])) for c in args.c.split(";")]
 
 SHARD1 = [(0,0),(0,3),(1,0),(1,1),(1,5),(1,6),(2,1),(2,2),(2,6)]
 SHARD2 = [(4,4),(3,6),(5,2),(5,3),(6,1),(6,2)]
 
-T1 = 3
-T2 = 2
 input0 = {}
 input0['set1'] = [[T1, T2]] + [SHARD1]
 input0['set2'] = [[T1, T2]] + [SHARD2]
