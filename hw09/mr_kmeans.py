@@ -95,13 +95,13 @@ def mapfn2(k, items):
     for canopy in canopies:
         for p in points:
             if dist(canopy, p) < T1:
-                yield "%f %f" % canopy, p
+                yield "%f %f" % canopy, p # выплевываем координаты зонтика и точку принадлежащюю ему
 
 def reducefn2(k, items):
     # вот здесь мы записываем для каждого зонтика точки которые он содержит
-    # один хонтик есть один шардФЦs wefblmfwdlwnfnwefljbw4 wukbnlkdqwdf wbidnq3l nflwefgikql3 q
-
-    q = k.split()
+    # один зонтик - один шард
+    # конкретно здесь мы возвращаем словарь содержащий все зонтики
+    # однако в реальном приложении редьюс должен был записать зонтик как отдельный шард
     return items
     
 # Маппер получает список, в котором первым элементом записан список центроидов,
@@ -111,40 +111,40 @@ def mapfn3(k, items):
   import math  
 
   def dist(p1, p2):
-  	return math.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
+  	return math.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2) 
 
-  print k  
-  print items
-  print ''
-  print ''
   T1, T2 = items[0]
   T1 = int(T1)
   T2 = int(T2) 
-  print T1          
-  print T2      
         
   cur_centroids = items[1]
-  print cur_centroids
-  canopy_and_points = items[2]    
-  print canopy_and_points    
-  '''
-  for i in items:
-    min_dist = 100
-    min_c = -1
-    for c in cur_centroids:
-      if dist(i, c) < min_dist:
-        min_c = c
-        min_dist = dist(i, c)
-    yield "%f %f" % min_c, "%f %f" % i
-'''
-  yield 'a', 'a'
+  
+  canopy = items[2].split(' ')
+  canopy = (float(canopy[0]), float(canopy[1]))
+  points_in_canopy = items[3]
+  
+  for c in cur_centroids:
+      if dist(c, canopy) < T1:
+          for p in points_in_canopy:    
+              yield "%f %f" % p, c         
 
 # У свертки ключом является центроид а значением -- список точек, определённых в его кластер
 # Свёртка выплевывает новый центроид для этого кластера
 def reducefn3(k, vs):
-    new_cx = float(sum([float(v.split()[0]) for v in vs])) / len(vs)
-    new_cy = float(sum([float(v.split()[1]) for v in vs])) / len(vs)
-    return (new_cx, new_cy)
+    import math  
+
+    def dist(p1, p2):
+        return math.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2) 
+
+    point = k.split(' ')    
+    point = (float(point[0]), float(point[1]))
+    min_dist = -1
+    min_c = -1
+    for c in vs:
+        if min_dist == -1 or dist(point, c) < min_dist:
+            min_dist = dist(point, c)
+            min_c = c
+    return (point, min_c)
 
 def reducefn4(k, vs):
     return vs
@@ -183,12 +183,31 @@ canopies_with_points = s.run_server(password="") # это как бы было �
 
 for i in xrange(1,args.n):
   s = mincemeat.Server() 
-
-# читаем зонтики из шардов
-# но у нас они в списке canopies_with_point
+# вообще читаем зонтики из шардов
+# но конкретно сейчас они у нас в списке canopies_with_point
   input0 = {}
   iter_num = 0
+  import math  
+
+  def dist(p1, p2):
+      return math.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2) 
+      
   for k in canopies_with_points.keys():
+      current_canopy_contains_at_least_one_centroid = False
+      for c in centroids:
+          canopy_coordinates = k.split(' ')
+          canopy_coordinates = (float(canopy_coordinates[0]), float(canopy_coordinates[1]))
+          if dist(c, canopy_coordinates) < T1:
+              current_canopy_contains_at_least_one_centroid = True
+              break
+      if current_canopy_contains_at_least_one_centroid == False:
+          # данный зонтик не содержит ни одну из центроид при заданном внешнем радиусе T1
+          # значит группа точек принадлежащая этому зонтику имеет расстояния до всех центроид равное бесконечности
+          # следовательно их можно либо приписать любой центроиде
+          # либо объявить отщепенцами и проигнорировать
+          # выбор пути зависит от конкретно решаемой задачи
+          # я пойду по второму пути
+          continue
       v = canopies_with_points[k]
       input0['set%d' % (iter_num + 1)] = [[T1, T2]] + [centroids] + [k, v]
       iter_num += 1
@@ -200,6 +219,7 @@ for i in xrange(1,args.n):
   centroids = [c for c in results.itervalues()]
   print centroids
 
+'''
 # На последней итерации снова собираем кластер и печатаем его
 s = mincemeat.Server() 
 input0 = {}
@@ -211,3 +231,4 @@ s.reducefn = reducefn4
 results = s.run_server(password="") 
 for key, value in sorted(results.items()):
     print("%s: %s" % (key, value) )
+'''
