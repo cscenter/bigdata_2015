@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ERR="/dev/null"
-ERR="/dev/stderr"
+#ERR="/dev/stderr"
 python raft.py -p 8001 -l 1:L,1:O,1:R,4:E,4:M,5:I,5:P,6:S,6:U -t 6 2>$ERR &
 python raft.py -p 8002 -l 1:L,1:O,1:R,4:E -t 4 2>$ERR &
 python raft.py -p 8003 -l 1:L,1:O,1:R,4:E,4:M,5:I,5:P,6:S,6:U,6:S,6:D -t 6 2>$ERR &
