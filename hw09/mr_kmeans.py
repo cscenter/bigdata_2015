@@ -141,7 +141,7 @@ s.reducefn = reducefn0
 
 # в качестве начальных центроидов берутся зонтичные центроиды
 centroids = s.run_server(password='').values()[0]
-print(centroids)
+print('canopies:', centroids)
 
 # теперь отнесем каждую точку к соответствующему
 input1 = {}
@@ -157,7 +157,7 @@ for key, value in sorted(results.items()):
 SHARD1NEW = results['set1']
 SHARD2NEW = results['set2']
 
-# add clusters to centroids
+# положим каждый центроид в свой же зонтик
 centroids = [(c, c) for c in centroids]
 
 for i in xrange(1, args.n):
@@ -172,7 +172,7 @@ for i in xrange(1, args.n):
 
     results = s.run_server(password='')
     centroids = list(results.values())
-    print(centroids)
+    print('centroid:', centroids)
 
 # На последней итерации снова собираем кластер и печатаем его
 s = mincemeat.Server()
