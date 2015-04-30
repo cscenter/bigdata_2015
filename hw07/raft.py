@@ -8,6 +8,7 @@ import requests
 import cgi
 from urllib2 import urlopen
 from string import strip
+import urlparse
 
 #просто на те же адреса что и в примере шлём post и get запросы, т.к. их функционала нам достаточно для реализации репликации
 #на get запрос ведомый возвращает свой журнал
@@ -57,8 +58,37 @@ class RaftHandler(BaseHTTPRequestHandler):
             self.wfile.write("added")
         return
 
-def start_server(port):
-  server = HTTPServer(('', port), RaftHandler)
+def handleRequestsUsing(term, log):
+	return lambda *args: RaftHandler(term, log, *args)
+
+def find_baseline(term, log, port):
+  for i in reversed(xrange(len(log))):
+    resp = urlopen(url = "http://localhost:%d/replicate?cur_term=%d&cur_value=%s&prev_idx=%d&prev_term=%d" % (port, log[i][0], log[i][1], i - 1, log[i-1][0]))
+    if resp.getcode() != 200:
+      raise Exception("ERROR: can't get response from follower on port %d" % port)
+    answer = resp.read().decode(encoding='UTF-8')
+    if "ACK" == answer:
+      return i
+  return -1
+
+def append_tail(start_idx, log, follower_port):
+  i = start_idx
+  while i < len(log):
+    resp = urlopen(url = "http://localhost:%d/replicate?cur_term=%d&cur_value=%s&prev_idx=%d&prev_term=%d" % (follower_port, log[i][0], log[i][1], i - 1, log[i-1][0]))
+    if resp.getcode() != 200:
+      raise Exception("ERROR: can't get response from follower on port %d" % follower_port)
+    answer = resp.read().decode(encoding='UTF-8')
+    if "NACK" == answer:
+      raise Exception("ERROR: when appending a log at index %d tail follower returned NACK. What's up?"	% i)
+    i += 1 
+
+def replicate_log(term, log, follower_ports):
+  for port in follower_ports:
+    append_tail(1 + find_baseline(term, log, port), log, port)
+    urlopen(url = "http://localhost:%d/print" % port)
+  
+def start_follower(term, log, port):
+  server = HTTPServer(('', port), handleRequestsUsing(term, log))
   print 'Started httpserver on port %d' % port
   t = threading.Thread(target=server.serve_forever)
   t.setDaemon(True)
@@ -113,9 +143,8 @@ def get_journal_from_follower(port):
     return r.text.decode(encoding='UTF-8')
 
 if args.f:
-  print "Leader is starting. Trying to contact followers..."
+  print "Leader is starting. Log=%s" % str(log)
   follower_ports = [int(f.strip()) for f in args.f.split(",")]
-
   #реплицируем журнал всем ведомым
   print "Replication started..."
   for port in follower_ports:
