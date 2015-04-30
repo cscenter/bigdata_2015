@@ -124,7 +124,7 @@ def mapfn3(k, items):
   points_in_canopy = items[3]
   
   for c in cur_centroids:
-      if dist(c, canopy) < T1:
+      if dist(c, canopy) < T1:                                       
           for p in points_in_canopy:    
               yield "%f %f" % p, c         
 
@@ -146,7 +146,20 @@ def reducefn3(k, vs):
             min_c = c
     return (point, min_c)
 
+def mapfn4(k, items):
+    yield '%f %f' % items[1], items[0]
+
 def reducefn4(k, vs):
+    new_cx = 0
+    new_cy = 0
+    for v in vs:
+        new_cx += v[0]
+        new_cy += v[1]
+    new_cx /= len(vs)
+    new_cy /= len(vs);    
+    return (new_cx, new_cy)
+
+def reducefn5(k, vs):
     return vs
 
 parser = argparse.ArgumentParser()
@@ -214,21 +227,62 @@ for i in xrange(1,args.n):
   s.map_input = mincemeat.DictMapInput(input0) 
   s.mapfn = mapfn3
   s.reducefn = reducefn3
-
   results = s.run_server(password="") 
+  points_and_their_centroids = [c for c in results.itervalues()]
+  
+  # дальше пересчитаем центроиды с помощью еще одного мап редьюса
+  s = mincemeat.Server()
+  input0 = {}
+  iter_num = 0
+  for p, c in points_and_their_centroids:
+      input0['set%d' % (iter_num + 1)] = [p, c]
+      iter_num += 1           
+  s.map_input = mincemeat.DictMapInput(input0)
+  s.mapfn = mapfn4
+  s.reducefn = reducefn4
+
+  results = s.run_server(password="")          
   centroids = [c for c in results.itervalues()]
   print centroids
-
-'''
-# На последней итерации снова собираем кластер и печатаем его
+    
 s = mincemeat.Server() 
 input0 = {}
-input0['set1'] = [centroids] + SHARD1
-input0['set2'] = [centroids] + SHARD2
+iter_num = 0
+for k in canopies_with_points.keys():
+    current_canopy_contains_at_least_one_centroid = False
+    for c in centroids:
+        canopy_coordinates = k.split(' ')
+        canopy_coordinates = (float(canopy_coordinates[0]), float(canopy_coordinates[1]))
+        if dist(c, canopy_coordinates) < T1:
+            current_canopy_contains_at_least_one_centroid = True
+            break
+    if current_canopy_contains_at_least_one_centroid == False:
+          # данный зонтик не содержит ни одну из центроид при заданном внешнем радиусе T1
+          # значит группа точек принадлежащая этому зонтику имеет расстояния до всех центроид равное бесконечности
+          # следовательно их можно либо приписать любой центроиде
+          # либо объявить отщепенцами и проигнорировать
+          # выбор пути зависит от конкретно решаемой задачи
+          # я пойду по второму пути
+        continue
+    v = canopies_with_points[k]
+    input0['set%d' % (iter_num + 1)] = [[T1, T2]] + [centroids] + [k, v]
+    iter_num += 1
 s.map_input = mincemeat.DictMapInput(input0) 
 s.mapfn = mapfn3
-s.reducefn = reducefn4
+s.reducefn = reducefn3
+results = s.run_server(password="") 
+points_and_their_centroids = [c for c in results.itervalues()]
+  
+  # 
+s = mincemeat.Server()
+input0 = {}
+iter_num = 0
+for p, c in points_and_their_centroids:
+    input0['set%d' % (iter_num + 1)] = [p, c]
+    iter_num += 1           
+s.map_input = mincemeat.DictMapInput(input0)
+s.mapfn = mapfn4
+s.reducefn = reducefn5
 results = s.run_server(password="") 
 for key, value in sorted(results.items()):
     print("%s: %s" % (key, value) )
-'''
