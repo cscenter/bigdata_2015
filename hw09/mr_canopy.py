@@ -133,12 +133,6 @@ results1 = s.run_server(password="")
 """ KMeans """
 
 
-def print_dict(d):
-    for k, v in d.iteritems():
-        print k, ' : ', v
-    print ''
-
-
 dist = lambda x, y: sum(map(lambda x_i, y_i: (x_i - y_i) ** 2, x, y))
 
 for i in xrange(args.n):
