@@ -135,7 +135,7 @@ s = mincemeat.Server()
 input0 = {}
 input0['set1'] = SHARD1
 input0['set2'] = SHARD2
-s.map_input = mincemeat.DictParamsMapInput(input0, t1=2.0, t2=3.5)
+s.map_input = mincemeat.DictParamsMapInput(input0, t1=4.0, t2=3.5)
 s.mapfn = mapfn0
 s.reducefn = reducefn0
 
@@ -147,7 +147,7 @@ print('canopies:', centroids)
 input1 = {}
 input1['set1'] = [centroids] + SHARD1
 input1['set2'] = [centroids] + SHARD2
-s.map_input = mincemeat.DictParamsMapInput(input1, t1=2.0, t2=3.5)
+s.map_input = mincemeat.DictParamsMapInput(input1, t1=4.0, t2=3.5)
 s.mapfn = mapfn1
 s.reducefn = reducefn1
 
