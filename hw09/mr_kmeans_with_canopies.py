@@ -1,6 +1,11 @@
 # encoding: utf-8
 import mincemeat
 import argparse
+# при больших T1 мы не получаем никаких выйгрышей от зонтичной кластеризации
+# при маленьких T1 мы мы можем получить "изолированные" зонтики, в которые не войдёт ни один центроид
+# при больших T2 у нас получится мало зонтиков это не очень хорошо
+# при маленьких T2 у нас получится очень много зонтиков, что расточительно
+
 # этот map-reduce служит для нахождения центров зонтиков
 def mapfn0(k, items):
     import math
@@ -36,8 +41,6 @@ def mapfn0(k, items):
             yield "centroid_of_canopy", "%f %f" % my_centroid
 
 def reducefn0(k, vs):
-    print 'vs'
-    print vs
     import math
     import random
     T1 = 10
@@ -72,6 +75,7 @@ def reducefn0(k, vs):
             output_centroids.append(my_centroid)
     return output_centroids
 # этот map-reduce служит для построения зонтиков
+# каждый получившийся зонтик при желании можно хранить в отдельном шарде
 def mapfn0_1(k, items):
     import math
     T1 = 10
@@ -88,7 +92,7 @@ def mapfn0_1(k, items):
 def reducefn0_1(k, vs):
     return vs
 
-# этот map-reduce производит лист пар точка - ближайший к ней центроид
+# этот map-reduce производит лист пар (точка - ближайший) к ней центроид
 def mapfn1_1(k, items):
     import math
     T1 = 10
@@ -112,7 +116,7 @@ def reducefn1_1(k, vs):
             nearest_v = v
             nearest_dist = dist(k.split(), v.split())
     return nearest_v
-
+# этот map-reduce , используя результат предыдущего map-reduce, оптимизирует наши центроиды
 def mapfn1_2(k, items):
         yield items, k
 def reducefn1_2(k, vs):
@@ -120,35 +124,6 @@ def reducefn1_2(k, vs):
     new_cy = float(sum([float(v.split()[1]) for v in vs])) / len(vs)
     return (new_cx, new_cy)
 
-
-
-
-# Маппер получает список, в котором первым элементом записан список центроидов,
-# а последущими элементами являются точки исходного набора данных
-# Маппер выплевывает для каждой точки d пару (c, d) где c -- ближайший к точке центроид
-'''def mapfn1(k, items):
-    import math
-
-    def dist(p1, p2):
-        return math.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
-
-    cur_centroids = items[0]
-    del items[0]
-    for j in items:
-        min_dist = 100
-        min_c = -1
-        for c in cur_centroids:
-            if dist(j, c) < min_dist:
-                min_c = c
-                min_dist = dist(j, c)
-                yield "%f %f" % min_c, "%f %f" % j
-
-# У свертки ключом является центроид а значением -- список точек, определённых в его кластер
-# Свёртка выплевывает новый центроид для этого кластера
-def reducefn1(k, vs):
-    new_cx = float(sum([float(v.split()[0]) for v in vs])) / len(vs)
-    new_cy = float(sum([float(v.split()[1]) for v in vs])) / len(vs)
-    return (new_cx, new_cy)'''
 
 def reducefn2(k, vs):
     return vs
@@ -168,7 +143,7 @@ print centroids
 SHARD1 = [(0, 0), (0, 3), (1, 0), (1, 1), (1, 5), (1, 6), (2, 1), (2, 2), (2, 6)]
 SHARD2 = [(4, 4), (3, 6), (5, 2), (5, 3), (6, 1), (6, 2)]
 
-
+#находим центры зонтиков
 s0 = mincemeat.Server()
 input0 = {}
 input0['set1'] = SHARD1
@@ -177,10 +152,9 @@ s0.map_input = mincemeat.DictMapInput(input0)
 s0.mapfn = mapfn0
 s0.reducefn = reducefn0
 results = s0.run_server(password="")
-print 'centroids of canopies'
 canopy_centroids = results.items()[0][1]
-print canopy_centroids
 
+#строим зонтики
 s0_1 = mincemeat.Server()
 input0 = {}
 input0['set1'] = [canopy_centroids] + SHARD1
@@ -189,11 +163,9 @@ s0_1.map_input = mincemeat.DictMapInput(input0)
 s0_1.mapfn = mapfn0_1
 s0_1.reducefn = reducefn0_1
 results = s0_1.run_server(password="")
-print 'canopies'
 canopies = results
-print canopies
 
-
+# оптимизируем центроиды
 for i in xrange(1, args.n):
     s1 = mincemeat.Server()
     input0 = {}
@@ -212,7 +184,7 @@ for i in xrange(1, args.n):
     print 'centroids'
     print centroids
 
-# На последней итерации снова собираем кластер и печатаем его
+# кластеризуем
 s1 = mincemeat.Server()
 input0 = {}
 for key, value in sorted(canopies.items()):
