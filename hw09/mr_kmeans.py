@@ -98,6 +98,9 @@ def mapfn2(k, items):
                 yield "%f %f" % canopy, p
 
 def reducefn2(k, items):
+    # вот здесь мы записываем для каждого зонтика точки которые он содержит
+    # один хонтик есть один шардФЦs wefblmfwdlwnfnwefljbw4 wukbnlkdqwdf wbidnq3l nflwefgikql3 q
+
     q = k.split()
     return items
     
@@ -110,8 +113,21 @@ def mapfn3(k, items):
   def dist(p1, p2):
   	return math.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
 
-  cur_centroids = items[0]
-  del items[0]
+  print k  
+  print items
+  print ''
+  print ''
+  T1, T2 = items[0]
+  T1 = int(T1)
+  T2 = int(T2) 
+  print T1          
+  print T2      
+        
+  cur_centroids = items[1]
+  print cur_centroids
+  canopy_and_points = items[2]    
+  print canopy_and_points    
+  '''
   for i in items:
     min_dist = 100
     min_c = -1
@@ -120,6 +136,8 @@ def mapfn3(k, items):
         min_c = c
         min_dist = dist(i, c)
     yield "%f %f" % min_c, "%f %f" % i
+'''
+  yield 'a', 'a'
 
 # У свертки ключом является центроид а значением -- список точек, определённых в его кластер
 # Свёртка выплевывает новый центроид для этого кластера
@@ -153,8 +171,6 @@ s.map_input = mincemeat.DictMapInput(input0)
 s.mapfn = mapfn1
 s.reducefn = reducefn1
 canopy_coordinates = s.run_server(password="")
-print canopy_coordinates
-print ''
 
 input0 = {}
 input0['set1'] = [[T1, T2]] + [canopy_coordinates[str(T1) + ',' + str(T2)]] + [SHARD1] 
@@ -163,16 +179,19 @@ s = mincemeat.Server()
 s.map_input = mincemeat.DictMapInput(input0)
 s.mapfn = mapfn2
 s.reducefn = reducefn2
-results = s.run_server(password="")
-print results
+canopies_with_points = s.run_server(password="") # это как бы было записано в шард
 
-'''
 for i in xrange(1,args.n):
   s = mincemeat.Server() 
 
+# читаем зонтики из шардов
+# но у нас они в списке canopies_with_point
   input0 = {}
-  input0['set1'] = [centroids] + SHARD1
-  input0['set2'] = [centroids] + SHARD2
+  iter_num = 0
+  for k in canopies_with_points.keys():
+      v = canopies_with_points[k]
+      input0['set%d' % (iter_num + 1)] = [[T1, T2]] + [centroids] + [k, v]
+      iter_num += 1
   s.map_input = mincemeat.DictMapInput(input0) 
   s.mapfn = mapfn3
   s.reducefn = reducefn3
@@ -192,5 +211,3 @@ s.reducefn = reducefn4
 results = s.run_server(password="") 
 for key, value in sorted(results.items()):
     print("%s: %s" % (key, value) )
-
-'''
