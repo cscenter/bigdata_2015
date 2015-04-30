@@ -79,9 +79,28 @@ def reducefn1(k, items):
             x += l2[0]
             y += l2[1]
         all_canopy.append((float(x) / len(l), float(y) / len(l)))
-    print all_canopy    
     return all_canopy    
-   
+
+def mapfn2(k, items):
+    import math    
+    def dist(p1, p2):
+        return math.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
+
+    T1 = items[0][0]
+    T2 = items[0][1]
+    T1 = int(T1)
+    T2 = int(T2)
+    canopies = items[1]
+    points = items[2]    
+    for canopy in canopies:
+        for p in points:
+            if dist(canopy, p) < T1:
+                yield "%f %f" % canopy, p
+
+def reducefn2(k, items):
+    q = k.split()
+    return items
+    
 # Маппер получает список, в котором первым элементом записан список центроидов,
 # а последущими элементами являются точки исходного набора данных
 # Маппер выплевывает для каждой точки d пару (c, d) где c -- ближайший к точке центроид
@@ -133,8 +152,20 @@ s = mincemeat.Server()
 s.map_input = mincemeat.DictMapInput(input0)
 s.mapfn = mapfn1
 s.reducefn = reducefn1
+canopy_coordinates = s.run_server(password="")
+print canopy_coordinates
+print ''
+
+input0 = {}
+input0['set1'] = [[T1, T2]] + [canopy_coordinates[str(T1) + ',' + str(T2)]] + [SHARD1] 
+input0['set2'] = [[T1, T2]] + [canopy_coordinates[str(T1) + ',' + str(T2)]] + [SHARD2]
+s = mincemeat.Server()
+s.map_input = mincemeat.DictMapInput(input0)
+s.mapfn = mapfn2
+s.reducefn = reducefn2
 results = s.run_server(password="")
 print results
+
 '''
 for i in xrange(1,args.n):
   s = mincemeat.Server() 
