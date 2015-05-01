@@ -6,6 +6,7 @@ import mincemeat
 # первый mapper.
 # на вход получает массив точек.
 # на выходе даёт {центр зонта: ([точки ближе T2], [точки ближе T1])}.
+# может получить наслойку зонтов, если они вычислялись на разных нодах
 def create_canopies(k, args):
     Ts, points = args
     T1, T2 = Ts
@@ -42,6 +43,33 @@ def id_canopies(canopy, points):
 
 
 # второй mapper.
+# склеивает зонты, получившиеся в ходе ошибки на предыдущем этапе.
+# получает на вход ([список зонтов для склейки], {центры зонтов: ([точки ближе T2], [точки ближе T1])})
+# если зонт нужно склеить с другим, выплёвывает точки поглощаемого зонта под псевдонимом поглощающего зонта
+def canopies_union(k, args):
+    to_merge, canopy_info = args
+    canopy, poins = canopy_info
+    if not to_merge:
+        yield canopy_info
+    for m in to_merge:
+        if canopy in m:
+            yield m[0], poins
+
+
+# второй reducer.
+# окончательно склеивает близкие зонты
+def canopies_union_reducer(c, v):
+    own = []
+    candidates = []
+    for pair in v:
+        if pair[0]:
+            own.extend(pair[0])
+        if pair[1]:
+            candidates.extend(pair[1])
+    return own, candidates
+
+
+# второй mapper.
 # получает на вход {центр зонта: ([точки ближе T2], [ ближе T1])}.
 # возвращает {точка: (Мой зонт, Возможный мой зонт)}.
 def mark_point(canopy, points):
@@ -70,10 +98,9 @@ def reduce_marked(point, canopies):
         else:
             candidate.add(canopy[1])
     if own:
-        return own[0], None
+        return (own[0], None)
     else:
-        return  None, candidate
-
+        return (None, candidate)
 
 
 # формируем кластеры как в исходном примере.
@@ -148,7 +175,9 @@ parser.add_argument("-n", help="Iterations count", required = True, type = int)
 args = parser.parse_args()
 
 s = mincemeat.Server()
-radius = (2.5, 1.0) # T1, T2
+T1 = 3.0
+T2 = 2.0
+radius = (T1, T2)
 input0 = {}
 input0['set1'] = (radius, SHARD1)
 input0['set2'] = (radius, SHARD2)
@@ -160,6 +189,28 @@ results = s.run_server(password="")
 canopies = [c for c in results]
 
 
+canopies_to_merge = set()
+temp_canopies = canopies[:]
+for left in temp_canopies:
+    for right in temp_canopies:
+        if left is right:
+            continue
+        l = tuple(float(x) for x in left.split(','))
+        r = tuple(float(x) for x in right.split(','))
+        if dist(l, r) < T2:
+            canopies_to_merge.add((left, right))
+            temp_canopies.remove(right)
+
+input = {}
+
+for k, v in results.items():
+    input[k] = (canopies_to_merge, (k, v))
+
+s.map_input = mincemeat.DictMapInput(input)
+s.mapfn = canopies_union
+s.reducefn = canopies_union_reducer
+
+results = s.run_server(password="")
 
 
 s.map_input = mincemeat.DictMapInput(results)
