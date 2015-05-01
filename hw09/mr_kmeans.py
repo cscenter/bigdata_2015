@@ -69,7 +69,7 @@ def canopies_union_reducer(c, v):
     return own, candidates
 
 
-# второй mapper.
+# третий mapper.
 # получает на вход {центр зонта: ([точки ближе T2], [ ближе T1])}.
 # возвращает {точка: (Мой зонт, Возможный мой зонт)}.
 def mark_point(canopy, points):
@@ -82,7 +82,7 @@ def mark_point(canopy, points):
         yield "%f,%f" % point, (None, canopy)
 
 
-# второй reducer
+# третий reducer
 # получает {точка: [(Мой зонт, Возможный мой зонт)]}.
 # возвращает
 # {точка: (мой первый гарантированный зонт, None)}
