@@ -148,7 +148,7 @@ parser.add_argument("-n", help="Iterations count", required = True, type = int)
 args = parser.parse_args()
 
 s = mincemeat.Server()
-radius = (1.5, 1.0) # T1, T2
+radius = (2.5, 1.0) # T1, T2
 input0 = {}
 input0['set1'] = (radius, SHARD1)
 input0['set2'] = (radius, SHARD2)
@@ -156,7 +156,7 @@ s.map_input = mincemeat.DictMapInput(input0)
 s.mapfn = create_canopies
 s.reducefn = id_canopies
 
-results = s.run_server(password="",  port=8082)
+results = s.run_server(password="")
 canopies = [c for c in results]
 
 
