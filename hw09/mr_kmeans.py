@@ -5,29 +5,46 @@ import argparse
 # Маппер получает список, в котором первым элементом записан список центроидов,
 # а последущими элементами являются точки исходного набора данных
 # Маппер выплевывает для каждой точки d пару (c, d) где c -- ближайший к точке центроид
+#ко всем точкам добавился зонт
 def mapfn1(k, items):
   import math
 
   def dist(p1, p2):
-  	return math.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
+      (c1, p1) = p1
+      (c2, p2) = p2
+      if (c1 != c2):
+          return 100 #max float
+  	  return math.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
 
   cur_centroids = items[0]
+  print cur_centroids
   del items[0]
   for i in items:
-    min_dist = 100
+    print "for"
+    print i
+    min_dist = 100 #max float
     min_c = -1
     for c in cur_centroids:
       if dist(i, c) < min_dist:
         min_c = c
         min_dist = dist(i, c)
-    yield "%f %f" % min_c, "%f %f" % i # min_c - ближайший центройд, i - точка
+    if (min_c == -1):
+        continue
+    (can_c, mc_p) = min_c
+    (can_i, i_p) = i
+    yield "%f %f" % can_c + " " + "%f %f" % mc_p, "%f %f" % can_i + " " + "%f %f" % i_p
 
 # У свертки ключом является центроид а значением -- список точек, определённых в его кластер
 # Свёртка выплевывает новый центроид для этого кластера
+
+# по хорошему тут надо искать зонт, которому принадлежит новый центройд,
+# но т.к. для простоты не пользуемся реальной дфс(так бы из файла
+# вытащили бы T1 T2 и сами центры зонтов, благо их мало), а передавать
+# аргументом это не удобно в map/reduce, то не ищу.
 def reducefn1(k, vs):
-    new_cx = float(sum((float(v.split()[0]) for v in vs))) / len(vs)
-    new_cy = float(sum((float(v.split()[1]) for v in vs))) / len(vs)
-    return (new_cx, new_cy)
+    new_cx = float(sum((float(v.split()[2]) for v in vs))) / len(vs)
+    new_cy = float(sum((float(v.split()[3]) for v in vs))) / len(vs)
+    return ((float(k.split()[0]), float(k.split()[1])), (new_cx, new_cy))
 
 def reducefn2(k, vs):
     return vs
@@ -98,7 +115,7 @@ SHARD2 = [(4,4),(3,6),(5,2),(5,3),(6,1),(6,2)]
 canopy_build = False
 print "canopy started"
 
-params = [81, 81] #T1 T2, и это квадраты расстояний
+params = [4, 9] #T1 T2, и это квадраты расстояний
 #canopiesDict следует понимать в реальной системе как набор файлов,
 #в которых хранятся зонтики
 canopiesDict = {}
@@ -137,7 +154,6 @@ while (not canopy_build):
     for i in results.values():
         (k, v) = i
         if (k == 'not used'):
-            # notUsed = convertStringListToFloatList(v)
             notUsed = v
         else:
             print(k, v)
@@ -148,7 +164,6 @@ while (not canopy_build):
                 canopiesDict[k] = v
     for i in canopiesDict:
         canopies.append(i)
-    # canopies = convertStringListToFloatList(canopies)
     if (len(notUsed) == 0):
         break
 
@@ -161,61 +176,79 @@ for i in canopiesDict.items():
 #вот здесь явно это показывается
 shards = canopiesDict
 
-centroidsDict = {}
-#распихаем центройды по зонтам
+
+def map_prep(k, items):
+    c = items[0]
+    del items[0]
+    for i in items:
+        yield "%f %f" % c, "%f %f" % i
+
+def reduce_prep(k, vs):
+    def convertStringPoint(p):
+        (x, y) = p.split(" ")
+        return (float(x), float(y))
+    c = convertStringPoint(k)
+    return [(c, convertStringPoint(p)) for p in vs]
+
+print "Prepearing to K-Means, please run mincemeat"
+
+s = mincemeat.Server()
+
+input0 = {}
+
+for i in shards.items():
+    (c, ps) = i
+    print [c] + ps
+    input0[c] = [c] + ps
+s.map_input = mincemeat.DictMapInput(input0)
+s.mapfn = map_prep
+s.reducefn = reduce_prep
+results = s.run_server(password="")
+
+print "Prepearing stoped"
+print "Points with canopy"
+points = []
+for i in results.values():
+    points += i;
+
+print points
+
+centroidsP = []
+#запишем центройдам их зонты
 def dist(p1, p2):
     return (p1[0] - p2[0])**2 + (p1[1] - p2[1])**2
-#можно тоже сделать map/reduceом, но если умещаются центройды, то
-#допустим что и центры зонтов так же умещаются
-#а иначе было бы зонтов куда больше чем центройдов,
-#и нам такое не интересно. Будем считать что выбрали такие
-#T1 и T2, что количество зонтов <= количеству центройдов
-print "centroids per canopy"
+
+#центройдов мало, полагаем что и зонтов мало(влазят в память),
+# иначе наш алгоритм всё равно
+#плоховато отработает
+print "centroids with canopy"
 for canopy in canopies:
     for centroid in centroids:
         if (dist(canopy, centroid) < params[1]):
-            print(canopy, centroid)
-            if (canopy in centroidsDict):
-                centroidsDict[canopy].append(centroid)
-            else:
-                centroidsDict[canopy] = [centroid]
+            centroidsP.append((canopy, centroid))
+print centroidsP
 
-for i in centroidsDict.items():
-    print(i)
-
-#k-means не менял, т.к. мы ему скармливаем шарды, каждый из которых
-#содержит точки только принадлежащие одному зонту
-#это позволяет нам не париться с бесконечными расстояниями между зонтами
-#да, теперь будут появляться дубликаты точек, и высчитываемые центройды будут
-#смещены к пересечениям зонтов(а точнее зонам между T1 и T2),
-#может в какой-то ситуации это даже хорошо?
-
-#Если делать по "канону", то тогда всего-то бы нужно было приписать
-#к точкам их зонт(ещё один map/reduce), и в K-Means в высчитывании
-# расстояний возвращать например наибольший float, если они из разных зонтов.
+#опять же, points в реальной системе бы находился на множестве файлов,
+#чтобы была возможность параллельной работы,
+#для простоты это 1 список
+print "K-Means can start, please run mincemeat"
 for i in xrange(1,args.n):
   s = mincemeat.Server()
   input0 = {}
-  for shard in shards.keys():
-    #нас интересуют только центройды в зонтах,
-    #другими словами, если для зонта нет центройдов, то мы пропускаем
-    if (shard in centroidsDict):
-        input0[shard] = [centroidsDict[shard]] + shards[shard]
+  input0['shards'] = [centroidsP] + points
 
   s.map_input = mincemeat.DictMapInput(input0)
   s.mapfn = mapfn1
   s.reducefn = reducefn1
 
   results = s.run_server(password="") 
-  centroids = [c for c in results.itervalues()]
-  print centroids
+  centroidsP = [c for c in results.itervalues()]
+  print centroidsP
 
 # На последней итерации снова собираем кластер и печатаем его
 s = mincemeat.Server()
 input0 = {}
-for shard in shards.keys():
-    if (shard in centroidsDict):
-        input0[shard] = [centroidsDict[shard]] + shards[shard]
+input0['shards'] = [centroidsP] + points
 s.map_input = mincemeat.DictMapInput(input0) 
 s.mapfn = mapfn1
 s.reducefn = reducefn2
